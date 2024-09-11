@@ -4,7 +4,7 @@
         <div class="container">
             <div class="classy-nav-container breakpoint-off">
                 <nav class="classy-navbar" id="bigshopNav">
-                    <a href="index.html" class="nav-brand"><img src="/img/core-img/logo.png" alt="logo"></a>
+                    <a href="/" class="nav-brand"><img src="/img/core-img/logo.png" alt="logo"></a>
                     <div class="classy-navbar-toggler">
                         <span class="navbarToggler"><span></span><span></span><span></span></span>
                     </div>
@@ -82,8 +82,27 @@
                         </div>
 
                         <!-- Wishlist -->
-                        <div class="wishlist-area">
-                            <a href="wishlist.html" class="wishlist-btn"><i class="icofont-heart"></i></a>
+                        <div class="cart-area">
+                            <div th:href="@{notification/list}" class="cart--btn"> <span class="cart_quantity">2</span>
+                                <i class="icofont-heart"></i></div>
+
+                            <!-- Cart Dropdown Content -->
+                            <div class="cart-dropdown-content">
+                                <ul class="cart-list">
+                                    <li>
+                                        <div class="cart-item-desc">
+                                            <a href="#" class="image">
+                                                <img src="/img/product-img/top-1.png" class="cart-thumb" alt="">
+                                            </a>
+                                            <div>
+                                                <a th:href="@{/notification/list}" href=>Kid's Fashion</a>
+                                                <p>1 x - <span class="price">$32.99</span></p>
+                                            </div>
+                                        </div>
+                                        <span class="dropdown-product-remove"><i class="icofont-bin"></i></span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
 
                         <!-- Cart -->
