@@ -66,6 +66,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDetailResponse getProductDetail(Integer productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("상품이 없습니다."));
+        incrementViewCount(product);
 
         return ProductDetailResponse.builder()
                 .productId(product.getId())
@@ -79,6 +80,11 @@ public class ProductServiceImpl implements ProductService {
                 .createdAt(product.getCreatedAt())
                 .view(product.getView())
                 .build();
+    }
+
+    private void incrementViewCount(Product product) {
+        product.setView(product.getView() + 1);
+        productRepository.save(product);
     }
 
     @Override
