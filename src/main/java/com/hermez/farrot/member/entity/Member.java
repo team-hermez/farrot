@@ -7,11 +7,11 @@ import lombok.Getter;
 @Entity
 @Table(name = "MEMBER")
 @Getter
-
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer memberId;
+    @Column(name="member_id")
+    private Integer id;
 
     @Column(name="member_name", nullable = false, length = 100)
     private String memberName;
