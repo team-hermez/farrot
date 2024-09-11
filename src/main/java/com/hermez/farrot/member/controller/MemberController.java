@@ -32,16 +32,10 @@ public class MemberController {
     @PostMapping("/register")
     String postMemberRegister(MemberRegisterRequest memberRegisterRequest) {
         userService.save(memberRegisterRequest);
-
-        return "redirect:/login";
+        return "redirect:/member/login";
     }
     @GetMapping("/login")
     String memberLoginPage(Model model) {
-        return "member/login";
-    }
-
-    @PostMapping("/login")
-    String postMember(Model model) {
         return "member/login";
     }
 
