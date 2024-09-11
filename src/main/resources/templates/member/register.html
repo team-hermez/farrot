@@ -1,0 +1,66 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bigshop | Responsive E-commerce Template</title>
+    <link rel="icon" href="/img/core-img/favicon.ico">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<div th:replace="/layout/header :: header"></div>
+
+    <div class="breadcumb_area">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <h5>회원가입</h5>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active">Login &amp; Register</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bigshop_reg_log_area section_padding_100_50">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="login_form mb-50">
+                        <h5 class="mb-3">회원가입</h5>
+
+                        <form th:action="@{/member/register}" method="POST">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="memberName" id="memberName" placeholder="이름">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="nickname" name="nickname" placeholder="닉네임">
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="이메일">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호">
+                            </div>
+                            <div class="form-group">
+                                <input type="tel" class="form-control" id="phone" name="phone" placeholder="전화번호">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div th:replace="/layout/footer :: footer"></div>
+
+</body>
+
+</html>
