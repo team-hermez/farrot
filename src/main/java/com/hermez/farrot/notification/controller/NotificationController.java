@@ -1,16 +1,16 @@
 package com.hermez.farrot.notification.controller;
 
-import com.hermez.farrot.notification.service.NotificationService;
-import org.springframework.http.MediaType;
+//import com.hermez.farrot.notification.service.NotificationService;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/notification")
 public class NotificationController {
-    private NotificationService notificationService;
+//    private NotificationService notificationService;
 
     @GetMapping("/list")
     public String getList(Model model) {
