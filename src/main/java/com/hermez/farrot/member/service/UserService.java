@@ -20,6 +20,6 @@ public class UserService {
                 .password(bCryptPasswordEncoder.encode(memberRegisterRequest.getPassword()))
                 .phone(memberRegisterRequest.getPhone())
                 .nickname(memberRegisterRequest.getNickname())
-                .build()).getMemberId();
+                .build()).getId();
     }
 }
