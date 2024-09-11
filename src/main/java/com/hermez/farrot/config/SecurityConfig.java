@@ -28,7 +28,8 @@ public class SecurityConfig {
                         .anyRequest().permitAll())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/member/login")
-                        .permitAll().defaultSuccessUrl("/", true)
+                        .usernameParameter("email")
+                        .permitAll().defaultSuccessUrl("/member/detail", true)
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/member/login")
