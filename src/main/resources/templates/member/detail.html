@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bigshop | Responsive E-commerce Template</title>
+    <link rel="icon" href="/img/core-img/favicon.ico">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+<div th:replace="/layout/header :: header"></div>
+    <div class="breadcumb_area">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <h5>마이페이지</h5>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active">My Account</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="my-account-area section_padding_100_50">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-lg-9">
+                    <div class="my-account-content mb-50">
+                        <h5 class="mb-3">이거뜨면 로그인 된거읾</h5>
+
+                        <form action="#" method="post">
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label for="firstName">아이디</label>
+                                        <input type="text" class="form-control" id="firstName" placeholder="사용자 아이디">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="displayName">닉네임</label>
+                                        <input type="text" class="form-control" id="displayName" placeholder="사용자 이름">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="emailAddress">이메일 주소</label>
+                                        <input type="email" class="form-control" id="emailAddress" placeholder="signingworld@gmail.com">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="currentPass">현재 비밀번호</label>
+                                        <input type="password" class="form-control" id="currentPass">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="newPass"> 새 비밀번호</label>
+                                        <input type="password" class="form-control" id="newPass">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="confirmPass">새 비밀번호 확인</label>
+                                        <input type="password" class="form-control" id="confirmPass">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">저장하기</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<div th:replace="/layout/footer :: footer"></div>
+</body>
+
+</html>
