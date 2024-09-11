@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+  <title>STOMP WebSocket Example</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+  <link th:href="@{/css/chat.css}" rel="stylesheet">
+  <style>
+    #response {
+      height: 500px;
+    }
+
+    .btn-upload {
+      width: 150px;
+      height: 30px;
+      background: #fff;
+      border: 1px solid rgb(77, 77, 77);
+      border-radius: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        background: rgb(77, 77, 77);
+        color: #fff;
+      }
+    }
+
+    #file {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<input type="hidden" th:value="${roomId}" class="room-id">
+<div class="wrapper">
+  <div class="user-container">
+    <label for="nickname">상품:</label>
+    <input type="text" id="nickname" value="상품명 들어감" readonly>
+  </div>
+  <div class="display-container">
+    <ul class="chatting-list">
+
+    </ul>
+  </div>
+  <div class="input-container">
+    <span>
+      <label for="file">
+  <div class="btn-upload">이미지 전송</div>
+</label>
+<input type="file" name="file" id="file">
+    <input type="text" class="chatting-input" autofocus>
+    <button class="send-button">전송</button>
+    </span>
+  </div>
+</div>
+<script th:src="@{/js/chat.js}"></script>
+</body>
+</html>
