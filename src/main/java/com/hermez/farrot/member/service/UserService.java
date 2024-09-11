@@ -13,7 +13,7 @@ public class UserService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public int save(MemberRegisterRequest memberRegisterRequest) {
+    public Integer save(MemberRegisterRequest memberRegisterRequest) {
         return memberRepository.save(Member.builder()
                 .memberName(memberRegisterRequest.getMemberName())
                 .email(memberRegisterRequest.getEmail())
