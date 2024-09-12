@@ -1,5 +1,7 @@
 package com.hermez.farrot.chat.chatroom.controller;
 
+import com.hermez.farrot.chat.chatmessage.dto.response.ChatRoomResponse;
+import com.hermez.farrot.chat.chatmessage.service.ChatMessageService;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomEnterResponse;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
 import com.hermez.farrot.chat.chatroom.service.ChatRoomService;
@@ -12,6 +14,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +35,8 @@ public class ChatRoomController {
 
   private final ChatRoomService chatRoomService;
   private final MemberRepository memberRepository;
+  private final ChatMessageService chatMessageService;
+  private final SimpMessagingTemplate simpMessagingTemplate;
 
   @GetMapping("/enter/{productId}")
   public String enterChatRoom(@PathVariable Integer productId, Model model) {
@@ -72,6 +77,13 @@ public class ChatRoomController {
     Member sender = memberRepository.findByEmail(userEmail)
         .orElseThrow(() -> new RuntimeException("멤버없음"));
     log.info("나의 아이디 {}",sender.getId());
+    ChatRoomEnterResponse response = new ChatRoomEnterResponse(roomId,sender.getEmail(),
+        sender.getId(), sender.getNickname());
+    log.info("Sending before message: {}", response.roomId());
+    List<ChatRoomResponse> chatMessages = chatMessageService.findAllByChatRoomId(response);
+/*    chatMessages.forEach(chatMessage ->
+        simpMessagingTemplate.convertAndSend("/room/" + response.roomId(), chatMessage)
+    );*/
     ChatRoomEnterResponse chatRoomEnterResponse = ChatRoomEnterResponse.builder()
         .roomId(roomId)
         .email(userEmail)
@@ -79,6 +91,7 @@ public class ChatRoomController {
         .nickName(sender.getNickname())
         .build();
     model.addAttribute("chatRoomEnterResponse", chatRoomEnterResponse);
+    model.addAttribute("chatMessages", chatMessages);
     return "chat/chat-room";
   }
 

@@ -35,7 +35,7 @@
 </head>
 <body>
 <input type="hidden" th:value="${chatRoomEnterResponse.roomId}" class="room-id">
-<input type="text" th:value="${chatRoomEnterResponse.senderId}" class="sender-id" readonly>
+<input type="hidden" th:value="${chatRoomEnterResponse.senderId}" class="sender-id">
 <input type="hidden" th:value="${chatRoomEnterResponse.nickName}" class="nickname">
 <input type="hidden" th:value="${chatRoomEnterResponse.email}" class="email">
 <div class="wrapper">

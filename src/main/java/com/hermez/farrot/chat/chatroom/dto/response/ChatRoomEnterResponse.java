@@ -5,7 +5,6 @@ import lombok.Builder;
 @Builder
 public record ChatRoomEnterResponse(
     Integer roomId, String email,
-    Integer senderId, String nickName,
-    String displayNickName) {
+    Integer senderId, String nickName) {
 
 }
