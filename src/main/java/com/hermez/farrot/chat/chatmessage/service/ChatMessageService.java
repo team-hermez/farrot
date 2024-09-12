@@ -62,6 +62,7 @@ public class ChatMessageService {
                           .getMember().getNickname()
                       : response.nickName()
               )
+              .senderId(senderId)
               .senderType(
                   senderId != myId ? SenderType.RECEIVER : SenderType.SENDER
               )

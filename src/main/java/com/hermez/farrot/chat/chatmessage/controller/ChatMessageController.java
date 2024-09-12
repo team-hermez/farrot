@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class ChatMessageController {
 
   private final ChatMessageService chatMessageService;
-  private final SimpMessagingTemplate messagingTemplate;
   private final MemberRepository memberRepository;
   private final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -52,8 +51,10 @@ public class ChatMessageController {
   public void sendBeforeMessage(@ModelAttribute ChatRoomEnterResponse chatRoomEnterResponse) {
     log.info("Sending before message: {}", chatRoomEnterResponse.roomId());
     List<ChatRoomResponse> chatMessages = chatMessageService.findAllByChatRoomId(chatRoomEnterResponse);
-    chatMessages.forEach(chatMessage ->
-        messagingTemplate.convertAndSend("/room/" + chatRoomEnterResponse.roomId(), chatMessage)
+    chatMessages.forEach(chatMessage ->{
+        log.info("Sending before message: {}", chatMessage);
+          simpMessagingTemplate.convertAndSend("/room/" + chatRoomEnterResponse.roomId(), chatMessage);
+        }
     );
   }
 
