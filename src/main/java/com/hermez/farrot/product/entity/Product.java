@@ -52,7 +52,7 @@ public class Product {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-        this.view=0;
+        this.view=1;
     }
 }
 
