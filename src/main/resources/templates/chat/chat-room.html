@@ -34,7 +34,10 @@
   </style>
 </head>
 <body>
-<input type="hidden" th:value="${roomId}" class="room-id">
+<input type="hidden" th:value="${chatRoomEnterResponse.roomId}" class="room-id">
+<input type="hidden" th:value="${chatRoomEnterResponse.senderId}" class="sender-id">
+<input type="hidden" th:value="${chatRoomEnterResponse.nickName}" class="nickname">
+<input type="hidden" th:value="${chatRoomEnterResponse.email}" class="email">
 <div class="wrapper">
   <div class="user-container">
     <label for="nickname">상품:</label>
