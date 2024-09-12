@@ -8,20 +8,17 @@ import com.hermez.farrot.chat.chatmessage.service.ChatMessageService;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomEnterResponse;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
-import jakarta.servlet.http.HttpSession;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -38,18 +35,15 @@ public class ChatMessageController {
 
   @MessageMapping("/message/{roomId}")
   @SendTo("/room/{roomId}")
-  public ChatResponse sendMessage(@ModelAttribute SendMessageRequest request){
-    SecurityContext securityContext = SecurityContextHolder.getContext();
-    if (securityContext.getAuthentication() == null) {
-      throw new RuntimeException("Authentication not found");
-    }
-    UserDetails principal = (UserDetails) securityContext.getAuthentication().getPrincipal();
+  public ChatResponse sendMessage(
+      @Payload SendMessageRequest request){
+    /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetails principal = (UserDetails) authentication.getPrincipal();
     String userEmail = principal.getUsername();
-
     Member sender = memberRepository.findByEmail(userEmail)
         .orElseThrow(() -> new RuntimeException("멤버없음"));
     log.info("세션 유저 정보===={}",sender.getNickname());
-    log.info("Sending message: {}", request);
+    log.info("Sending message: {}", request);*/
     chatMessageService.save(request.chatRoomId(),request.email() ,request.message(),request.type());
     return ChatResponse.builder()
         .chatRoomId(request.chatRoomId())
@@ -62,7 +56,7 @@ public class ChatMessageController {
   }
 
   @MessageMapping("/enter/{roomId}")
-  public void sendBeforeMessage(@Payload ChatRoomEnterResponse chatRoomEnterResponse) {
+  public void sendBeforeMessage(@ModelAttribute ChatRoomEnterResponse chatRoomEnterResponse) {
     log.info("Sending before message: {}", chatRoomEnterResponse.roomId());
     List<ChatRoomResponse> chatMessages = chatMessageService.findAllByChatRoomId(chatRoomEnterResponse);
     chatMessages.forEach(chatMessage ->
