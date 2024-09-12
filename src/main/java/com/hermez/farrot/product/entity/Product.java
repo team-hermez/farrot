@@ -43,7 +43,7 @@ public class Product {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "product_status_id")
+    @JoinColumn(name = "product_status_id", nullable = false)
     private ProductStatus productStatus;
 
     @Column(nullable = false, updatable = false)
