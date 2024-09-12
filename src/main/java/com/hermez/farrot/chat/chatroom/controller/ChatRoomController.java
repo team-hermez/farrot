@@ -8,24 +8,24 @@ import com.hermez.farrot.chat.chatroom.service.ChatRoomService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
 import com.hermez.farrot.product.entity.Product;
-import jakarta.servlet.http.HttpSession;
+import com.hermez.farrot.product.repository.ProductRepository;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RequestMapping("/chat-room")
 @Controller
@@ -35,11 +35,9 @@ public class ChatRoomController {
 
   private final ChatRoomService chatRoomService;
   private final MemberRepository memberRepository;
-  private final ChatMessageService chatMessageService;
-  private final SimpMessagingTemplate simpMessagingTemplate;
 
-  @GetMapping("/enter/{productId}")
-  public String enterChatRoom(@PathVariable Integer productId, Model model) {
+  @PostMapping("/enter/{productId}")
+  public String enterChatRoom(@PathVariable Integer productId, RedirectAttributes redirectAttributes) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails principal = (UserDetails) authentication.getPrincipal();
     String userEmail = principal.getUsername();
@@ -47,14 +45,9 @@ public class ChatRoomController {
         .orElseThrow(() -> new RuntimeException("멤버없음"));
     chatRoomService.createChatRoom(productId);
     Integer roomId = chatRoomService.findBySenderId(sender.getId());
-    ChatRoomEnterResponse chatRoomEnterResponse = ChatRoomEnterResponse.builder()
-        .roomId(roomId)
-        .email(userEmail)
-        .senderId(sender.getId())
-        .nickName(sender.getNickname())
-        .build();
-    model.addAttribute("chatRoomEnterResponse", chatRoomEnterResponse);
-    return "chat/chat-room";
+    redirectAttributes.addAttribute("roomId", roomId);
+    redirectAttributes.addAttribute("productId", productId);
+    return "redirect:/chat-room/room";
   }
 
   @GetMapping("/rooms")
@@ -70,20 +63,19 @@ public class ChatRoomController {
   }
 
   @GetMapping("/room")
-  public String chatRoomPage(@RequestParam Integer roomId,Model model) {
+  public String chatRoomPage(@RequestParam Integer roomId,@RequestParam Integer productId,Model model) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails principal = (UserDetails) authentication.getPrincipal();
     String userEmail = principal.getUsername();
     Member sender = memberRepository.findByEmail(userEmail)
         .orElseThrow(() -> new RuntimeException("멤버없음"));
     log.info("나의 아이디 {}",sender.getId());
-    ChatRoomEnterResponse response = new ChatRoomEnterResponse(roomId,sender.getEmail(),
-        sender.getId(), sender.getNickname());
+    ChatRoomEnterResponse response = new ChatRoomEnterResponse(roomId, sender.getEmail(), productId ,sender.getId(), sender.getNickname());
     log.info("Sending before message: {}", response.roomId());
-    List<ChatRoomResponse> chatMessages = chatMessageService.findAllByChatRoomId(response);
-/*    chatMessages.forEach(chatMessage ->
-        simpMessagingTemplate.convertAndSend("/room/" + response.roomId(), chatMessage)
-    );*/
+//    Product findProduct = productRepository.findById(response.productId())
+//        .orElseThrow(() -> new RuntimeException("아이템이 없습니다."));
+//    Integer buyerId = findProduct.getMember().getId();
+//    List<ChatRoomResponse> chatMessages = chatMessageService.findAllByChatRoomId(response);
     ChatRoomEnterResponse chatRoomEnterResponse = ChatRoomEnterResponse.builder()
         .roomId(roomId)
         .email(userEmail)
@@ -91,7 +83,8 @@ public class ChatRoomController {
         .nickName(sender.getNickname())
         .build();
     model.addAttribute("chatRoomEnterResponse", chatRoomEnterResponse);
-    model.addAttribute("chatMessages", chatMessages);
+//    model.addAttribute("chatMessages", chatMessages);
+    model.addAttribute("sessionUsername", userEmail);
     return "chat/chat-room";
   }
 
