@@ -48,4 +48,11 @@ public class ChatRoom {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    public static ChatRoom makeChatRoom(Member sender, Product product){
+      return ChatRoom.builder()
+          .sender(sender)
+          .product(product)
+          .createdAt(LocalDateTime.now())
+          .build();
+    }
 }

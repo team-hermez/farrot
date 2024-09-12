@@ -22,9 +22,37 @@ public class ChatRoomRepository {
 
   public List<ChatRoom> findAll() {
     return em.createQuery("select c from ChatRoom c "
-//        + " join fetch c.member m "
+        + " join fetch c.sender m "
         + " join fetch c.chatMessages cm "
-        + " join fetch  c.product p", ChatRoom.class).getResultList();
+        + " join fetch  c.product p"
+        , ChatRoom.class).getResultList();
   }
 
+  public List<ChatRoom> findAllBySenderId(Integer senderId) {
+    return em.createQuery("select c from ChatRoom c"
+        + " join fetch c.sender m "
+        + " join fetch c.product p"
+        + " where m.id = :senderId", ChatRoom.class)
+        .setParameter("senderId", senderId)
+        .getResultList();
+  }
+
+  public List<ChatRoom> findAllByProductId(Integer productId) {
+    return em.createQuery("select c from ChatRoom c"
+            + " join fetch c.sender m "
+            + " join fetch c.product p"
+            + " where p.id = :productId", ChatRoom.class)
+        .setParameter("productId", productId)
+        .getResultList();
+  }
+
+  public Integer findChatRoomIdBySenderId(Integer senderId) {
+    return em.createQuery("select cr.id from ChatRoom cr"
+            + " where cr.sender.id =:senderId"
+            + " order by cr.id desc ", Integer.class)
+        .setParameter("senderId", senderId)
+        .setMaxResults(1)
+        .getSingleResult();
+
+  }
 }
