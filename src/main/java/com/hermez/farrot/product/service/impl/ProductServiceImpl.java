@@ -110,4 +110,8 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
     }
 
+    @Override
+    public List<Product> getProductsByMember(Integer memberId) {
+        return productRepository.findByMemberId(memberId);
+    }
 }
