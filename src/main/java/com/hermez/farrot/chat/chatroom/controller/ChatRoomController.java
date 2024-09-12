@@ -71,6 +71,7 @@ public class ChatRoomController {
     String userEmail = principal.getUsername();
     Member sender = memberRepository.findByEmail(userEmail)
         .orElseThrow(() -> new RuntimeException("멤버없음"));
+    log.info("나의 아이디 {}",sender.getId());
     ChatRoomEnterResponse chatRoomEnterResponse = ChatRoomEnterResponse.builder()
         .roomId(roomId)
         .email(userEmail)

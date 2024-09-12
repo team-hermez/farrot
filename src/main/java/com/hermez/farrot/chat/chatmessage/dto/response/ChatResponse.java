@@ -7,6 +7,6 @@ import lombok.Builder;
 @Builder
 public record ChatResponse(
     Integer chatRoomId,String nickName,
-    SenderType senderType , String message,
-    ChatMessageType type, Integer readCount,
-    String sendTime) {}
+    Integer senderId, SenderType senderType ,
+    String message, ChatMessageType type,
+    Integer readCount, String sendTime) {}

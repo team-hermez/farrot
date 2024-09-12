@@ -178,8 +178,8 @@
                     <p>등록일: <span th:text="${productDetail.createdAt}">등록일</span></p>
                     <p>조회수: <span th:text="${productDetail.view}">조회수</span></p>
                     <div>
-                        <form class="cart clearfix my-5 d-flex flex-wrap align-items-center" method="post">
-                            <button type="submit" name="addtocart" value="5"
+                        <form class="cart clearfix my-5 d-flex flex-wrap align-items-center" th:action="@{/chat-room/enter/{id}(id=${productDetail.productId})}" method="GET">
+                            <button type="submit" value="5"
                                     class="btn btn-primary mt-1 mt-md-0 ml-1 ml-md-3">채팅하기
                             </button>
                         </form>
