@@ -24,4 +24,6 @@ public interface ProductService {
 
     void updateProductStatus(Integer productId, Integer statusId);
 
+    List<Product> getProductsByMember(Integer memberId);
+
 }
