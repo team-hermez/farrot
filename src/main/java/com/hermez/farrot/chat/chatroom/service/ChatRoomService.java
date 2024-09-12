@@ -1,10 +1,8 @@
 package com.hermez.farrot.chat.chatroom.service;
 
-import com.hermez.farrot.chat.chatmessage.entity.ChatMessage;
-import com.hermez.farrot.chat.chatmessage.repository.ChatMessageRepository;
+import com.hermez.farrot.chat.chatmessage.dto.response.LatestMessageResponse;
 import com.hermez.farrot.chat.chatmessage.repository.query.ChatMessageQueryRepository;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
-import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse.ChatRoomsResponseBuilder;
 import com.hermez.farrot.chat.chatroom.entity.ChatRoom;
 import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepository;
 import com.hermez.farrot.member.entity.Member;
@@ -13,7 +11,6 @@ import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.repository.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +48,7 @@ public class ChatRoomService {
   public List<ChatRoomsResponse> findAll(Integer senderId) {
     List<ChatRoom> chatRooms1 = chatRoomRepository.findAllBySenderId(senderId);
     List<ChatRoom> chatRooms2 = new ArrayList<>();
-    productRepository.findAllByMemberId(senderId).forEach(
+    productRepository.findByMemberId(senderId).forEach(
         product -> chatRooms2.addAll(chatRoomRepository.findAllByProductId(product.getId()))
     );
     List<ChatRoom> allChatRooms = new ArrayList<>(chatRooms1);
@@ -59,8 +56,24 @@ public class ChatRoomService {
     allChatRooms.forEach(
         chatRoom -> log.info("챗룸: {}",chatRoom.getId())
     );
-   return allChatRooms.stream()
-        .map(c -> ChatRoomsResponse.builder()
+    List<ChatRoomsResponse> chatRoomsResponses = new ArrayList<>();
+    allChatRooms.forEach(
+        chatRoom -> {
+          LatestMessageResponse response = chatMessageQueryRepository.findLatestMessageByChatRoomId(chatRoom.getId());
+          ChatRoomsResponse roomsResponse = ChatRoomsResponse.builder()
+              .chatRoomId(chatRoom.getId())
+              .productId(chatRoom.getProduct().getId())
+              .chatMessageType(response.chatMessageType())
+              .message(response.latestMessage())
+              .readCount(response.readCount())
+              .latestSendTime(response.latestSendTime())
+              .build();
+          chatRoomsResponses.add(roomsResponse);
+        }
+    );
+    return chatRoomsResponses;
+            /*  LatestMessageResponse latestMessageByChatRoomId = chatMessageQueryRepository.findLatestMessageByChatRoomId(c.getId());
+            ChatRoomsResponse.builder()
             .chatRoomId(c.getId())
             .productId(c.getProduct().getId())
             .chatMessageType(chatMessageQueryRepository.findLatestMessageByChatRoomId(c.getId()).chatMessageType())
@@ -68,7 +81,7 @@ public class ChatRoomService {
             .readCount(chatMessageQueryRepository.findLatestMessageByChatRoomId(c.getId()).readCount())
             .latestSendTime(chatMessageQueryRepository.findLatestMessageByChatRoomId(c.getId()).latestSendTime())
             .build()).collect(
-            Collectors.toList());
+            Collectors.toList());*/
   }
 
   public Integer findBySenderId(Integer senderId) {
