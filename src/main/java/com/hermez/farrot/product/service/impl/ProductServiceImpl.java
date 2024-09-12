@@ -5,6 +5,7 @@ import com.hermez.farrot.category.service.CategoryService;
 import com.hermez.farrot.product.dto.response.ProductDetailResponse;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.entity.ProductStatus;
+import com.hermez.farrot.product.exception.ResourceNotFoundException;
 import com.hermez.farrot.product.repository.ProductRepository;
 import com.hermez.farrot.product.repository.ProductStatusRepository;
 import com.hermez.farrot.product.service.ProductService;
@@ -34,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product saveProduct(Product product) {
         ProductStatus defaultStatus = productStatusRepository.findByStatus("판매중")
-                .orElseThrow(() -> new RuntimeException("기본 상태가 존재하지 않습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("판매중 상태 존재하지 않습니다."));
         product.setProductStatus(defaultStatus);
         return productRepository.save(product);
     }
@@ -65,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDetailResponse getProductDetail(Integer productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("상품이 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("상품을 찾을 수 없습니다."));
         incrementViewCount(product);
 
         return ProductDetailResponse.builder()
@@ -90,7 +91,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProductById(Integer productId) {
         Optional<Product> productOptional = productRepository.findById(productId);
-        return productOptional.orElseThrow(() -> new RuntimeException("상품이 존재하지 않습니다."));
+        return productOptional.orElseThrow(() -> new ResourceNotFoundException("상품이 존재하지 않습니다."));
     }
 
     @Override
@@ -101,10 +102,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateProductStatus(Integer productId, Integer statusId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("상품이 없습니다."));
-
+                .orElseThrow(() -> new ResourceNotFoundException("상품이 없습니다."));
         ProductStatus status = productStatusRepository.findById(statusId)
-                .orElseThrow(() -> new RuntimeException("상태가 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("상태가 없습니다."));
 
         product.setProductStatus(status);
         productRepository.save(product);
