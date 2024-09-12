@@ -3,6 +3,7 @@ package com.hermez.farrot.product.controller;
 import com.hermez.farrot.category.entity.Category;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
+import com.hermez.farrot.product.dto.request.ProductByCategorySearchRequest;
 import com.hermez.farrot.product.dto.request.ProductsSearchRequest;
 import com.hermez.farrot.product.dto.response.ProductDetailResponse;
 import com.hermez.farrot.product.entity.Product;
@@ -30,19 +31,19 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public String getProducts(@ModelAttribute ProductsSearchRequest productsSearchRequest, Model model) {
+    public String getProducts(@ModelAttribute ProductByCategorySearchRequest productByCategorySearchRequest, Model model) {
         List<Category> categories = productService.getAllCategories();
-        Pageable pageable = PageRequest.of(productsSearchRequest.getPage(), productsSearchRequest.getSize());
+        Pageable pageable = PageRequest.of(productByCategorySearchRequest.getPage(), productByCategorySearchRequest.getSize());
         Page<Product> productPage = productService.getProductsByFilters(
-                productsSearchRequest.getCategoryId(),
-                productsSearchRequest.getMinPrice(),
-                productsSearchRequest.getMaxPrice(),
+                productByCategorySearchRequest.getCategoryId(),
+                productByCategorySearchRequest.getMinPrice(),
+                productByCategorySearchRequest.getMaxPrice(),
                 pageable
         );
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("totalPages", productPage.getTotalPages());
-        model.addAttribute("currentPage", productsSearchRequest.getPage());
-        model.addAttribute("size", productsSearchRequest.getSize());
+        model.addAttribute("currentPage", productByCategorySearchRequest.getPage());
+        model.addAttribute("size", productByCategorySearchRequest.getSize());
         model.addAttribute("categories", categories);
 
         return "product/products";
@@ -93,5 +94,19 @@ public class ProductController {
     public String deleteProduct(@RequestParam("id") Integer productId, Model model) {
         productService.deleteProductById(productId);
         return "redirect:/product/products";
+    }
+
+    @GetMapping("/search")
+    public String getProducts(@ModelAttribute ProductsSearchRequest productsSearchRequest, Model model) {
+        Pageable pageable = PageRequest.of(productsSearchRequest.getPage(), productsSearchRequest.getSize());
+        Page<Product> productPage = productService.searchProductsByName(productsSearchRequest.getProductName(), pageable);
+
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("currentPage", productsSearchRequest.getPage());
+        model.addAttribute("size", productsSearchRequest.getSize());
+        model.addAttribute("productName", productsSearchRequest.getProductName());
+
+        return "product/search-products";
     }
 }

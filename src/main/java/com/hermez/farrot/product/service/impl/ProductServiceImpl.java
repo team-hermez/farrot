@@ -114,4 +114,10 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getProductsByMember(Integer memberId) {
         return productRepository.findByMemberId(memberId);
     }
+
+    @Override
+    public Page<Product> searchProductsByName(String productName, Pageable pageable) {
+        return productRepository.findByProductNameContainingIgnoreCase(productName, pageable);
+    }
+
 }

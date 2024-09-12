@@ -18,4 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
     Page<Product> findByCategoryOrderByCreatedAtDesc(Category category, Pageable pageable);
 
     List<Product> findByMemberId(Integer memberId);
+
+    Page<Product> findByProductNameContainingIgnoreCase(String productName, Pageable pageable);
+
 }

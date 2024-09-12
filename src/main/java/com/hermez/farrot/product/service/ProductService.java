@@ -26,4 +26,5 @@ public interface ProductService {
 
     List<Product> getProductsByMember(Integer memberId);
 
+    Page<Product> searchProductsByName(String productName, Pageable pageable);
 }

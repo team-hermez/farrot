@@ -80,6 +80,20 @@
     <!-- Top Catagory Area -->
     <div class="top_catagory_area mt-50 clearfix">
         <div class="container">
+            <div class="search-area mt-50">
+                <form action="/product/search" method="get" class="search-form">
+                    <div class="input-group">
+                        <input type="search" name="productName" class="form-control" placeholder="상품 이름을 검색하세요" required>
+                        <input type="hidden" name="page" value="0">
+                        <input type="hidden" name="size" value="10">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="icofont-search"></i> 검색
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
             <div class="row">
                 <!-- Single Catagory -->
                 <div class="col-12 col-md-4">
