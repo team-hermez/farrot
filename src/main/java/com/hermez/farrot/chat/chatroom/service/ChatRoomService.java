@@ -11,7 +11,6 @@ import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.repository.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -53,9 +52,6 @@ public class ChatRoomService {
     );
     List<ChatRoom> allChatRooms = new ArrayList<>(chatRooms1);
     allChatRooms.addAll(chatRooms2);
-    allChatRooms.forEach(
-        chatRoom -> log.info("챗룸: {}",chatRoom.getId())
-    );
     List<ChatRoomsResponse> chatRoomsResponses = new ArrayList<>();
     allChatRooms.forEach(
         chatRoom -> {
@@ -63,6 +59,7 @@ public class ChatRoomService {
           ChatRoomsResponse roomsResponse = ChatRoomsResponse.builder()
               .chatRoomId(chatRoom.getId())
               .productId(chatRoom.getProduct().getId())
+              .productName(chatRoom.getProduct().getProductName())
               .chatMessageType(response.chatMessageType())
               .message(response.latestMessage())
               .readCount(response.readCount())
@@ -72,16 +69,6 @@ public class ChatRoomService {
         }
     );
     return chatRoomsResponses;
-            /*  LatestMessageResponse latestMessageByChatRoomId = chatMessageQueryRepository.findLatestMessageByChatRoomId(c.getId());
-            ChatRoomsResponse.builder()
-            .chatRoomId(c.getId())
-            .productId(c.getProduct().getId())
-            .chatMessageType(chatMessageQueryRepository.findLatestMessageByChatRoomId(c.getId()).chatMessageType())
-            .message(chatMessageQueryRepository.findLatestMessageByChatRoomId(c.getId()).latestMessage())
-            .readCount(chatMessageQueryRepository.findLatestMessageByChatRoomId(c.getId()).readCount())
-            .latestSendTime(chatMessageQueryRepository.findLatestMessageByChatRoomId(c.getId()).latestSendTime())
-            .build()).collect(
-            Collectors.toList());*/
   }
 
   public Integer findBySenderId(Integer senderId) {

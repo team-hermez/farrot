@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
-public record ChatRoomRequest(String nickName, SenderType senderType , String message, ChatMessageType type,
+public record ChatRoomRequest(String nickName , String message, ChatMessageType type,
                               LocalDateTime sendTime) {
 
 }

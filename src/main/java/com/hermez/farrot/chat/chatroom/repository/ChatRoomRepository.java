@@ -32,7 +32,8 @@ public class ChatRoomRepository {
     return em.createQuery("select c from ChatRoom c"
         + " join fetch c.sender m "
         + " join fetch c.product p"
-        + " where m.id = :senderId", ChatRoom.class)
+        + " where m.id = :senderId"
+            + " order by c.createdAt", ChatRoom.class)
         .setParameter("senderId", senderId)
         .getResultList();
   }
@@ -41,7 +42,8 @@ public class ChatRoomRepository {
     return em.createQuery("select c from ChatRoom c"
             + " join fetch c.sender m "
             + " join fetch c.product p"
-            + " where p.id = :productId", ChatRoom.class)
+            + " where p.id = :productId"
+            + " order by c.createdAt", ChatRoom.class)
         .setParameter("productId", productId)
         .getResultList();
   }
