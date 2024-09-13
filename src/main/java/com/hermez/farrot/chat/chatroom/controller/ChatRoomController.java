@@ -84,7 +84,6 @@ public class ChatRoomController {
         .build();
     model.addAttribute("chatRoomEnterResponse", chatRoomEnterResponse);
 //    model.addAttribute("chatMessages", chatMessages);
-    model.addAttribute("sessionUsername", userEmail);
     return "chat/chat-room";
   }
 

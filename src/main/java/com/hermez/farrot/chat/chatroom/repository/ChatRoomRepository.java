@@ -16,7 +16,7 @@ public class ChatRoomRepository {
     em.persist(chatRoom);
   }
 
-  public ChatRoom findById(int chatRoomId) {
+  public ChatRoom findById(Integer chatRoomId) {
     return em.find(ChatRoom.class, chatRoomId);
   }
 

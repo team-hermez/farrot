@@ -2,7 +2,6 @@ package com.hermez.farrot.chat.chatmessage.service;
 
 
 import com.hermez.farrot.chat.chatmessage.dto.response.ChatRoomResponse;
-import com.hermez.farrot.chat.chatmessage.dto.response.SenderType;
 import com.hermez.farrot.chat.chatmessage.entity.ChatMessage;
 import com.hermez.farrot.chat.chatmessage.entity.ChatMessageType;
 import com.hermez.farrot.chat.chatmessage.repository.ChatMessageRepository;
@@ -42,7 +41,6 @@ public class ChatMessageService {
 
   public void sendMessageToUser(String sessionId,String destination,ChatRoomResponse response){
     MessageHeaders headers = createMessageHeaders(sessionId);
-    log.info("Sending message to user {} to destination {}", sessionId, destination);
     simpMessagingTemplate.convertAndSendToUser(sessionId,destination, response,headers);
   }
 
@@ -68,22 +66,18 @@ public class ChatMessageService {
     return chatMessages.stream().map(c -> {
       Integer senderId = c.getSender().getId();
       String nickname = c.getSender().getNickname();
-          log.info("메시지 보낸 사람 아이디 {}",nickname);
-          if(!Objects.equals(senderId, myId)){
-            if(c.getReadCount()!=0) c.readMessage();
-          }
           return ChatRoomResponse.builder()
               .nickName(nickname)
               .senderId(senderId)
-//              .senderType(senderId != myId ? SenderType.RECEIVER : SenderType.SENDER)
               .message(c.getMessage())
               .type(c.getType())
-              .readCount(senderId == myId ? c.getReadCount() : null)
+              .readCount(Objects.equals(senderId, myId) ? c.getReadCount() : null)
               .sendTime(formatTime(c.getCreatedAt()))
               .build();
         }
     ).collect(Collectors.toList());
   }
+
   private String formatTime(LocalDateTime time) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("a h:mm");
     return time.format(formatter);
