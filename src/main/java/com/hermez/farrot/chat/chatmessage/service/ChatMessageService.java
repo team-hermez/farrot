@@ -5,7 +5,6 @@ import com.hermez.farrot.chat.chatmessage.dto.response.ChatRoomResponse;
 import com.hermez.farrot.chat.chatmessage.entity.ChatMessage;
 import com.hermez.farrot.chat.chatmessage.entity.ChatMessageType;
 import com.hermez.farrot.chat.chatmessage.repository.ChatMessageRepository;
-
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomEnterResponse;
 import com.hermez.farrot.chat.chatroom.entity.ChatRoom;
 import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepository;
@@ -53,7 +52,8 @@ public class ChatMessageService {
 
   @Transactional
   public void save(int chatRoomId,String userEmail ,String message, ChatMessageType chatMessageType) {
-    ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId);
+    ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+        .orElseThrow(()->new RuntimeException("채팅방이 없습니다."));
     Member sender = memberRepository.findByEmail(userEmail)
         .orElseThrow(() -> new RuntimeException("멤버없음"));
     ChatMessage chatMessage = ChatMessage.createChatMessage(chatRoom, sender, message,chatMessageType);
