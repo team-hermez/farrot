@@ -105,7 +105,7 @@
                         <div class="carousel-inner">
                             <div class="carousel-item active">
                                 <a class="gallery_img" href="/img/product-img/pd-big-thumb-1.png" title="First Slide">
-                                    <img class="d-block w-100" src="/img/product-img/pd-big-thumb-1.png"
+                                    <img class="d-block w-100" th:src="${productDetail.images.get(0).getPath()}"
                                          alt="First slide">
                                 </a>
                                 <!-- Product Badge -->

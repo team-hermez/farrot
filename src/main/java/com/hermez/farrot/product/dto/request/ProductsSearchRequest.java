@@ -8,5 +8,5 @@ import lombok.Setter;
 public class ProductsSearchRequest {
     private String productName;
     private Integer page = 0;
-    private Integer size = 10;
+    private Integer size = 8;
 }

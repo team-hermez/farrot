@@ -1,20 +1,25 @@
 package com.hermez.farrot.product.controller;
 
 import com.hermez.farrot.category.entity.Category;
+import com.hermez.farrot.image.dto.request.ImageRequest;
+import com.hermez.farrot.image.service.ImageService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
-import com.hermez.farrot.product.dto.request.ProductByCategorySearchRequest;
+import com.hermez.farrot.product.dto.request.ProductSearchRequest;
 import com.hermez.farrot.product.dto.request.ProductsSearchRequest;
 import com.hermez.farrot.product.dto.response.ProductDetailResponse;
+import com.hermez.farrot.product.dto.response.ProductSearchResponse;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,27 +29,20 @@ public class ProductController {
 
     private final ProductService productService;
     private final MemberRepository memberRepository;
+    private final ImageService imageService;
 
-    public ProductController(ProductService productService, MemberRepository memberRepository) {
+    public ProductController(ProductService productService, MemberRepository memberRepository, ImageService imageService) {
         this.productService = productService;
         this.memberRepository = memberRepository;
+        this.imageService = imageService;
     }
 
     @GetMapping("/products")
-    public String getProducts(@ModelAttribute ProductByCategorySearchRequest productByCategorySearchRequest, Model model) {
+    public String getSearchProducts(@ModelAttribute ProductSearchRequest productSearchRequest, Model model) {
         List<Category> categories = productService.getAllCategories();
-        Pageable pageable = PageRequest.of(productByCategorySearchRequest.getPage(), productByCategorySearchRequest.getSize());
-        Page<Product> productPage = productService.getProductsByFilters(
-                productByCategorySearchRequest.getCategoryId(),
-                productByCategorySearchRequest.getMinPrice(),
-                productByCategorySearchRequest.getMaxPrice(),
-                pageable
-        );
-        model.addAttribute("products", productPage.getContent());
-        model.addAttribute("totalPages", productPage.getTotalPages());
-        model.addAttribute("currentPage", productByCategorySearchRequest.getPage());
-        model.addAttribute("size", productByCategorySearchRequest.getSize());
+        ProductSearchResponse response = productService.getProductsByFilters(productSearchRequest);
         model.addAttribute("categories", categories);
+        model.addAttribute("response", response);
 
         return "product/products";
     }
@@ -64,14 +62,20 @@ public class ProductController {
         return "product/register-sell";
     }
 
+    @Transactional
     @PostMapping("/register-sell")
-    public String postRegisterSell(@ModelAttribute Product product, BindingResult result) {
+    public String postRegisterSell(@ModelAttribute Product product, @RequestParam("imageFiles") MultipartFile[] imageFiles , BindingResult result) {
         Member member = memberRepository.getReferenceById(1);
         product.setMember(member);
         productService.saveProduct(product);
+        for (MultipartFile file : imageFiles) {
+            if (!file.isEmpty()) {
+                System.out.println(imageFiles.toString());
+                imageService.save(new ImageRequest<>(product, file));
+            }
+        }
         return "redirect:/product/products";
     }
-
 
     @GetMapping("/update-sell")
     public String getEditProduct(@RequestParam("id") Integer id, Model model) {
