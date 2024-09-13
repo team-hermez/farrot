@@ -1,60 +1,19 @@
 package com.hermez.farrot.chat.chatroom.repository;
 
 import com.hermez.farrot.chat.chatroom.entity.ChatRoom;
-import jakarta.persistence.EntityManager;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-@Repository
-@RequiredArgsConstructor
-public class ChatRoomRepository {
+public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
-  private final EntityManager em;
+  List<ChatRoom> findAllBySenderId(Integer senderId);
 
-  public void save(ChatRoom chatRoom) {
-    em.persist(chatRoom);
-  }
+  List<ChatRoom> findAllByProductId(Integer productId);
 
-  public ChatRoom findById(Integer chatRoomId) {
-    return em.find(ChatRoom.class, chatRoomId);
-  }
+  @Query("select cr.id from ChatRoom cr where cr.sender.id =:senderId order by cr.id desc")
+  List<Integer> findChatRoomIdBySenderId(Integer senderId);
 
-  public List<ChatRoom> findAll() {
-    return em.createQuery("select c from ChatRoom c "
-        + " join fetch c.sender m "
-        + " join fetch c.chatMessages cm "
-        + " join fetch  c.product p"
-        , ChatRoom.class).getResultList();
-  }
-
-  public List<ChatRoom> findAllBySenderId(Integer senderId) {
-    return em.createQuery("select c from ChatRoom c"
-        + " join fetch c.sender m "
-        + " join fetch c.product p"
-        + " where m.id = :senderId"
-            + " order by c.createdAt", ChatRoom.class)
-        .setParameter("senderId", senderId)
-        .getResultList();
-  }
-
-  public List<ChatRoom> findAllByProductId(Integer productId) {
-    return em.createQuery("select c from ChatRoom c"
-            + " join fetch c.sender m "
-            + " join fetch c.product p"
-            + " where p.id = :productId"
-            + " order by c.createdAt", ChatRoom.class)
-        .setParameter("productId", productId)
-        .getResultList();
-  }
-
-  public Integer findChatRoomIdBySenderId(Integer senderId) {
-    return em.createQuery("select cr.id from ChatRoom cr"
-            + " where cr.sender.id =:senderId"
-            + " order by cr.id desc ", Integer.class)
-        .setParameter("senderId", senderId)
-        .setMaxResults(1)
-        .getSingleResult();
-
-  }
+  Optional<ChatRoom> findById(Integer roomId);
 }
