@@ -1,7 +1,10 @@
 package com.hermez.farrot.chat.chatroom.service;
 
 import com.hermez.farrot.chat.chatmessage.dto.response.LatestMessageResponse;
+import com.hermez.farrot.chat.chatmessage.entity.ChatMessage;
+import com.hermez.farrot.chat.chatmessage.repository.ChatMessageRepository;
 import com.hermez.farrot.chat.chatmessage.repository.query.ChatMessageQueryRepository;
+import com.hermez.farrot.chat.chatmessage.service.ChatMessageService;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
 import com.hermez.farrot.chat.chatroom.entity.ChatRoom;
 import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepository;
@@ -26,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatRoomService {
 
   private final ChatRoomRepository chatRoomRepository;
-  //  private final ChatMessageRepository chatMessageRepository;
+  private final ChatMessageRepository chatMessageRepository;
   private final ChatMessageQueryRepository chatMessageQueryRepository;
   private final ProductRepository productRepository;
   private final MemberRepository memberRepository;
@@ -73,5 +76,30 @@ public class ChatRoomService {
 
   public Integer findBySenderId(Integer senderId) {
     return chatRoomRepository.findChatRoomIdBySenderId(senderId);
+  }
+
+  public ChatRoom findById(Integer roomId) {
+    return chatRoomRepository.findById(roomId);
+  }
+
+  @Transactional
+  public void readMessage(Integer roomId, Integer senderId) {
+    ChatRoom chatRoom = chatRoomRepository.findById(roomId);
+    chatRoom.getChatMessages().forEach(chatMessage -> {
+      if(!chatMessage.getSender().getId().equals(senderId)) chatMessage.readMessage();
+    });
+  }
+
+  @Transactional
+  public void connectChatRoom(Integer roomId) {
+    log.info("커넥트 메서드에 접속");
+    ChatRoom chatRoom = chatRoomRepository.findById(roomId);
+    chatRoom.connect();
+  }
+
+  @Transactional
+  public void disconnectChatRoom(Integer roomId) {
+    ChatRoom chatRoom = chatRoomRepository.findById(roomId);
+    chatRoom.disconnect();
   }
 }

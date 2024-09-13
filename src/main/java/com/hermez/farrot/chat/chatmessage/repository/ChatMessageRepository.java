@@ -31,4 +31,8 @@ public List<ChatMessage> findAllByChatRoomId(Integer chatRoomId){
 }
 
 
+  public ChatMessage findById(Integer chatMessageId) {
+    return em.find(ChatMessage.class, chatMessageId);
+  }
+
 }

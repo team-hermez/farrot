@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,7 +40,9 @@ public class ChatRoom {
     private Member sender;
 
     @OneToMany(mappedBy = "chatRoom",cascade = ALL)
-    private List<ChatMessage> chatMessages;
+    private List<ChatMessage> chatMessages = new ArrayList<>();
+
+    private Integer connect;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "product_id", nullable = false)
@@ -51,8 +54,13 @@ public class ChatRoom {
     public static ChatRoom makeChatRoom(Member sender, Product product){
       return ChatRoom.builder()
           .sender(sender)
+          .connect(1)
           .product(product)
           .createdAt(LocalDateTime.now())
           .build();
     }
+
+    public void connect(){this.connect++;}
+
+    public void disconnect(){this.connect--;}
 }

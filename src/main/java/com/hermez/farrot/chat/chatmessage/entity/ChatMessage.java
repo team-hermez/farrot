@@ -1,5 +1,6 @@
 package com.hermez.farrot.chat.chatmessage.entity;
 
+import static com.hermez.farrot.chat.chatmessage.entity.RoomConnect.*;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -63,14 +64,11 @@ public class ChatMessage {
         chatMessage.setChatRoom(chatRoom);
         chatMessage.sender = sender;
         chatMessage.message = message;
-        chatMessage.readCount = 1;
         chatMessage.type = chatMessageType;
         chatMessage.createdAt = LocalDateTime.now();
+        chatMessage.readCount = 1;
         return chatMessage;
     }
 
-    public void readMessage() {
-        this.readCount -= 1;
-    }
-
+    public void readMessage() {if(readCount == 1) this.readCount -= 1;}
 }
