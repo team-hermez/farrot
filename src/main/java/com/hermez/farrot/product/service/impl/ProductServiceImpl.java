@@ -2,7 +2,12 @@ package com.hermez.farrot.product.service.impl;
 
 import com.hermez.farrot.category.entity.Category;
 import com.hermez.farrot.category.service.CategoryService;
+import com.hermez.farrot.image.entity.Image;
+import com.hermez.farrot.image.repository.ImageRepository;
+import com.hermez.farrot.image.service.ImageService;
+import com.hermez.farrot.product.dto.request.ProductSearchRequest;
 import com.hermez.farrot.product.dto.response.ProductDetailResponse;
+import com.hermez.farrot.product.dto.response.ProductSearchResponse;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.entity.ProductStatus;
 import com.hermez.farrot.product.exception.ResourceNotFoundException;
@@ -12,12 +17,12 @@ import com.hermez.farrot.product.service.ProductService;
 import com.hermez.farrot.util.PriceFormatUtil;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -25,11 +30,15 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final ProductStatusRepository productStatusRepository;
+    private final ImageRepository imageRepository;
+    private final ImageService imageService;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, ProductStatusRepository productStatusRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, ProductStatusRepository productStatusRepository, ImageRepository imageRepository, ImageService imageService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.productStatusRepository = productStatusRepository;
+        this.imageRepository = imageRepository;
+        this.imageService = imageService;
     }
 
     @Override
@@ -45,22 +54,43 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getProductsByFilters(Integer categoryId, Integer minPrice, Integer maxPrice, Pageable pageable) {
-        return productRepository.findAll(
-                (Specification<Product>) (root, query, criteriaBuilder) -> {
-                    Predicate predicate = criteriaBuilder.conjunction();
-                    if (categoryId != null) {
-                        predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("category").get("id"), categoryId));
-                    }
-                    if (minPrice != null) {
-                        predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
-                    }
-                    if (maxPrice != null) {
-                        predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
-                    }
-                    query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
-                    return predicate;
-                }, pageable);
+    public ProductSearchResponse getProductsByFilters(ProductSearchRequest request) {
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+
+        Page<Product> productPage = productRepository.findAll((Specification<Product>) (root, query, criteriaBuilder) -> {
+            Predicate predicate = criteriaBuilder.conjunction();
+
+            if (request.getCategoryId() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("category").get("id"), request.getCategoryId()));
+            }
+            if (request.getMinPrice() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThanOrEqualTo(root.get("price"), request.getMinPrice()));
+            }
+            if (request.getMaxPrice() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThanOrEqualTo(root.get("price"), request.getMaxPrice()));
+            }
+
+            query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
+            return predicate;
+        }, pageable);
+
+        Map<Integer, List<Image>> productImages = new HashMap<>();
+        for (Product product : productPage.getContent()) {
+            List<Image> images = imageService.getImagesByEntity(product);
+            if (images == null || images.isEmpty()) {
+                Image defaultImage = Image.builder()
+                        .path("/default-product-image.png")
+                        .build();
+                images = Collections.singletonList(defaultImage);
+            }
+            productImages.put(product.getId(), images);
+        }
+        return ProductSearchResponse.builder()
+                .productPage(productPage)
+                .productImages(productImages)
+                .currentPage(request.getPage())
+                .size(request.getSize())
+                .build();
     }
 
     @Override
@@ -68,7 +98,6 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("상품을 찾을 수 없습니다."));
         incrementViewCount(product);
-
         return ProductDetailResponse.builder()
                 .productId(product.getId())
                 .sellerId(product.getMember().getId())
@@ -80,6 +109,7 @@ public class ProductServiceImpl implements ProductService {
                 .productStatus(product.getProductStatus().getStatus())
                 .createdAt(product.getCreatedAt())
                 .view(product.getView())
+                .images(imageService.getImagesByEntity(product))
                 .build();
     }
 

@@ -1,10 +1,12 @@
 package com.hermez.farrot.product.dto.response;
 
+import com.hermez.farrot.image.entity.Image;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,6 +23,5 @@ public class ProductDetailResponse {
     private String productStatus;
     private LocalDateTime createdAt;
     private Integer view;
-
-
+    private List<Image> images;
 }

@@ -1,7 +1,9 @@
 package com.hermez.farrot.product.service;
 
 import com.hermez.farrot.category.entity.Category;
+import com.hermez.farrot.product.dto.request.ProductSearchRequest;
 import com.hermez.farrot.product.dto.response.ProductDetailResponse;
+import com.hermez.farrot.product.dto.response.ProductSearchResponse;
 import com.hermez.farrot.product.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,8 +16,6 @@ public interface ProductService {
 
     List<Category> getAllCategories();
 
-    Page<Product> getProductsByFilters(Integer categoryId, Integer minPrice, Integer maxPrice, Pageable pageable);
-
     ProductDetailResponse getProductDetail(Integer productId);
 
     Product getProductById(Integer productId);
@@ -27,4 +27,6 @@ public interface ProductService {
     List<Product> getProductsByMember(Integer memberId);
 
     Page<Product> searchProductsByName(String productName, Pageable pageable);
+
+    ProductSearchResponse getProductsByFilters(ProductSearchRequest productSearchRequest);
 }
