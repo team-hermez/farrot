@@ -34,61 +34,61 @@
             </div>
         </div>
     </div>
-    <section class="my-account-area section_padding_100_50">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-lg-9">
-                    <div class="my-account-content mb-50">
-                        <h5 class="mb-3">상품 등록</h5>
+<section class="my-account-area section_padding_100_50">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-9">
+                <div class="my-account-content mb-50">
+                    <h5 class="mb-3">상품 등록</h5>
 
-                        <form action="#" method="post">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label for="categoryId">카테고리</label><br>
-                                        <select class="form-control" id="categoryId" th:field="*{product.category}" name="categoryId">
-                                            <option value="" disabled selected>카테고리를 선택하세요</option>
-                                            <option th:each="category : ${categories}"
-                                                    th:value="${category.id}"
-                                                    th:text="${category.code}"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-lg-6">
-                                    <div class="form-group">
-                                        <label for="productName">상품 이름</label>
-                                        <input type="text" class="form-control"  id="productName" th:field="*{product.productName}" placeholder="상품명">
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label for="price">판매 가격</label>
-                                        <input type="number" class="form-control" id="price" th:field="*{product.price}" placeholder="판매 가격">
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label for="imageFile">이미지 등록</label>
-                                        <input type="file" class="form-control" id="imageFile" name="imageFile">
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label for="description">상품 설명</label>
-                                        <textarea class="form-control" id="description" rows=5 th:field="*{product.description}" placeholder="상품 설명"></textarea>
-                                    </div>
-
-                                </div>
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-primary">등록하기</button>
+                    <!-- Form 수정 -->
+                    <form action="/product/register-sell" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="categoryId">카테고리</label><br>
+                                    <select class="form-control" id="categoryId" th:field="*{product.category}" name="categoryId">
+                                        <option value="" disabled selected>카테고리를 선택하세요</option>
+                                        <option th:each="category : ${categories}"
+                                                th:value="${category.id}"
+                                                th:text="${category.code}"></option>
+                                    </select>
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="productName">상품 이름</label>
+                                    <input type="text" class="form-control"  id="productName" th:field="*{product.productName}" placeholder="상품명">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="price">판매 가격</label>
+                                    <input type="number" class="form-control" id="price" th:field="*{product.price}" placeholder="판매 가격">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="imageFiles">이미지 등록</label>
+                                    <input type="file" class="form-control" id="imageFiles" name="imageFiles" multiple>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="description">상품 설명</label>
+                                    <textarea class="form-control" id="description" rows="5" th:field="*{product.description}" placeholder="상품 설명"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary">등록하기</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 </body>
 <script src="/js/jquery.min.js"></script>
 <script src="/js/popper.min.js"></script>
