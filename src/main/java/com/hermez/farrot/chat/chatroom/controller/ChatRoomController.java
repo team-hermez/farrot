@@ -1,20 +1,15 @@
 package com.hermez.farrot.chat.chatroom.controller;
 
-import com.hermez.farrot.chat.chatmessage.dto.response.ChatRoomResponse;
-import com.hermez.farrot.chat.chatmessage.service.ChatMessageService;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomEnterResponse;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
 import com.hermez.farrot.chat.chatroom.service.ChatRoomService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
-import com.hermez.farrot.product.entity.Product;
-import com.hermez.farrot.product.repository.ProductRepository;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -55,9 +50,9 @@ public class ChatRoomController {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails principal = (UserDetails) authentication.getPrincipal();
     String userEmail = principal.getUsername();
-    Member findMember = memberRepository.findByEmail(userEmail)
+    Member findMember = memberRepository.findByEmail(userEmail)//쿼리1
         .orElseThrow(() -> new RuntimeException("멤버없음"));
-    List<ChatRoomsResponse> chatRooms = chatRoomService.findAll(findMember.getId());
+    List<ChatRoomsResponse> chatRooms = chatRoomService.findAll(findMember.getId());//쿼리2
     model.addAttribute("chatRooms", chatRooms);
     return "chat/chat-rooms";
   }

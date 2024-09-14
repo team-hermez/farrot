@@ -1,7 +1,12 @@
 package com.hermez.farrot.chat.chatmessage.repository.query;
 
+import static com.hermez.farrot.chat.chatmessage.entity.QChatMessage.chatMessage;
+
 import com.hermez.farrot.chat.chatmessage.dto.response.LatestMessageResponse;
 import com.hermez.farrot.chat.chatmessage.entity.ChatMessageType;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -14,17 +19,25 @@ import org.springframework.stereotype.Repository;
 public class ChatMessageQueryRepository {
 
   private final EntityManager em;
+  private JPAQueryFactory queryFactory;
+
+  @PostConstruct
+  private void init() {
+    queryFactory = new JPAQueryFactory(em);
+  }
 
   public LatestMessageResponse findLatestMessageByChatRoomId(Integer chatRoomId) {
-    List<LatestMessageResponse> result = em.createQuery(
-            "select new com.hermez.farrot.chat.chatmessage.dto.response.LatestMessageResponse(c.type,c.message,c.readCount,c.createdAt)"
-                + " from ChatMessage c "
-                + " where c.chatRoom.id=:chatRoomId order by c.createdAt desc",
-            LatestMessageResponse.class)
-        .setParameter("chatRoomId", chatRoomId)
-        .setMaxResults(1)
-        .getResultList();
-    return result.isEmpty() ? LatestMessageResponse.builder().chatMessageType(ChatMessageType.TEXT).build() : result.get(0);
+    List<LatestMessageResponse> result = queryFactory
+        .select(Projections.constructor(LatestMessageResponse.class,
+            chatMessage.type, chatMessage.message,
+            chatMessage.readCount, chatMessage.createdAt
+        ))
+        .from(chatMessage)
+        .where(chatMessage.chatRoom.id.eq(chatRoomId))
+        .orderBy(chatMessage.createdAt.desc())
+        .fetch();
+    return result.isEmpty() ? LatestMessageResponse.builder().chatMessageType(ChatMessageType.TEXT)
+        .build() : result.get(0);
   }
 
 }

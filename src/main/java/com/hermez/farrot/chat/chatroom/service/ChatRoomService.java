@@ -5,6 +5,7 @@ import com.hermez.farrot.chat.chatmessage.repository.ChatMessageRepository;
 import com.hermez.farrot.chat.chatmessage.repository.query.ChatMessageQueryRepository;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
 import com.hermez.farrot.chat.chatroom.entity.ChatRoom;
+import com.hermez.farrot.chat.chatroom.repository.ChatRoomCustomRepository;
 import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepository;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatRoomService {
 
   private final ChatRoomRepository chatRoomRepository;
+  private final ChatRoomCustomRepository chatRoomCustomRepository;
   private final ChatMessageRepository chatMessageRepository;
   private final ChatMessageQueryRepository chatMessageQueryRepository;
   private final ProductRepository productRepository;
@@ -48,9 +51,8 @@ public class ChatRoomService {
   public List<ChatRoomsResponse> findAll(Integer senderId) {
     List<ChatRoom> chatRooms1 = chatRoomRepository.findAllBySenderId(senderId);
     List<ChatRoom> chatRooms2 = new ArrayList<>();
-    productRepository.findByMemberId(senderId).forEach(
-        product -> chatRooms2.addAll(chatRoomRepository.findAllByProductId(product.getId()))
-    );
+    productRepository.findByMemberId(senderId).forEach(p->
+    chatRooms2.addAll(chatRoomRepository.findAllByProductId(p.getId())));
     List<ChatRoom> allChatRooms = new ArrayList<>(chatRooms1);
     allChatRooms.addAll(chatRooms2);
     List<ChatRoomsResponse> chatRoomsResponses = new ArrayList<>();
@@ -73,7 +75,7 @@ public class ChatRoomService {
   }
 
   public Integer findBySenderId(Integer senderId) {
-    return chatRoomRepository.findChatRoomIdBySenderId(senderId).get(0);
+    return chatRoomCustomRepository.findChatRoomIdBySenderId(senderId).get(0);
   }
 
 
