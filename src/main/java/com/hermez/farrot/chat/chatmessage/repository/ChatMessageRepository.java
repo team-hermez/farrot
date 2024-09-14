@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
+public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long>,ChatMessageRepositoryCustom {
 
-  @Query("select c from ChatMessage c where c.chatRoom.id=:chatRoomId order by c.id")
-  List<ChatMessage> findAllByChatRoomId(@Param("chatRoomId") Integer chatRoomId);
 }

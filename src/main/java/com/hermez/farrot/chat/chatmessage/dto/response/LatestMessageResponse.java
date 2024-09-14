@@ -7,9 +7,7 @@ import lombok.Builder;
 
 @Builder
 public record LatestMessageResponse(
-    ChatMessageType chatMessageType,
-    String latestMessage,
-    Integer readCount,
-    LocalDateTime latestSendTime) {
+    ChatMessageType chatMessageType, String latestMessage,
+    Integer readCount, LocalDateTime latestSendTime) {
 
 }
