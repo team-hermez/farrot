@@ -1,11 +1,9 @@
 package com.hermez.farrot.chat.chatmessage.repository;
 
-import static com.hermez.farrot.chat.chatmessage.entity.QChatMessage.*;
-import static com.hermez.farrot.chat.chatroom.entity.QChatRoom.*;
+import static com.hermez.farrot.chat.chatmessage.entity.QChatMessage.chatMessage;
+import static com.hermez.farrot.chat.chatroom.entity.QChatRoom.chatRoom;
 
 import com.hermez.farrot.chat.chatmessage.entity.ChatMessage;
-import com.hermez.farrot.chat.chatmessage.entity.QChatMessage;
-import com.hermez.farrot.chat.chatroom.entity.QChatRoom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.List;

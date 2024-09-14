@@ -1,5 +1,6 @@
 package com.hermez.farrot.chat.chatroom.controller;
 
+import com.hermez.farrot.chat.chatroom.dto.SelectOption;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomEnterResponse;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
 import com.hermez.farrot.chat.chatroom.service.ChatRoomService;

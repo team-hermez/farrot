@@ -6,7 +6,6 @@ import static com.hermez.farrot.product.entity.QProduct.product;
 import static com.querydsl.core.types.Projections.*;
 
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.List;
@@ -19,11 +18,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Slf4j
-public class ChatRoomCustomRepository {
+public class ChatRoomRepositoryCustom {
 
   private final JPAQueryFactory queryFactory;
 
-  public ChatRoomCustomRepository(EntityManager em) {
+  public ChatRoomRepositoryCustom(EntityManager em) {
     this.queryFactory = new JPAQueryFactory(em);
   }
 
@@ -84,7 +83,6 @@ public class ChatRoomCustomRepository {
 
     int start = Math.min(pageNumber * pageSize, allContent.size());
     int end = Math.min(start + pageSize, allContent.size());
-    List<ChatRoomsResponse> content = allContent.subList(start, end);
-    return content;
+    return allContent.subList(start, end);
   }
 }
