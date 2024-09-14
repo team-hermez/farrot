@@ -11,8 +11,4 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
   Optional<ChatRoom> findById(Integer roomId);
 
-  Page<ChatRoom> findAllBySenderId(Integer senderId,Pageable pageable);
-
-  Page<ChatRoom> findAllByProductId(Integer productId,Pageable pageable);
-
 }

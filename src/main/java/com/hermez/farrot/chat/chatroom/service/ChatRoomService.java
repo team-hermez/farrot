@@ -2,7 +2,7 @@ package com.hermez.farrot.chat.chatroom.service;
 
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
 import com.hermez.farrot.chat.chatroom.entity.ChatRoom;
-import com.hermez.farrot.chat.chatroom.repository.ChatRoomCustomRepository;
+import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepositoryCustom;
 import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepository;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatRoomService {
 
   private final ChatRoomRepository chatRoomRepository;
-  private final ChatRoomCustomRepository chatRoomCustomRepository;
+  private final ChatRoomRepositoryCustom chatRoomCustomRepository;
   private final ProductRepository productRepository;
   private final MemberRepository memberRepository;
 

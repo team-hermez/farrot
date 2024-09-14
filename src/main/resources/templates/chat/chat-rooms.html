@@ -11,7 +11,6 @@
   <link rel="icon" href="/img/core-img/favicon.ico">
   <link rel="stylesheet" href="/style.css">
   <script>
-    // JavaScript 함수: 선택 박스 변경 시 폼 제출
     function selectForm() {
       document.getElementById('selectForm').submit();
     }
@@ -176,14 +175,12 @@
           <nav aria-label="Page navigation">
 
             <ul class="pagination pagination-sm justify-content-center">
-              <!-- 이전 페이지 링크 -->
               <li class="page-item" th:classappend="${chatRooms.hasPrevious()} ? '' : 'disabled'">
                 <a class="page-link" th:href="@{rooms(page=${chatRooms.number - 1}, code=${selectOption.code})}">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
                 </a>
               </li>
 
-              <!-- 페이지 번호 링크 -->
               <li class="page-item"
                   th:each="pageNum : ${#numbers.sequence(0, chatRooms.totalPages - 1)}"
                   th:classappend="${pageNum == chatRooms.number} ? 'active' : ''">
@@ -191,7 +188,6 @@
                    th:text="${pageNum + 1}"></a>
               </li>
 
-              <!-- 다음 페이지 링크 -->
               <li class="page-item" th:classappend="${chatRooms.hasNext()} ? '' : 'disabled'">
                 <a class="page-link" th:href="@{rooms(page=${chatRooms.number + 1}, code=${selectOption.code})}">
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
