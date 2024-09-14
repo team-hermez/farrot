@@ -11,19 +11,17 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RequiredArgsConstructor
 @Slf4j
 public class ChatMessageQueryRepository {
 
-  private final EntityManager em;
-  private JPAQueryFactory queryFactory;
+  private final JPAQueryFactory queryFactory;
 
-  @PostConstruct
-  private void init() {
-    queryFactory = new JPAQueryFactory(em);
+  public ChatMessageQueryRepository(EntityManager em) {
+    this.queryFactory = new JPAQueryFactory(em);
   }
 
   public LatestMessageResponse findLatestMessageByChatRoomId(Integer chatRoomId) {

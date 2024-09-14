@@ -5,11 +5,11 @@ import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
 import com.hermez.farrot.chat.chatroom.service.ChatRoomService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,13 +46,13 @@ public class ChatRoomController {
   }
 
   @GetMapping("/rooms")
-  public String chatRoomsPage(Model model) {
+  public String chatRoomsPage(Model model, @PageableDefault(size = 5) Pageable pageable) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails principal = (UserDetails) authentication.getPrincipal();
     String userEmail = principal.getUsername();
     Member findMember = memberRepository.findByEmail(userEmail)//쿼리1
         .orElseThrow(() -> new RuntimeException("멤버없음"));
-    List<ChatRoomsResponse> chatRooms = chatRoomService.findAll(findMember.getId());//쿼리2
+    Page<ChatRoomsResponse> chatRooms = chatRoomService.findAll(findMember.getId(),pageable);//쿼리2
     model.addAttribute("chatRooms", chatRooms);
     return "chat/chat-rooms";
   }
