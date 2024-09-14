@@ -5,6 +5,8 @@ import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
 import com.hermez.farrot.chat.chatroom.service.ChatRoomService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,16 +49,25 @@ public class ChatRoomController {
   }
 
   @GetMapping("/rooms")
-  public String chatRoomsPage(Model model, @PageableDefault(size = 5) Pageable pageable) {
+  public String chatRoomsPage(
+      @ModelAttribute("selectOption") SelectOption selectOption,
+     @PageableDefault(size = 5) Pageable pageable,
+      Model model) {
+    List<SelectOption> selectOptions = new ArrayList<>();
+    selectOptions.add(new SelectOption("All", "대화 보기"));
+    selectOptions.add(new SelectOption("Buy", "구매 대화"));
+    selectOptions.add(new SelectOption("Sell", "판매 대화"));
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails principal = (UserDetails) authentication.getPrincipal();
     String userEmail = principal.getUsername();
     Member findMember = memberRepository.findByEmail(userEmail)//쿼리1
         .orElseThrow(() -> new RuntimeException("멤버없음"));
-    Page<ChatRoomsResponse> chatRooms = chatRoomService.findAll(findMember.getId(),pageable);//쿼리2
+    Page<ChatRoomsResponse> chatRooms = chatRoomService.findAll(findMember.getId(),selectOption.code(),pageable);//쿼리2
+    model.addAttribute("selectOptions",selectOptions);
     model.addAttribute("chatRooms", chatRooms);
     return "chat/chat-rooms";
   }
+
 
   @GetMapping("/room")
   public String chatRoomPage(@RequestParam Integer roomId,@RequestParam Integer productId,Model model) {
@@ -64,13 +76,7 @@ public class ChatRoomController {
     String userEmail = principal.getUsername();
     Member sender = memberRepository.findByEmail(userEmail)
         .orElseThrow(() -> new RuntimeException("멤버없음"));
-    log.info("나의 아이디 {}",sender.getId());
     ChatRoomEnterResponse response = new ChatRoomEnterResponse(roomId, sender.getEmail(), productId ,sender.getId(), sender.getNickname());
-    log.info("Sending before message: {}", response.roomId());
-//    Product findProduct = productRepository.findById(response.productId())
-//        .orElseThrow(() -> new RuntimeException("아이템이 없습니다."));
-//    Integer buyerId = findProduct.getMember().getId();
-//    List<ChatRoomResponse> chatMessages = chatMessageService.findAllByChatRoomId(response);
     ChatRoomEnterResponse chatRoomEnterResponse = ChatRoomEnterResponse.builder()
         .roomId(roomId)
         .email(userEmail)
@@ -78,7 +84,6 @@ public class ChatRoomController {
         .nickName(sender.getNickname())
         .build();
     model.addAttribute("chatRoomEnterResponse", chatRoomEnterResponse);
-//    model.addAttribute("chatMessages", chatMessages);
     return "chat/chat-room";
   }
 
