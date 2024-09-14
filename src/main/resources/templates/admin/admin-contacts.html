@@ -87,7 +87,7 @@
                       <a class="dropdown-item"  href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                     </div>
                   </li>
-  
+
                   <li role="presentation" class="nav-item dropdown open">
                     <a href="javascript:;" class="dropdown-toggle info-number" id="navbarDropdown1" data-toggle="dropdown" aria-expanded="false">
                       <i class="fa fa-envelope-o"></i>
@@ -210,7 +210,7 @@
                               <p><strong>About: </strong> Web Designer / UX / Graphic Artist / Coffee Lover </p>
                               <ul class="list-unstyled">
                                 <li><i class="fa fa-building"></i> Address: </li>
-                                <li><i class="fa fa-phone"></i> Phone #: 번호 보이도록 타임리프로 바꾸기</li></li>
+                                <li><i class="fa fa-phone"></i> Phone #: <span th:text="${list.phone}">번호</span></li>
                               </ul>
                             </div>
                             <div class="right col-md-5 col-sm-5 text-center">
