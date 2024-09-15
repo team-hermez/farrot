@@ -1,26 +1,18 @@
 package com.hermez.farrot.chat;
 
-import static org.springframework.messaging.simp.stomp.StompCommand.*;
+import static org.springframework.messaging.simp.stomp.StompCommand.CONNECT;
+import static org.springframework.messaging.simp.stomp.StompCommand.DISCONNECT;
 
-import com.hermez.farrot.chat.chatmessage.entity.ChatMessage;
-import com.hermez.farrot.chat.chatmessage.entity.RoomConnect;
-import com.hermez.farrot.chat.chatroom.entity.ChatRoom;
 import com.hermez.farrot.chat.chatroom.service.ChatRoomService;
-import java.security.Principal;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -31,7 +23,7 @@ public class StompHandler implements ChannelInterceptor {
   private final ChatRoomService chatRoomService;
 
   @Override
-  public Message<?> preSend(@NotNull Message<?> message, @NotNull MessageChannel channel) {
+  public Message<?> preSend( Message<?> message,  MessageChannel channel) {
     StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
     log.info("command : {}", accessor.getCommand());
     log.info("session : {}", accessor.getSessionId());
