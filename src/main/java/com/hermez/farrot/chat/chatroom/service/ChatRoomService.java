@@ -58,6 +58,7 @@ public class ChatRoomService {
   }
 
 
+
   @Transactional
   public void readMessage(Integer roomId, Integer senderId) {
     ChatRoom chatRoom = chatRoomRepository.findById(roomId)

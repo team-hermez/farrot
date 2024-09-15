@@ -1,25 +1,35 @@
 package com.hermez.farrot.notification.controller;
 
-//import com.hermez.farrot.notification.service.NotificationService;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.hermez.farrot.notification.service.NotificationService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping("/notification")
+@RestController
+@RequiredArgsConstructor
+@Slf4j
 public class NotificationController {
-//    private NotificationService notificationService;
 
-    @GetMapping("/list")
-    public String getList(Model model) {
-        return "notification/notification-list";
-    }
+  private final NotificationService notificationService;
 
-//    @GetMapping(value = "/subscribe/{email}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public SseEmitter subscribe(@PathVariable String email, @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-//        return notificationService.subscribe(email, lastEventId);
-//    }
+
+  @PostMapping("/notification/register")
+  public ResponseEntity<String> register(@RequestBody String token){
+    log.info("토큰입니다 {}",token);
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetails principal = (UserDetails) authentication.getPrincipal();
+    String userEmail = principal.getUsername();
+    notificationService.register(userEmail, token);
+    log.info("userEmail: {}, token: {}",userEmail,token);
+    return ResponseEntity.ok().build();
+  }
+
 
 }
