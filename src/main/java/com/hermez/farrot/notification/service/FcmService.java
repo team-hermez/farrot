@@ -15,6 +15,7 @@ public class FcmService {
 
   public void send(NotificationRequest notificationRequest)
       throws ExecutionException, InterruptedException {
+    if(notificationRequest.token()!=null){
     Message message = Message.builder()
         .setToken(notificationRequest.token())
         .setWebpushConfig(WebpushConfig.builder().putHeader("ttl", "300")
@@ -23,6 +24,7 @@ public class FcmService {
         ).build();
     String response = FirebaseMessaging.getInstance().sendAsync(message).get();
     log.info("Sent message ==== {}",response);
+    }
   }
 
 }
