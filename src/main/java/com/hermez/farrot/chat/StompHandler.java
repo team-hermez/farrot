@@ -1,5 +1,7 @@
 package com.hermez.farrot.chat;
 
+import static org.springframework.messaging.simp.stomp.StompCommand.*;
+
 import com.hermez.farrot.chat.chatmessage.entity.ChatMessage;
 import com.hermez.farrot.chat.chatmessage.entity.RoomConnect;
 import com.hermez.farrot.chat.chatroom.entity.ChatRoom;
@@ -9,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -28,7 +31,7 @@ public class StompHandler implements ChannelInterceptor {
   private final ChatRoomService chatRoomService;
 
   @Override
-  public Message<?> preSend(Message<?> message, MessageChannel channel) {
+  public Message<?> preSend(@NotNull Message<?> message, @NotNull MessageChannel channel) {
     StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
     log.info("command : {}", accessor.getCommand());
     log.info("session : {}", accessor.getSessionId());
@@ -40,11 +43,13 @@ public class StompHandler implements ChannelInterceptor {
 
     String senderId = accessor.getFirstNativeHeader("senderId");
     String roomId = accessor.getFirstNativeHeader("roomId");
-    if(StompCommand.CONNECT.equals(accessor.getCommand())) {
+    String productId = accessor.getFirstNativeHeader("productId");
+    if(CONNECT.equals(accessor.getCommand())) {
       Map<String, Object> attributes = accessor.getSessionAttributes();
         assert attributes != null;
         attributes.put("senderId", senderId);
         attributes.put("roomId", roomId);
+        attributes.put("productId", productId);
         accessor.setSessionAttributes(attributes);
 
       log.info("session attribute 2 : {}", accessor.getSessionAttributes());
@@ -58,7 +63,7 @@ public class StompHandler implements ChannelInterceptor {
   public void afterSendCompletion(Message<?> message, MessageChannel channel, boolean sent,
       Exception ex) {
     StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-    if(StompCommand.DISCONNECT.equals(accessor.getCommand())) {
+    if(DISCONNECT.equals(accessor.getCommand())) {
       String roomId = accessor.getFirstNativeHeader("roomId");
       if(roomId != null) {
         log.info("종료 로직 : {}", roomId);

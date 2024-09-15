@@ -6,6 +6,7 @@ import static com.hermez.farrot.product.entity.QProduct.product;
 import static com.querydsl.core.types.Projections.*;
 
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
+import com.hermez.farrot.member.entity.Member;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.List;
@@ -85,4 +86,23 @@ public class ChatRoomRepositoryCustom {
     int end = Math.min(start + pageSize, allContent.size());
     return allContent.subList(start, end);
   }
+
+  public Member findBuyerByChatRoomId(Integer chatRoomId){
+    return queryFactory
+        .select(chatRoom.sender)
+        .from(chatRoom)
+        .where(chatRoom.id.eq(chatRoomId))
+        .fetchOne();
+  }
+
+  //나중에 지울거
+  public Member findSellerByProductId(Integer productId){
+    return queryFactory
+        .select(product.member)
+        .from(product)
+        .where(product.id.eq(productId))
+        .fetchOne();
+  }
+
+
 }

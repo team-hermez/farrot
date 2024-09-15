@@ -77,10 +77,10 @@ public class ChatRoomController {
     String userEmail = principal.getUsername();
     Member sender = memberRepository.findByEmail(userEmail)
         .orElseThrow(() -> new RuntimeException("멤버없음"));
-    ChatRoomEnterResponse response = new ChatRoomEnterResponse(roomId, sender.getEmail(), productId ,sender.getId(), sender.getNickname());
     ChatRoomEnterResponse chatRoomEnterResponse = ChatRoomEnterResponse.builder()
         .roomId(roomId)
         .email(userEmail)
+        .productId(productId)
         .senderId(sender.getId())
         .nickName(sender.getNickname())
         .build();
