@@ -46,7 +46,7 @@ public class ChatMessageController {
       @Payload SendMessageRequest request,
       StompHeaderAccessor accessor) {
     log.info("Sending message: {}", request.senderId());
-    chatMessageService.save(request.chatRoomId(), request.email(), request.message(),
+    Integer readCount = chatMessageService.save(request.chatRoomId(), request.email(), request.message(),
         request.type());
     Integer productId = Integer.valueOf(
         (String) Objects.requireNonNull(accessor.getSessionAttributes()).get("productId"));
@@ -55,10 +55,10 @@ public class ChatMessageController {
     Member sender = memberRepository.findById(request.senderId())
         .orElseThrow(() -> new RuntimeException("해당 유저가 없습니다."));
     if (Objects.equals(sender.getId(), seller.getId())) {
-      log.info("판매자에게 보내기");
+      log.info("구매자에게 보내기");
       notificationService.creatNotification(sender, buyer);
     } else if (Objects.equals(sender.getId(), buyer.getId())) {
-      log.info("구매자에게 보내기");
+      log.info("판매자에게 보내기");
       notificationService.creatNotification(sender, seller);
     } else {
       throw new NoMatchUniqueReceiverException("알림을 받을 유저를 찾을 수 없습니다.");
@@ -69,7 +69,7 @@ public class ChatMessageController {
         .nickName(request.nickname())
         .message(request.message())
         .type(request.type())
-        .readCount(1)
+        .readCount(readCount)
         .sendTime(formatTime(LocalDateTime.now())).build();
   }
 
