@@ -51,13 +51,13 @@ public class ChatMessageService {
   }
 
   @Transactional
-  public void save(int chatRoomId,String userEmail ,String message, ChatMessageType chatMessageType) {
+  public Integer save(int chatRoomId,String userEmail ,String message, ChatMessageType chatMessageType) {
     ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
         .orElseThrow(()->new RuntimeException("채팅방이 없습니다."));
     Member sender = memberRepository.findByEmail(userEmail)
         .orElseThrow(() -> new RuntimeException("멤버없음"));
-    ChatMessage chatMessage = ChatMessage.createChatMessage(chatRoom, sender, message,chatMessageType);
-    chatMessageRepository.save(chatMessage);
+    ChatMessage chatMessage = ChatMessage.createChatMessage(chatRoom, sender, message,chatMessageType,chatRoom.getConnect());
+    return chatMessageRepository.save(chatMessage).getReadCount();
   }
 
   public List<ChatRoomResponse> findAllByChatRoomId(ChatRoomEnterResponse response) {

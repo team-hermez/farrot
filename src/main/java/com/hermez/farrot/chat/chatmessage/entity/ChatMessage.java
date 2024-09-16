@@ -59,14 +59,16 @@ public class ChatMessage {
         chatRoom.getChatMessages().add(this);
     }
 
-    public static ChatMessage createChatMessage(ChatRoom chatRoom, Member sender,String message,ChatMessageType chatMessageType) {
+    public static ChatMessage createChatMessage(
+        ChatRoom chatRoom, Member sender,String message,
+        ChatMessageType chatMessageType,Integer connect) {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setChatRoom(chatRoom);
         chatMessage.sender = sender;
         chatMessage.message = message;
         chatMessage.type = chatMessageType;
         chatMessage.createdAt = LocalDateTime.now();
-        chatMessage.readCount = 1;
+        chatMessage.readCount = connect == 1 ? 1 : 0;
         return chatMessage;
     }
 

@@ -71,10 +71,14 @@ public class StompHandler implements ChannelInterceptor {
       case SUBSCRIBE:
       case SEND:
         verifyAccessToken(); break;
+      case DISCONNECT:
+        log.info("연결이 끊어졌습니다.{}",accessor.getSessionAttributes().get("roomId"));
+        disConnectToChatRoom((String)(accessor.getSessionAttributes().get("roomId")));
     }
   }
 
   private void disConnectToChatRoom(String roomId) {
+    log.info("disconnect ");
     Integer roomId_ = Integer.parseInt(roomId);
     chatRoomService.disconnectChatRoom(roomId_);
   }
