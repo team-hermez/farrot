@@ -31,8 +31,10 @@ public class MemberController {
     @PostMapping("/register")
     public String postMemberRegister(MemberRegisterRequest memberRegisterRequest) {
         userService.save(memberRegisterRequest);
-        return "redirect:/login";
+
+        return "redirect:/member/login";
     }
+
     @GetMapping("/login")
     public String login(@AuthenticationPrincipal UserDetails userDetails) {
         // 로그인 상태면 메인 페이지로 돌려보냄
@@ -59,6 +61,7 @@ public class MemberController {
 
         return "redirect:/member/login";
     }
+  
     @GetMapping("/detail")
     String memberDetailPage(Model model) {
         return "member/detail";
