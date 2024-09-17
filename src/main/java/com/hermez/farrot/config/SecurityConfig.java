@@ -1,46 +1,62 @@
 package com.hermez.farrot.config;
 
+import com.hermez.farrot.member.security.JwtAuthenticationFilter;
+import com.hermez.farrot.member.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity
 @Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtTokenProvider jwtTokenProvider;
+    private final static int ONE_DAY = 24 * 60 * 60;
+
     @Bean
     public WebSecurityCustomizer configure() {
         return (web) -> web.ignoring()
-                .requestMatchers(new AntPathRequestMatcher("/static/**"));
+                .requestMatchers(PathRequest
+                        .toStaticResources()
+                        .atCommonLocations());
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/member/detail").authenticated()
-                        .requestMatchers("/admin").hasRole("ADMIN")
-                        .anyRequest().permitAll())
-                .formLogin(formLogin -> formLogin
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+                .httpBasic(HttpBasicConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(
+                        (authorize) -> authorize
+                                .requestMatchers("/member/detail").authenticated()
+                                .anyRequest().permitAll()
+                )
+                .formLogin(login -> login
                         .loginPage("/member/login")
-                        .permitAll().defaultSuccessUrl("/", true)
+                        .loginProcessingUrl("/")
+                        .usernameParameter("email")
+                        .permitAll()
                 )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/member/login")
-                        .invalidateHttpSession(true)
-                )
-                .csrf(AbstractHttpConfigurer::disable);
-
-        return httpSecurity.build();
-    }
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+                .logout(Customizer.withDefaults())
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 }
