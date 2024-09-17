@@ -42,7 +42,7 @@ public class ChatMessageController {
 
 
   @MessageMapping("/enter/{roomId}")
-  public void sendBeforeMessage(@ModelAttribute ChatRoomEnterResponse chatRoomEnterResponse, StompHeaderAccessor accessor) {
+  public void sendBeforeMessage(@Payload ChatRoomEnterResponse chatRoomEnterResponse, StompHeaderAccessor accessor) {
       chatMessageService.findAllByChatRoomId(chatRoomEnterResponse)
     .forEach(chatMessage -> chatMessageService.sendMessageToUser(accessor.getSessionId(), "/room/" + chatRoomEnterResponse.roomId(), chatMessage));
   }
