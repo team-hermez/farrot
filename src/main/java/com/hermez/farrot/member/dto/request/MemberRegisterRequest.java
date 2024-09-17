@@ -12,7 +12,6 @@ public class MemberRegisterRequest {
     private String password;
     private String phone;
 
-
     public MemberRegisterRequest(){};
 
     public MemberRegisterRequest(String memberName, String nickname, String email, String password, String phone) {
@@ -21,7 +20,6 @@ public class MemberRegisterRequest {
         this.email = email;
         this.password = password;
         this.phone = phone;
-
     }
 
 }

@@ -1,6 +1,5 @@
 package com.hermez.farrot.member.service;
 
-import com.hermez.farrot.member.entity.CustomUser;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -18,7 +15,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Member> member = memberRepository.findByEmail(email);
-        return member.map(CustomUser::new).orElseThrow(() -> new UsernameNotFoundException(email));
+        Member member =
+                memberRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("사용자를 찾을 수 없습니다"));
+
+        return new UserDetailsImpl(member, member.getEmail(), member.getPassword());
     }
 }
