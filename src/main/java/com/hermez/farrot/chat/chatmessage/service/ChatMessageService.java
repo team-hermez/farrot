@@ -55,12 +55,10 @@ public class ChatMessageService {
   }
 
   @Transactional
-  public Integer save(int chatRoomId,String userEmail ,String message, ChatMessageType chatMessageType) {
-    ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-        .orElseThrow(()->new RuntimeException("채팅방이 없습니다."));
-    Member sender = memberRepository.findByEmail(userEmail)
-        .orElseThrow(() -> new RuntimeException("멤버없음"));
-    ChatMessage chatMessage = ChatMessage.createChatMessage(chatRoom, sender, message,chatMessageType,chatRoom.getConnect());
+  public Integer save(SendMessageRequest request) {
+    ChatRoom chatRoom = chatRoomRepository.findById(request.chatRoomId()).orElseThrow(()->new RuntimeException("채팅방이 없습니다."));
+    Member sender = memberRepository.findByEmail(request.email()).orElseThrow(() -> new RuntimeException("해당하는 멤버가 없습니다."));
+    ChatMessage chatMessage = ChatMessage.createChatMessage(chatRoom, sender, request.message(),request.type(),chatRoom.getConnect());
     return chatMessageRepository.save(chatMessage).getReadCount();
   }
 
@@ -85,8 +83,7 @@ public class ChatMessageService {
   public void sendChatNotification(SendMessageRequest request, Integer productId) {
     Member seller = chatRoomRepositoryCustom.findSellerByProductId(productId);
     Member buyer = chatRoomRepositoryCustom.findBuyerByChatRoomId(request.chatRoomId());
-    Member sender = memberRepository.findById(request.senderId())
-        .orElseThrow(() -> new RuntimeException("해당 유저가 없습니다."));
+    Member sender = memberRepository.findById(request.senderId()).orElseThrow(() -> new RuntimeException("해당 유저가 없습니다."));
     if (Objects.equals(sender.getId(), seller.getId())) {
       log.info("구매자에게 보내기");
       notificationService.creatNotification(sender, buyer);

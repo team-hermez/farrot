@@ -69,8 +69,7 @@ public class ChatRoomController {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails principal = (UserDetails) authentication.getPrincipal();
     String userEmail = principal.getUsername();
-    Member sender = memberRepository.findByEmail(userEmail)
-        .orElseThrow(() -> new RuntimeException("멤버없음"));
+    Member sender = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버없음"));
     ChatRoomEnterResponse chatRoomEnterResponse = ChatRoomEnterResponse.builder()
         .roomId(roomId)
         .email(userEmail)

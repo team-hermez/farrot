@@ -27,7 +27,7 @@ public class ChatMessageController {
   @SendTo("/room/{roomId}")
   public ChatResponse sendMessage(@Payload SendMessageRequest request, StompHeaderAccessor accessor) {
     log.info("Sending message: {}", request.senderId());
-    Integer readCount = chatMessageService.save(request.chatRoomId(), request.email(), request.message(), request.type());
+    Integer readCount = chatMessageService.save(request);
     Integer productId = Integer.valueOf((String) Objects.requireNonNull(accessor.getSessionAttributes()).get("productId"));
     chatMessageService.sendChatNotification(request, productId);
     return ChatResponse.builder()
@@ -42,13 +42,9 @@ public class ChatMessageController {
 
 
   @MessageMapping("/enter/{roomId}")
-  public void sendBeforeMessage(
-      @ModelAttribute ChatRoomEnterResponse chatRoomEnterResponse,
-      StompHeaderAccessor accessor
-  ) {
+  public void sendBeforeMessage(@ModelAttribute ChatRoomEnterResponse chatRoomEnterResponse, StompHeaderAccessor accessor) {
       chatMessageService.findAllByChatRoomId(chatRoomEnterResponse)
-    .forEach(chatMessage -> chatMessageService.sendMessageToUser(accessor.getSessionId(), "/room/" + chatRoomEnterResponse.roomId(), chatMessage)
-    );
+    .forEach(chatMessage -> chatMessageService.sendMessageToUser(accessor.getSessionId(), "/room/" + chatRoomEnterResponse.roomId(), chatMessage));
   }
 
   private String formatTime(LocalDateTime time) {
