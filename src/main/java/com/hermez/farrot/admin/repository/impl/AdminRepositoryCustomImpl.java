@@ -2,21 +2,35 @@ package com.hermez.farrot.admin.repository.impl;
 
 import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
 import com.hermez.farrot.admin.repository.AdminRepositoryCustom;
+import com.hermez.farrot.product.entity.Product;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.hermez.farrot.product.entity.QProduct.product;
 
 @Repository
 public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
+    private final JPAQueryFactory queryFactory;
+
     private final JdbcTemplate jdbcTemplate;
 
-    public AdminRepositoryCustomImpl(JdbcTemplate jdbcTemplate) {
+    public AdminRepositoryCustomImpl(JdbcTemplate jdbcTemplate, EntityManager em) {
         this.jdbcTemplate = jdbcTemplate;
+        this.queryFactory = new JPAQueryFactory(em);
     }
 
     @Override
@@ -39,5 +53,29 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 return new AdminCategorySalesTop5Response(count, categoryCode);
             }
         });
+    }
+
+    @Override
+    public Page<Product> findProductsSoldToday(LocalDate today, Pageable pageable) {
+        List<Product> products = queryFactory
+                .selectFrom(product)
+                .where(createdAtIsToday(today))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = queryFactory
+                .selectFrom(product)
+                .where(createdAtIsToday(today))
+                .fetchCount();
+
+        return new PageImpl<>(products, pageable, total);
+    }
+
+    private BooleanExpression createdAtIsToday(LocalDate today) {
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
+
+        return product.createdAt.between(startOfDay, endOfDay);
     }
 }

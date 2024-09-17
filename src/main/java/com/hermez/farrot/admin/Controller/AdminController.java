@@ -5,6 +5,10 @@ import com.google.gson.JsonObject;
 import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
+import com.hermez.farrot.product.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,27 +30,65 @@ public class AdminController {
     }
 
     @GetMapping("/form")
-    public String getAdminMain(Model model) {
+    public String getMainForm(Model model) {
         int totalCount = adminService.getMemberTotalCount();
-        List<Member> memberList = adminService.getMemberList();
-        model.addAttribute("memberList", memberList);
         model.addAttribute("totalCount", totalCount);
 
-        return "admin/admin-form";
+        return "admin/form/admin-form";
     }
 
     @GetMapping("/member-form")
-    public String getMemberForm(Model model) {
-        List<Member> memberList = adminService.getMemberList();
+    public String getMemberForm(Model model, @PageableDefault(size = 6) Pageable pageable) {
+        Page<Member> memberList = adminService.getMemberList(pageable);
         model.addAttribute("memberList", memberList);
-        return "admin/admin-member-form";
+        return "admin/form/admin-member-form";
     }
 
     @GetMapping("/member")
-    public String getContacts(Model model) {
-        List<Member> memberList = adminService.getMemberList();
+    public String getMembers(Model model, @PageableDefault(size = 6) Pageable pageable) {
+        Page<Member> memberList = adminService.getMemberList(pageable);
         model.addAttribute("memberList", memberList);
-        return "admin/admin-member";
+        return "admin/member/admin-member";
+    }
+
+    @GetMapping("/report")
+    public String getReports(Model model, @PageableDefault(size = 6) Pageable pageable) {
+        Page<Member> memberList = adminService.getMemberList(pageable);
+        model.addAttribute("memberList", memberList);
+        return "admin/member/admin-report";
+    }
+
+    @GetMapping("/product-manage")
+    public String getProducts(Model model, @PageableDefault(size = 6) Pageable pageable) {
+        Page<Product> productList = adminService.getProductList(pageable);
+        model.addAttribute("productList", productList);
+        return "admin/product/admin-product";
+    }
+
+    @GetMapping("/products/today")
+    public String getProductsToday(Model model, @PageableDefault(size = 6) Pageable pageable) {
+        Page<Product> productList = adminService.findProductsSoldToday(pageable);
+        model.addAttribute("productList", productList);
+        return "admin/product/admin-product-today";
+    }
+
+    @GetMapping("/products/weekly")
+    public String getProductsWeekly(Model model, @PageableDefault(size = 6) Pageable pageable) {
+        Page<Product> productList = adminService.getProductList(pageable);
+        model.addAttribute("productList", productList);
+        return "admin/product/admin-product-weekly";
+    }
+
+    @GetMapping("/products/monthly")
+    public String getProductsMonthly(Model model, @PageableDefault(size = 6) Pageable pageable) {
+        Page<Product> productList = adminService.getProductList(pageable);
+        model.addAttribute("productList", productList);
+        return "admin/product/admin-product-monthly";
+    }
+
+    @GetMapping("/chat-manage")
+    public String getChat(Model model) {
+        return "admin/chat/admin-chat";
     }
 
     @ResponseBody
