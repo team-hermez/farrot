@@ -1,5 +1,6 @@
 package com.hermez.farrot.admin.service.impl;
 
+import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
 import com.hermez.farrot.admin.repository.AdminRepository;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
@@ -22,6 +23,11 @@ public class AdminServiceImpl implements AdminService {
 
     public int getMemberTotalCount(){
         return (int) adminRepository.count();
+    }
+
+    @Override
+    public List<AdminCategorySalesTop5Response> getCategorySalesTop5() {
+        return adminRepository.findCategorySales();
     }
 
 }
