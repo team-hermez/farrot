@@ -40,8 +40,7 @@ public class ChatRoomController {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails principal = (UserDetails) authentication.getPrincipal();
     String userEmail = principal.getUsername();
-    Member sender = memberRepository.findByEmail(userEmail)
-        .orElseThrow(() -> new RuntimeException("멤버없음"));
+    Member sender = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버를 찾을 수 없습니다."));
     chatRoomService.createChatRoom(productId);
     Integer roomId = chatRoomService.findBySenderId(sender.getId());
     redirectAttributes.addAttribute("roomId", roomId);
@@ -54,21 +53,16 @@ public class ChatRoomController {
       @ModelAttribute("selectOption") SelectOption selectOption,
      @PageableDefault(size = 5) Pageable pageable,
       Model model) {
-    List<SelectOption> selectOptions = new ArrayList<>();
-    selectOptions.add(new SelectOption("All", "대화 보기"));
-    selectOptions.add(new SelectOption("Buy", "구매 대화"));
-    selectOptions.add(new SelectOption("Sell", "판매 대화"));
+    List<SelectOption> selectOptions = getSelectChatRoomOptions();
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails principal = (UserDetails) authentication.getPrincipal();
     String userEmail = principal.getUsername();
-    Member findMember = memberRepository.findByEmail(userEmail)//쿼리1
-        .orElseThrow(() -> new RuntimeException("멤버없음"));
+    Member findMember = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버없음"));
     Page<ChatRoomsResponse> chatRooms = chatRoomService.findAll(findMember.getId(),selectOption.code(),pageable);//쿼리2
     model.addAttribute("selectOptions",selectOptions);
     model.addAttribute("chatRooms", chatRooms);
     return "chat/chat-rooms";
   }
-
 
   @GetMapping("/room")
   public String chatRoomPage(@RequestParam Integer roomId,@RequestParam Integer productId,Model model) {
@@ -86,6 +80,14 @@ public class ChatRoomController {
         .build();
     model.addAttribute("chatRoomEnterResponse", chatRoomEnterResponse);
     return "chat/chat-room";
+  }
+
+  private static List<SelectOption> getSelectChatRoomOptions() {
+    List<SelectOption> selectOptions = new ArrayList<>();
+    selectOptions.add(new SelectOption("All", "대화 보기"));
+    selectOptions.add(new SelectOption("Buy", "구매 대화"));
+    selectOptions.add(new SelectOption("Sell", "판매 대화"));
+    return selectOptions;
   }
 
 }

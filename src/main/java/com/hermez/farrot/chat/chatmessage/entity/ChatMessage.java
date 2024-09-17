@@ -1,6 +1,5 @@
 package com.hermez.farrot.chat.chatmessage.entity;
 
-import static com.hermez.farrot.chat.chatmessage.entity.RoomConnect.*;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 
