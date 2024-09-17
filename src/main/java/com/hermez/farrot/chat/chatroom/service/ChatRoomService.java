@@ -36,8 +36,7 @@ public class ChatRoomService {
 
   @Transactional
   public void createChatRoom(Integer productId) {
-    Product product = productRepository.findById(productId)
-            .orElseThrow(()->new RuntimeException("Product not found"));
+    Product product = productRepository.findById(productId).orElseThrow(()->new RuntimeException("Product not found"));
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails principal = (UserDetails) authentication.getPrincipal();
     String userEmail = principal.getUsername();
@@ -92,7 +91,6 @@ public class ChatRoomService {
       chatRoomIdSet.addAll(chatRoomCustomRepository.findChatRoomIdAsSeller(
           senderId));
     }
-    List<Integer> chatRoomIdList = new ArrayList<>(chatRoomIdSet);
-    return chatRoomIdList;
+    return new ArrayList<>(chatRoomIdSet);
   }
 }

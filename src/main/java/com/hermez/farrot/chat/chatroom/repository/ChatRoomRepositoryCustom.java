@@ -3,7 +3,7 @@ package com.hermez.farrot.chat.chatroom.repository;
 import static com.hermez.farrot.chat.chatmessage.entity.QChatMessage.chatMessage;
 import static com.hermez.farrot.chat.chatroom.entity.QChatRoom.chatRoom;
 import static com.hermez.farrot.product.entity.QProduct.product;
-import static com.querydsl.core.types.Projections.*;
+import static com.querydsl.core.types.Projections.constructor;
 
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
 import com.hermez.farrot.member.entity.Member;

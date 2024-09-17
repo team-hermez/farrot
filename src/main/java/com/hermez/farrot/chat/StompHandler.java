@@ -1,7 +1,6 @@
 package com.hermez.farrot.chat;
 
 import static org.springframework.messaging.simp.stomp.StompCommand.CONNECT;
-import static org.springframework.messaging.simp.stomp.StompCommand.DISCONNECT;
 
 import com.hermez.farrot.chat.chatroom.service.ChatRoomService;
 import java.util.Map;
@@ -51,19 +50,6 @@ public class StompHandler implements ChannelInterceptor {
     return message;
   }
 
-  @Override
-  public void afterSendCompletion(Message<?> message, MessageChannel channel, boolean sent,
-      Exception ex) {
-    StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-    if(DISCONNECT.equals(accessor.getCommand())) {
-      String roomId = accessor.getFirstNativeHeader("roomId");
-      if(roomId != null) {
-        log.info("종료 로직 : {}", roomId);
-        disConnectToChatRoom(roomId);
-      }
-    }
-  }
-
   private void handleMessage(StompCommand stompCommand,StompHeaderAccessor accessor, String senderId, String roomId) {
     switch (stompCommand) {
       case CONNECT:
@@ -72,8 +58,7 @@ public class StompHandler implements ChannelInterceptor {
       case SEND:
         verifyAccessToken(); break;
       case DISCONNECT:
-        log.info("연결이 끊어졌습니다.{}",accessor.getSessionAttributes().get("roomId"));
-        disConnectToChatRoom((String)(accessor.getSessionAttributes().get("roomId")));
+        disConnectToChatRoom((String)(Objects.requireNonNull(accessor.getSessionAttributes()).get("roomId")));
     }
   }
 

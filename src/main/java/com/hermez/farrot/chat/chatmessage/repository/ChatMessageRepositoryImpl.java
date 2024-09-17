@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ChatMessageRepositoryImpl implements ChatMessageRepositoryCustom {
-//select c from ChatMessage c where c.chatRoom.id=:chatRoomId order by c.id
 
   private final JPAQueryFactory queryFactory;
 

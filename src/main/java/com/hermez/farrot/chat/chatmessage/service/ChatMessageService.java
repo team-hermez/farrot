@@ -1,16 +1,19 @@
 package com.hermez.farrot.chat.chatmessage.service;
 
 
+import com.hermez.farrot.chat.chatmessage.dto.request.SendMessageRequest;
 import com.hermez.farrot.chat.chatmessage.dto.response.ChatRoomResponse;
 import com.hermez.farrot.chat.chatmessage.entity.ChatMessage;
 import com.hermez.farrot.chat.chatmessage.entity.ChatMessageType;
+import com.hermez.farrot.chat.chatmessage.exception.NoMatchUniqueReceiverException;
 import com.hermez.farrot.chat.chatmessage.repository.ChatMessageRepository;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomEnterResponse;
 import com.hermez.farrot.chat.chatroom.entity.ChatRoom;
 import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepository;
+import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepositoryCustom;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
-import com.hermez.farrot.product.repository.ProductRepository;
+import com.hermez.farrot.notification.service.NotificationService;
 import jakarta.annotation.Nullable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,11 +37,12 @@ public class ChatMessageService {
 
   private final ChatMessageRepository chatMessageRepository;
   private final ChatRoomRepository chatRoomRepository;
+  private final ChatRoomRepositoryCustom chatRoomRepositoryCustom;
   private final MemberRepository memberRepository;
-  private final ProductRepository productRepository;
+  private final NotificationService notificationService;
   private final SimpMessagingTemplate simpMessagingTemplate;
 
-  public void sendMessageToUser(String sessionId,String destination,ChatRoomResponse response){
+  public void sendMessageToUser(String sessionId,String destination, ChatRoomResponse response){
     MessageHeaders headers = createMessageHeaders(sessionId);
     simpMessagingTemplate.convertAndSendToUser(sessionId,destination, response,headers);
   }
@@ -76,6 +80,22 @@ public class ChatMessageService {
               .build();
         }
     ).collect(Collectors.toList());
+  }
+
+  public void sendChatNotification(SendMessageRequest request, Integer productId) {
+    Member seller = chatRoomRepositoryCustom.findSellerByProductId(productId);
+    Member buyer = chatRoomRepositoryCustom.findBuyerByChatRoomId(request.chatRoomId());
+    Member sender = memberRepository.findById(request.senderId())
+        .orElseThrow(() -> new RuntimeException("해당 유저가 없습니다."));
+    if (Objects.equals(sender.getId(), seller.getId())) {
+      log.info("구매자에게 보내기");
+      notificationService.creatNotification(sender, buyer);
+    } else if (Objects.equals(sender.getId(), buyer.getId())) {
+      log.info("판매자에게 보내기");
+      notificationService.creatNotification(sender, seller);
+    } else {
+      throw new NoMatchUniqueReceiverException("알림을 받을 유저를 찾을 수 없습니다.");
+    }
   }
 
   private String formatTime(LocalDateTime time) {
