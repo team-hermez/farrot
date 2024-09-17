@@ -40,19 +40,9 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Contacts Design</h3>
+                <h3>전체 회원</h3>
               </div>
 
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5  form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <div class="clearfix"></div>
@@ -62,16 +52,16 @@
                   <div class="x_content">
                       <div class="col-md-12 col-sm-12  text-center">
                         <ul class="pagination pagination-split">
-                          <li><a href="#">A</a></li>
-                          <li><a href="#">B</a></li>
-                          <li><a href="#">C</a></li>
-                          <li><a href="#">D</a></li>
-                          <li><a href="#">E</a></li>
-                          <li>...</li>
-                          <li><a href="#">W</a></li>
-                          <li><a href="#">X</a></li>
-                          <li><a href="#">Y</a></li>
-                          <li><a href="#">Z</a></li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                          <li> </li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
                         </ul>
                       </div>
 
@@ -81,7 +71,7 @@
                       <div th:each="list : ${memberList}" class="col-md-4 col-sm-4  profile_details">
                         <div class="well profile_view">
                           <div class="col-sm-12">
-                            <h4 class="brief"><i>Digital Strategist</i></h4>
+                            <h4 class="brief" th:text = "${list.nickname}"><i>Digital Strategist</i></h4>
                             <div class="left col-md-7 col-sm-7">
                               <h2 th:text="${list.memberName}"></h2>
                               <p><strong>About: </strong> Web Designer / UX / Graphic Artist / Coffee Lover </p>
@@ -115,10 +105,45 @@
                           </div>
                         </div>
                       </div>
-
                   </div>
                 </div>
+
             </div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${memberList.first} ? 'disabled' : ''">
+                  <a class="page-link" th:href="@{/admin/member-form(page=0, size=${memberList.size})}" aria-label="First">
+                    <span aria-hidden="true">맨 처음</span>
+                  </a>
+                </li>
+
+                <li class="page-item" th:classappend="${memberList.hasPrevious()} ? '' : 'disabled'">
+                  <a class="page-link" th:href="@{/admin/member-form(page=${memberList.number - 1}, size=${memberList.size})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+
+                <li class="page-item"
+                    th:each="i : ${#numbers.sequence((memberList.number - 2 > 0 ? memberList.number - 2 : 0),
+                                             (memberList.number + 2 < memberList.totalPages - 1 ? memberList.number + 2 : memberList.totalPages - 1))}"
+                    th:classappend="${i == memberList.number} ? 'active'">
+                  <a class="page-link" th:text="${i + 1}"
+                     th:href="@{/admin/member-form(page=${i}, size=${memberList.size})}"></a>
+                </li>
+
+                <li class="page-item" th:classappend="${memberList.hasNext()} ? '' : 'disabled'">
+                  <a class="page-link" th:href="@{/admin/member-form(page=${memberList.number + 1}, size=${memberList.size})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+
+                <li class="page-item" th:classappend="${memberList.last} ? 'disabled' : ''">
+                  <a class="page-link" th:href="@{/admin/member-form(page=${memberList.totalPages - 1}, size=${memberList.size})}" aria-label="Last">
+                    <span aria-hidden="true">끝으로</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
         <!-- /page content -->
