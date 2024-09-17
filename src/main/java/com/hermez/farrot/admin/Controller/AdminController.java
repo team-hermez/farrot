@@ -39,14 +39,14 @@ public class AdminController {
     public String getMemberForm(Model model) {
         List<Member> memberList = adminService.getMemberList();
         model.addAttribute("memberList", memberList);
-        return "admin/admin-member";
+        return "admin/admin-member-form";
     }
 
-    @GetMapping("/contacts")
+    @GetMapping("/member")
     public String getContacts(Model model) {
         List<Member> memberList = adminService.getMemberList();
         model.addAttribute("memberList", memberList);
-        return "admin/admin-contacts";
+        return "admin/admin-member";
     }
 
     @ResponseBody

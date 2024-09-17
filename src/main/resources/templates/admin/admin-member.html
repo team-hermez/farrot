@@ -27,7 +27,11 @@
     <div class="main_container">
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
+
+                <!-- sidebar menu -->
                 <div th:replace="/admin/admin-sidebar :: div"></div>
+                <!-- /sidebar menu -->
+
             </div>
         </div>
 
@@ -57,6 +61,50 @@
 
                 <div class="clearfix"></div>
 
+                <div class="row">
+
+                    <div class="col-md-12 col-sm-12 ">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>회원 통계 <small>달별 가입한 회원 수</small></h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="dashboard-widget-content">
+                                    <div class="col-md-4 hidden-small">
+                                        <h2 class="line_30">여기 차트</h2>
+
+                                        <table class="countries_list">
+                                            <tbody>
+                                            <tr>
+                                                <td>United States</td>
+                                                <td class="fs15 fw700 text-right">33%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>France</td>
+                                                <td class="fs15 fw700 text-right">27%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Germany</td>
+                                                <td class="fs15 fw700 text-right">16%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Spain</td>
+                                                <td class="fs15 fw700 text-right">11%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Britain</td>
+                                                <td class="fs15 fw700 text-right">10%</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
                 <div class="row" style="display: block;">
 
                     <div class="col-md-12 col-sm-12  ">
@@ -142,7 +190,7 @@
                                             <input type="radio" name="options" class="join-btn" id="option2">  수정
                                         </label>
                                         <label class="btn btn-secondary">
-                                            <input type="radio" name="options" class="join-btn" id="option3"> 내보내기ㅈ
+                                            <input type="radio" name="options" class="join-btn" id="option3"> 내보내기
                                         </label>
                                     </div>
                                 </div>
