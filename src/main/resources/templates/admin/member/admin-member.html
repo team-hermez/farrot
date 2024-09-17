@@ -47,16 +47,6 @@
                         <h3>회원 관리</h3>
                     </div>
 
-                    <div class="title_right">
-                        <div class="col-md-5 col-sm-5   form-group pull-right top_search">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search for...">
-                                <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="clearfix"></div>
@@ -140,8 +130,7 @@
                                             <th class="column-title">계정 </th>
                                             <th class="column-title">가입일 </th>
                                             <th class="column-title">전화번호 </th>
-                                            <th class="column-title">구매 횟수</th>
-                                            <th class="column-title no-link last"><span class="nobr">Action</span>
+                                            <th class="column-title">생성일</th>
                                             </th>
                                             <th class="bulk-actions" colspan="7">
                                                 <a class="antoo" style="color:#fff; font-weight:500;">선택됨 ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
@@ -149,32 +138,17 @@
                                         </tr>
                                         </thead>
 
-                                        <tbody>
+                                        <tbody th:each="list : ${memberList}">
                                         <tr class="even pointer">
                                             <td class="a-center ">
                                                 <input type="checkbox" class="flat" name="table_records">
                                             </td>
-                                            <td class=" ">121000040</td>
-                                            <td class=" ">May 23, 2014 11:47:56 PM </td>
-                                            <td class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
-                                            <td class=" ">John Blank L</td>
-                                            <td class=" ">Paid</td>
-                                            <td class="a-right a-right ">$7.45</td>
-                                            <td class=" last"><a href="#">View</a>
-                                            </td>
-                                        </tr>
-                                        <tr class="odd pointer">
-                                            <td class="a-center ">
-                                                <input type="checkbox" class="flat" name="table_records">
-                                            </td>
-                                            <td class=" ">121000039</td>
-                                            <td class=" ">May 23, 2014 11:30:12 PM</td>
-                                            <td class=" ">121000208 <i class="success fa fa-long-arrow-up"></i>
-                                            </td>
-                                            <td class=" ">John Blank L</td>
-                                            <td class=" ">Paid</td>
-                                            <td class="a-right a-right ">$741.20</td>
-                                            <td class=" last"><a href="#">View</a>
+                                            <td th:text="${list.id}" class=" "></td>
+                                            <td th:text="${list.nickname}" class=" "></td>
+                                            <td th:text="${list.email}" class=" "><i class="success fa fa-long-arrow-up"></i></td>
+                                            <td th:text="${list.email}" class=" "></td>
+                                            <td th:text="${list.phone}" class=" "></td>
+                                            <td th:text="${list.phone}" class=" "></td>
                                             </td>
                                         </tr>
 
@@ -194,7 +168,41 @@
                                         </label>
                                     </div>
                                 </div>
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item" th:classappend="${memberList.first} ? 'disabled' : ''">
+                                            <a class="page-link" th:href="@{/admin/member(page=0, size=${memberList.size})}" aria-label="First">
+                                                <span aria-hidden="true">맨 처음</span>
+                                            </a>
+                                        </li>
 
+                                        <li class="page-item" th:classappend="${memberList.hasPrevious()} ? '' : 'disabled'">
+                                            <a class="page-link" th:href="@{/admin/member(page=${memberList.number - 1}, size=${memberList.size})}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+
+                                        <li class="page-item"
+                                            th:each="i : ${#numbers.sequence((memberList.number - 2 > 0 ? memberList.number - 2 : 0),
+                                             (memberList.number + 2 < memberList.totalPages - 1 ? memberList.number + 2 : memberList.totalPages - 1))}"
+                                            th:classappend="${i == memberList.number} ? 'active'">
+                                            <a class="page-link" th:text="${i + 1}"
+                                               th:href="@{/admin/member(page=${i}, size=${memberList.size})}"></a>
+                                        </li>
+
+                                        <li class="page-item" th:classappend="${memberList.hasNext()} ? '' : 'disabled'">
+                                            <a class="page-link" th:href="@{/admin/member(page=${memberList.number + 1}, size=${memberList.size})}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+
+                                        <li class="page-item" th:classappend="${memberList.last} ? 'disabled' : ''">
+                                            <a class="page-link" th:href="@{/admin/member(page=${memberList.totalPages - 1}, size=${memberList.size})}" aria-label="Last">
+                                                <span aria-hidden="true">끝으로</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
                         </div>
                     </div>
