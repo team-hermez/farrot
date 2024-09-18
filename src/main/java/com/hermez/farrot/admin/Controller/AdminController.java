@@ -11,10 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -37,18 +34,37 @@ public class AdminController {
         return "admin/form/admin-form";
     }
 
-    @GetMapping("/member-form")
-    public String getMemberForm(Model model, @PageableDefault(size = 6) Pageable pageable) {
-        Page<Member> memberList = adminService.getMemberList(pageable);
-        model.addAttribute("memberList", memberList);
-        return "admin/form/admin-member-form";
-    }
-
     @GetMapping("/member")
     public String getMembers(Model model, @PageableDefault(size = 6) Pageable pageable) {
         Page<Member> memberList = adminService.getMemberList(pageable);
         model.addAttribute("memberList", memberList);
         return "admin/member/admin-member";
+    }
+
+    @GetMapping("/member-detail/{id}")
+    public String getMemberDetail(@PageableDefault(size = 5) Pageable pageable, @PathVariable("id") Integer id, Model model) {
+        Member member = adminService.findMemberById(id);
+//        Page<Product> myProductList = adminService.getProductByMemberIdOrderByCreatedAtDesc(pageable, id);
+        model.addAttribute("member", member);
+//        model.addAttribute("myProductList", myProductList);
+        return "admin/member/admin-member-detail";
+    }
+
+    //TODO 페이징 다시
+    @GetMapping("/member-detail/transactions/{id}")
+    public String getMemberTransDetail(@PageableDefault(size = 5) Pageable pageable, @PathVariable("id") Integer id, Model model) {
+        Member member = adminService.findMemberById(id);
+//        Page<Product> myProductList = adminService.getProductByMemberIdOrderByCreatedAtDesc(pageable, id);
+        model.addAttribute("member", member);
+//        model.addAttribute("myProductList", myProductList);
+        return "admin/member/admin-member-trans-detail";
+    }
+
+    @GetMapping("/member-disable")
+    public String getMemberDisable(Model model, @PageableDefault(size = 6) Pageable pageable) {
+        Page<Member> memberList = adminService.getMemberList(pageable);
+        model.addAttribute("memberList", memberList);
+        return "admin/member/admin-member-disable";
     }
 
     @GetMapping("/report")
@@ -91,6 +107,7 @@ public class AdminController {
         return "admin/chat/admin-chat";
     }
 
+
     @ResponseBody
     @PostMapping("/category-sales")
     public String getCategorySalesTop5(Model model) {
@@ -114,4 +131,16 @@ public class AdminController {
         String jsonString = gson.toJson(jArray);
         return jsonString;
     }
+
+    @PostMapping("/process-action")
+    public String processAction(@RequestParam(value = "id", required = false) List<Integer> selectedIds,
+                                @RequestParam("action") String action) {
+
+        if (action.equals("alert")) {
+            System.out.println("알림!");
+        }
+
+        return "redirect:/admin/member";
+    }
+
 }

@@ -12,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -48,4 +50,14 @@ public class AdminServiceImpl implements AdminService {
         LocalDate today = LocalDate.now();
         return adminRepository.findProductsSoldToday(today, pageable);
     }
+
+    public Member findMemberById(Integer memberId){
+        Optional<Member> memberOptional = adminRepository.findById(memberId);
+        return memberOptional.orElseThrow();
+    }
+
+//    public Page<Product> getProductByMemberIdOrderByCreatedAtDesc(Pageable pageable, Integer memberId) {
+//        return productRepository.findByMemberIdOrderByCreatedAtDesc(memberId, pageable);
+//    }
+
 }
