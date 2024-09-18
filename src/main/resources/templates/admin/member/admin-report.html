@@ -1,13 +1,15 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentelella Alela! | </title>
+    <title>Contact Form | Gentelella Alela! by Colorlib</title>
 
     <!-- Bootstrap -->
     <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,24 +17,18 @@
     <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- NProgress -->
     <link href="/vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
     <link href="/build/css/custom.min.css" rel="stylesheet">
-</head>
+  </head>
 
-<body class="nav-md">
-<div class="container body">
-    <div class="main_container">
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
         <div class="col-md-3 left_col">
-            <div class="left_col scroll-view">
-
-                <!-- sidebar menu -->
-                <div th:replace="/admin/admin-sidebar :: div"></div>
-                <!-- /sidebar menu -->
-
-            </div>
+          <div class="left_col scroll-view">
+            <div th:replace="/admin/admin-sidebar :: div"></div>
+          </div>
         </div>
 
         <!-- top navigation -->
@@ -41,181 +37,130 @@
 
         <!-- page content -->
         <div class="right_col" role="main">
-            <div class="">
-                <div class="page-title">
-                    <div class="title_left">
-                        <h3>신고 관리</h3>
-                    </div>
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>🚨</h3>
+              </div>
 
-                </div>
-
-                <div class="clearfix"></div>
-
-                <div class="row">
-
-                    <div class="col-md-12 col-sm-12 ">
-                        <div class="x_panel">
-                            <div class="x_title">
-                                <h2>신고 통계 <small>가장 많이 신고 받은 회원</small></h2>
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="x_content">
-                                <div class="dashboard-widget-content">
-                                    <div class="col-md-4 hidden-small">
-                                        <h2 class="line_30">여기 차트</h2>
-
-                                        <table class="countries_list">
-                                            <tbody>
-                                            <tr>
-                                                <td>United States</td>
-                                                <td class="fs15 fw700 text-right">33%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>France</td>
-                                                <td class="fs15 fw700 text-right">27%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Germany</td>
-                                                <td class="fs15 fw700 text-right">16%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Spain</td>
-                                                <td class="fs15 fw700 text-right">11%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Britain</td>
-                                                <td class="fs15 fw700 text-right">10%</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="row" style="display: block;">
-
-                    <div class="col-md-12 col-sm-12  ">
-                        <div class="x_panel">
-                            <div class="x_title">
-                                <h2>전체 회원 </h2>
-                                <ul class="nav navbar-right panel_toolbox">
-                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="#">Settings 1</a>
-                                            <a class="dropdown-item" href="#">Settings 2</a>
-                                        </div>
-                                    </li>
-                                    <li><a class="close-link"><i class="fa fa-close"></i></a>
-                                    </li>
-                                </ul>
-                                <div class="clearfix"></div>
-                            </div>
-
-                            <div class="x_content">
-                                <div class="table-responsive">
-                                    <table class="table table-striped jambo_table bulk_action">
-                                        <thead>
-                                        <tr class="headings">
-                                            <th>
-                                                <input type="checkbox" id="check-all" class="flat">
-                                            </th>
-                                            <th class="column-title">회원번호 </th>
-                                            <th class="column-title">닉네임 </th>
-                                            <th class="column-title">계정 </th>
-                                            <th class="column-title">가입일 </th>
-                                            <th class="column-title">전화번호 </th>
-                                            <th class="column-title">구매 횟수</th>
-                                            <th class="column-title no-link last"><span class="nobr">Action</span>
-                                            </th>
-                                            <th class="bulk-actions" colspan="7">
-                                                <a class="antoo" style="color:#fff; font-weight:500;">선택됨 ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
-                                            </th>
-                                        </tr>
-                                        </thead>
-
-                                        <tbody>
-                                        <tr class="even pointer">
-                                            <td class="a-center ">
-                                                <input type="checkbox" class="flat" name="table_records">
-                                            </td>
-                                            <td class=" ">121000040</td>
-                                            <td class=" ">May 23, 2014 11:47:56 PM </td>
-                                            <td class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
-                                            <td class=" ">John Blank L</td>
-                                            <td class=" ">Paid</td>
-                                            <td class="a-right a-right ">$7.45</td>
-                                            <td class=" last"><a href="#">View</a>
-                                            </td>
-                                        </tr>
-                                        <tr class="odd pointer">
-                                            <td class="a-center ">
-                                                <input type="checkbox" class="flat" name="table_records">
-                                            </td>
-                                            <td class=" ">121000039</td>
-                                            <td class=" ">May 23, 2014 11:30:12 PM</td>
-                                            <td class=" ">121000208 <i class="success fa fa-long-arrow-up"></i>
-                                            </td>
-                                            <td class=" ">John Blank L</td>
-                                            <td class=" ">Paid</td>
-                                            <td class="a-right a-right ">$741.20</td>
-                                            <td class=" last"><a href="#">View</a>
-                                            </td>
-                                        </tr>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="row justify-content-end">
-                                    <div class="btn-group form-check" data-toggle="buttons">
-                                        <label class="btn btn-secondary">
-                                            <input type="radio" class="join-btn" name="options" id="option1">  알림
-                                        </label>
-                                        <label class="btn btn-secondary">
-                                            <input type="radio" name="options" class="join-btn" id="option2">  수정
-                                        </label>
-                                        <label class="btn btn-secondary">
-                                            <input type="radio" name="options" class="join-btn" id="option3"> 내보내기
-                                        </label>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
+
+            <div class="clearfix"></div>
+
+            <div class="row">
+                <div class="x_panel">
+                  <div class="x_content">
+                      <div class="col-md-12 col-sm-12  text-center">
+                        <ul class="pagination pagination-split">
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                          <li> </li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                          <li><a href="#"></a></li>
+                        </ul>
+                      </div>
+
+                      <div class="clearfix"></div>
+
+
+                      <div th:each="list : ${memberList}" class="col-md-4 col-sm-4  profile_details">
+                        <div class="well profile_view">
+                          <div class="col-sm-12">
+                            <h4 class="brief"><i>${report.title}</i></h4>
+                            <div class="left col-md-7 col-sm-7">
+                              <h2 th:text="${list.memberName}"></h2>
+                              <p><strong>신고사유: </strong> ${report.context} </p>
+                              <ul class="list-unstyled">
+                                <li><i class="fa fa-phone"></i> 전화번호 #: <span th:text="${list.phone}">번호</span></li>
+                                <li><i class="fa fa-briefcase user-profile-icon"></i> 이메일 #: <span th:text="${list.email}">이메일</span></li>
+
+                              </ul>
+                            </div>
+                            <div class="right col-md-5 col-sm-5 text-center">
+                              <img src="/img/image.jpg" alt="" class="img-circle img-fluid">
+                            </div>
+                          </div>
+                          <div class=" profile-bottom text-center">
+                            <div class=" col-sm-6 emphasis">
+
+                            </div>
+                            <div class=" col-sm-6 emphasis">
+                              <button type="button" class="btn btn-success btn-sm"> <i class="fa fa-user">
+                                </i> <i class="fa"></i> 허락 </button>
+                              <button type="button" class="btn btn-primary btn-sm">
+                                <i class="fa fa-user"> </i> 취소
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+
+            </div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${memberList.first} ? 'disabled' : ''">
+                  <a class="page-link" th:href="@{/admin/member-form(page=0, size=${memberList.size})}" aria-label="First">
+                    <span aria-hidden="true">맨 처음</span>
+                  </a>
+                </li>
+
+                <li class="page-item" th:classappend="${memberList.hasPrevious()} ? '' : 'disabled'">
+                  <a class="page-link" th:href="@{/admin/member-form(page=${memberList.number - 1}, size=${memberList.size})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+
+                <li class="page-item"
+                    th:each="i : ${#numbers.sequence((memberList.number - 2 > 0 ? memberList.number - 2 : 0),
+                                             (memberList.number + 2 < memberList.totalPages - 1 ? memberList.number + 2 : memberList.totalPages - 1))}"
+                    th:classappend="${i == memberList.number} ? 'active'">
+                  <a class="page-link" th:text="${i + 1}"
+                     th:href="@{/admin/member-form(page=${i}, size=${memberList.size})}"></a>
+                </li>
+
+                <li class="page-item" th:classappend="${memberList.hasNext()} ? '' : 'disabled'">
+                  <a class="page-link" th:href="@{/admin/member-form(page=${memberList.number + 1}, size=${memberList.size})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+
+                <li class="page-item" th:classappend="${memberList.last} ? 'disabled' : ''">
+                  <a class="page-link" th:href="@{/admin/member-form(page=${memberList.totalPages - 1}, size=${memberList.size})}" aria-label="Last">
+                    <span aria-hidden="true">끝으로</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
         <!-- /page content -->
 
-        <!-- footer content -->
         <footer>
-            <div class="pull-right">
-                Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-            </div>
-            <div class="clearfix"></div>
+          <div class="pull-right">
+            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+          </div>
+          <div class="clearfix"></div>
         </footer>
-        <!-- /footer content -->
+      </div>
     </div>
-</div>
 
-<!-- jQuery -->
-<script src="/vendors/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap -->
-<script src="/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<!-- FastClick -->
-<script src="/vendors/fastclick/lib/fastclick.js"></script>
-<!-- NProgress -->
-<script src="/vendors/nprogress/nprogress.js"></script>
-<!-- iCheck -->
-<script src="/vendors/iCheck/icheck.min.js"></script>
+    <!-- jQuery -->
+    <script src="/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+   <script src="/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FastClick -->
+    <script src="/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="/vendors/nprogress/nprogress.js"></script>
 
-<!-- Custom Theme Scripts -->
-<script src="/build/js/custom.min.js"></script>
-</body>
+    <!-- Custom Theme Scripts -->
+    <script src="/build/js/custom.min.js"></script>
+  </body>
 </html>
