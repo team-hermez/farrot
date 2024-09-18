@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AdminService {
     Page<Member> getMemberList(Pageable pageable);
@@ -14,4 +15,6 @@ public interface AdminService {
     Page<Product> getProductList(Pageable pageable);
     List<AdminCategorySalesTop5Response> getCategorySalesTop5();
     Page<Product> findProductsSoldToday(Pageable pageable);
+    Member findMemberById(Integer memberId);
+//    Page<Product> getProductByMemberIdOrderByCreatedAtDesc(Pageable pageable, Integer memberId);
 }
