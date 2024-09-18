@@ -3,6 +3,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
+import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.product.entity.Product;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,7 +31,10 @@ public class AdminController {
     @GetMapping("/form")
     public String getMainForm(Model model) {
         int totalCount = adminService.getMemberTotalCount();
+        int totalResisterCount = adminService.countByCreatedAtToday();
+
         model.addAttribute("totalCount", totalCount);
+        model.addAttribute("totalResisterCount", totalResisterCount);
 
         return "admin/form/admin-form";
     }
@@ -110,7 +115,7 @@ public class AdminController {
 
     @ResponseBody
     @PostMapping("/category-sales")
-    public String getCategorySalesTop5(Model model) {
+    public String postCategorySalesTop5() {
        List<AdminCategorySalesTop5Response> categorySalesTop5ResponseList = adminService.getCategorySalesTop5();
        Gson gson = new Gson();
        JsonArray jArray = new JsonArray();
@@ -126,6 +131,30 @@ public class AdminController {
 
             jsonObject.addProperty("count", count);
             jsonObject.addProperty("categoryCode", categoryCode);
+            jArray.add(jsonObject);
+        }
+        String jsonString = gson.toJson(jArray);
+        return jsonString;
+    }
+
+    @ResponseBody
+    @PostMapping("/member-register-weekly")
+    public String postMemberResisterWeekly() {
+        List<AdminRegisterWeeklyResponse> adminRegisterWeeklyResponseList = adminService.findSignupWeeklyCounts();
+        Gson gson = new Gson();
+        JsonArray jArray = new JsonArray();
+
+        Iterator<AdminRegisterWeeklyResponse> it = adminRegisterWeeklyResponseList.iterator();
+
+        while(it.hasNext()){
+            AdminRegisterWeeklyResponse adminRegisterWeeklyResponse = it.next();
+            JsonObject jsonObject = new JsonObject();
+
+            int count = adminRegisterWeeklyResponse.getSignupCount();
+            Date SignupDate = adminRegisterWeeklyResponse.getSignupDate();
+
+            jsonObject.addProperty("count", count);
+            jsonObject.addProperty("SignupDate", String.valueOf(SignupDate));
             jArray.add(jsonObject);
         }
         String jsonString = gson.toJson(jArray);
