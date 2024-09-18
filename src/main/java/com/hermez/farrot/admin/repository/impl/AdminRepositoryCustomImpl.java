@@ -1,6 +1,7 @@
 package com.hermez.farrot.admin.repository.impl;
 
 import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
+import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
 import com.hermez.farrot.admin.repository.AdminRepositoryCustom;
 import com.hermez.farrot.product.entity.Product;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -17,8 +18,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
+import static com.hermez.farrot.member.entity.QMember.member;
 import static com.hermez.farrot.product.entity.QProduct.product;
 
 @Repository
@@ -55,6 +58,35 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         });
     }
 
+    public List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts() {
+        String sql = "WITH RECURSIVE DateRange AS (" +
+                "    SELECT CURDATE() - INTERVAL 6 DAY AS signup_date " +
+                "    UNION ALL " +
+                "    SELECT signup_date + INTERVAL 1 DAY " +
+                "    FROM DateRange " +
+                "    WHERE signup_date < CURDATE()" +
+                ") " +
+                "SELECT " +
+                "    d.signup_date, " +
+                "    COALESCE(COUNT(m.member_id), 0) AS signup_count " +
+                "FROM " +
+                "    DateRange d " +
+                "    LEFT JOIN member m ON DATE(m.created_at) = d.signup_date " +
+                "GROUP BY " +
+                "    d.signup_date " +
+                "ORDER BY " +
+                "    d.signup_date";
+
+        return jdbcTemplate.query(sql, new RowMapper<AdminRegisterWeeklyResponse>() {
+            @Override
+            public AdminRegisterWeeklyResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Date signupDate = rs.getDate("signup_date");
+                int signupCount = rs.getInt("signup_count");
+                return new AdminRegisterWeeklyResponse(signupDate, signupCount);
+            }
+        });
+    }
+
     @Override
     public Page<Product> findProductsSoldToday(LocalDate today, Pageable pageable) {
         List<Product> products = queryFactory
@@ -77,5 +109,14 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
 
         return product.createdAt.between(startOfDay, endOfDay);
+    }
+
+    @Override
+    public int countByCreatedAtToday(LocalDate today) {
+        return Math.toIntExact(queryFactory
+                .select(member.count())
+                .from(member)
+                .where(member.createdAt.between(today.atStartOfDay(), today.plusDays(1).atStartOfDay()))
+                .fetchOne());
     }
 }

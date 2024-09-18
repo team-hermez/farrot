@@ -1,6 +1,7 @@
 package com.hermez.farrot.admin.service.impl;
 
 import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
+import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
 import com.hermez.farrot.admin.repository.AdminRepository;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
@@ -54,6 +55,15 @@ public class AdminServiceImpl implements AdminService {
     public Member findMemberById(Integer memberId){
         Optional<Member> memberOptional = adminRepository.findById(memberId);
         return memberOptional.orElseThrow();
+    }
+
+    public int countByCreatedAtToday(){
+        LocalDate today = LocalDate.now();
+        return adminRepository.countByCreatedAtToday(today);
+    }
+
+    public List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts(){
+        return adminRepository.findSignupWeeklyCounts();
     }
 
 //    public Page<Product> getProductByMemberIdOrderByCreatedAtDesc(Pageable pageable, Integer memberId) {
