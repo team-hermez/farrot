@@ -1,6 +1,7 @@
 package com.hermez.farrot.admin.service.impl;
 
 import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
+import com.hermez.farrot.admin.dto.AdminProductMonthTotalSalesResponse;
 import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
 import com.hermez.farrot.admin.repository.AdminRepository;
 import com.hermez.farrot.admin.service.AdminService;
@@ -41,6 +42,10 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<AdminCategorySalesTop5Response> getCategorySalesTop5() {
         return adminRepository.findCategorySales();
+    }
+
+    public List<AdminProductMonthTotalSalesResponse> findMonthTotalSales(){
+        return adminRepository.findMonthTotalSales();
     }
 
     public Page<Product> getProductList(Pageable pageable) {

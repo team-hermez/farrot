@@ -1,6 +1,7 @@
 package com.hermez.farrot.admin.repository;
 
 import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
+import com.hermez.farrot.admin.dto.AdminProductMonthTotalSalesResponse;
 import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
 import com.hermez.farrot.product.entity.Product;
 import org.springframework.data.domain.Page;
@@ -14,4 +15,5 @@ public interface AdminRepositoryCustom {
     Page<Product> findProductsSoldToday(LocalDate today, Pageable pageable);
     int countByCreatedAtToday(LocalDate today);
     List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts();
+    List<AdminProductMonthTotalSalesResponse> findMonthTotalSales();
 }
