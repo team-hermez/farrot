@@ -11,19 +11,21 @@ import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
     private final Member member;
+    private final Role role;
+    private final Integer id;
     private final String email;
     private final String password;
 
     public UserDetailsImpl(Member member, String email, String password) {
         this.member = member;
-        this.email = email;
-        this.password = password;
+        this.role = member.getRole();
+        this.id = member.getId();
+        this.email = member.getEmail();
+        this.password = member.getPassword();
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String authority = Role.ROLE_USER.name();
-
-        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(role.getAuthority());
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(simpleGrantedAuthority);
 
@@ -39,4 +41,6 @@ public class UserDetailsImpl implements UserDetails {
     public String getUsername() {
         return this.email;
     }
+
+    public Integer getId() { return id; }
 }
