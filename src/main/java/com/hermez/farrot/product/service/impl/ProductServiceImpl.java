@@ -55,9 +55,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductSearchResponse getProductsByFilters(ProductSearchRequest request) {
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        Pageable pageable = createPageRequest(request);
+        Page<Product> productPage = fetchFilteredProducts(request, pageable);
+        Map<Integer, List<Image>> productImages = fetchProductImages(productPage);
 
-        Page<Product> productPage = productRepository.findAll((Specification<Product>) (root, query, criteriaBuilder) -> {
+        return buildProductSearchResponse(request, productPage, productImages);
+    }
+
+    private Pageable createPageRequest(ProductSearchRequest request) {
+        return PageRequest.of(request.getPage(), request.getSize());
+    }
+
+    private Page<Product> fetchFilteredProducts(ProductSearchRequest request, Pageable pageable) {
+        return productRepository.findAll((Specification<Product>) (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.conjunction();
 
             if (request.getCategoryId() != null) {
@@ -73,7 +83,9 @@ public class ProductServiceImpl implements ProductService {
             query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
             return predicate;
         }, pageable);
+    }
 
+    private Map<Integer, List<Image>> fetchProductImages(Page<Product> productPage) {
         Map<Integer, List<Image>> productImages = new HashMap<>();
         for (Product product : productPage.getContent()) {
             List<Image> images = imageService.getImagesByEntity(product);
@@ -85,6 +97,10 @@ public class ProductServiceImpl implements ProductService {
             }
             productImages.put(product.getId(), images);
         }
+        return productImages;
+    }
+
+    private ProductSearchResponse buildProductSearchResponse(ProductSearchRequest request, Page<Product> productPage, Map<Integer, List<Image>> productImages) {
         return ProductSearchResponse.builder()
                 .productPage(productPage)
                 .productImages(productImages)
@@ -98,6 +114,11 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("상품을 찾을 수 없습니다."));
         incrementViewCount(product);
+        List<Image> images =  imageService.getImagesByEntity(product);
+        if(images.isEmpty()){
+            Image defaultImage = new Image("/default-product-image.png");
+            images.add(defaultImage);
+        }
         return ProductDetailResponse.builder()
                 .productId(product.getId())
                 .sellerId(product.getMember().getId())
@@ -105,11 +126,11 @@ public class ProductServiceImpl implements ProductService {
                 .categoryName(product.getCategory().getCode())
                 .productName(product.getProductName())
                 .description(product.getDescription())
-                .price(PriceFormatUtil.formatPrice(product.getPrice()))
+                .price(product.getPrice())
                 .productStatus(product.getProductStatus().getStatus())
                 .createdAt(product.getCreatedAt())
                 .view(product.getView())
-                .images(imageService.getImagesByEntity(product))
+                .images(images)
                 .build();
     }
 
