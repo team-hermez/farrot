@@ -36,4 +36,8 @@ public class Image {
     @Column(length = 255)
     private String path;
 
+
+    public Image(String path) {
+        this.path = path;
+    }
 }
