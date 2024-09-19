@@ -4,9 +4,9 @@ package com.hermez.farrot.chat.chatmessage.service;
 import com.hermez.farrot.chat.chatmessage.dto.request.SendMessageRequest;
 import com.hermez.farrot.chat.chatmessage.dto.response.ChatRoomResponse;
 import com.hermez.farrot.chat.chatmessage.entity.ChatMessage;
-import com.hermez.farrot.chat.chatmessage.entity.ChatMessageType;
 import com.hermez.farrot.chat.chatmessage.exception.NoMatchUniqueReceiverException;
 import com.hermez.farrot.chat.chatmessage.repository.ChatMessageRepository;
+import com.hermez.farrot.chat.chatmessage.repository.ChatMessageRepositoryImpl;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomEnterResponse;
 import com.hermez.farrot.chat.chatroom.entity.ChatRoom;
 import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepository;
@@ -41,33 +41,35 @@ public class ChatMessageService {
   private final MemberRepository memberRepository;
   private final NotificationService notificationService;
   private final SimpMessagingTemplate simpMessagingTemplate;
+  private final ChatMessageRepositoryImpl chatMessageRepositoryImpl;
 
-  public void sendMessageToUser(String sessionId,String destination, ChatRoomResponse response){
+  public void sendMessageToUser(String sessionId, String destination, ChatRoomResponse response) {
     MessageHeaders headers = createMessageHeaders(sessionId);
-    simpMessagingTemplate.convertAndSendToUser(sessionId,destination, response,headers);
+    simpMessagingTemplate.convertAndSendToUser(sessionId, destination, response, headers);
   }
 
-  private MessageHeaders createMessageHeaders(@Nullable String sessionId) {
-    SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
-    if (sessionId !=null) headerAccessor.setSessionId(sessionId);
-    headerAccessor.setLeaveMutable(true);
-    return headerAccessor.getMessageHeaders();
-  }
 
   @Transactional
   public Integer save(SendMessageRequest request) {
-    ChatRoom chatRoom = chatRoomRepository.findById(request.chatRoomId()).orElseThrow(()->new RuntimeException("채팅방이 없습니다."));
-    Member sender = memberRepository.findByEmail(request.email()).orElseThrow(() -> new RuntimeException("해당하는 멤버가 없습니다."));
-    ChatMessage chatMessage = ChatMessage.createChatMessage(chatRoom, sender, request.message(),request.type(),chatRoom.getConnect());
+    ChatRoom chatRoom = chatRoomRepository.findById(request.chatRoomId())
+        .orElseThrow(() -> new RuntimeException("채팅방이 없습니다."));
+    Member sender = memberRepository.findByEmail(request.email())
+        .orElseThrow(() -> new RuntimeException("해당하는 멤버가 없습니다."));
+    ChatMessage chatMessage = ChatMessage.createChatMessage(chatRoom, sender, request.message(),
+        request.type(), chatRoom.getConnect());
     return chatMessageRepository.save(chatMessage).getReadCount();
+  }
+
+  public Integer getReadCount(Integer memberId, Integer chatRoomId) {
+    return chatMessageRepositoryImpl.countReadCountByChatRoomId(memberId, chatRoomId);
   }
 
   public List<ChatRoomResponse> findAllByChatRoomId(ChatRoomEnterResponse response) {
     List<ChatMessage> chatMessages = chatMessageRepository.findAllByChatRoomId(response.roomId());
     Integer myId = response.senderId();
     return chatMessages.stream().map(c -> {
-      Integer senderId = c.getSender().getId();
-      String nickname = c.getSender().getNickname();
+          Integer senderId = c.getSender().getId();
+          String nickname = c.getSender().getNickname();
           return ChatRoomResponse.builder()
               .nickName(nickname)
               .senderId(senderId)
@@ -80,10 +82,12 @@ public class ChatMessageService {
     ).collect(Collectors.toList());
   }
 
+
   public void sendChatNotification(SendMessageRequest request, Integer productId) {
     Member seller = chatRoomRepositoryCustom.findSellerByProductId(productId);
     Member buyer = chatRoomRepositoryCustom.findBuyerByChatRoomId(request.chatRoomId());
-    Member sender = memberRepository.findById(request.senderId()).orElseThrow(() -> new RuntimeException("해당 유저가 없습니다."));
+    Member sender = memberRepository.findById(request.senderId())
+        .orElseThrow(() -> new RuntimeException("해당 유저가 없습니다."));
     if (Objects.equals(sender.getId(), seller.getId())) {
       log.info("구매자에게 보내기");
       notificationService.creatNotification(sender, buyer);
@@ -93,6 +97,16 @@ public class ChatMessageService {
     } else {
       throw new NoMatchUniqueReceiverException("알림을 받을 유저를 찾을 수 없습니다.");
     }
+  }
+
+  private MessageHeaders createMessageHeaders(@Nullable String sessionId) {
+    SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(
+        SimpMessageType.MESSAGE);
+    if (sessionId != null) {
+      headerAccessor.setSessionId(sessionId);
+    }
+    headerAccessor.setLeaveMutable(true);
+    return headerAccessor.getMessageHeaders();
   }
 
   private String formatTime(LocalDateTime time) {

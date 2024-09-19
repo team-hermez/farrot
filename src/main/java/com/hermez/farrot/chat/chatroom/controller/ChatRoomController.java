@@ -1,5 +1,6 @@
 package com.hermez.farrot.chat.chatroom.controller;
 
+import com.hermez.farrot.chat.chatmessage.service.ChatMessageService;
 import com.hermez.farrot.chat.chatroom.dto.SelectOption;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomEnterResponse;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -22,8 +24,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RequestMapping("/chat-room")
@@ -34,6 +38,7 @@ public class ChatRoomController {
 
   private final ChatRoomService chatRoomService;
   private final MemberRepository memberRepository;
+  private final ChatMessageService chatMessageService;
 
   @PostMapping("/enter/{productId}")
   public String enterChatRoom(@PathVariable Integer productId, RedirectAttributes redirectAttributes) {
@@ -52,13 +57,14 @@ public class ChatRoomController {
   public String chatRoomsPage(
       @ModelAttribute("selectOption") SelectOption selectOption,
      @PageableDefault(size = 5) Pageable pageable,
+      @AuthenticationPrincipal UserDetails userDetails,
       Model model) {
+    if (userDetails == null) return "redirect:/login";
+    String userEmail = userDetails.getUsername();
     List<SelectOption> selectOptions = getSelectChatRoomOptions();
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    UserDetails principal = (UserDetails) authentication.getPrincipal();
-    String userEmail = principal.getUsername();
     Member findMember = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버없음"));
     Page<ChatRoomsResponse> chatRooms = chatRoomService.findAll(findMember.getId(),selectOption.code(),pageable);//쿼리2
+
     model.addAttribute("selectOptions",selectOptions);
     model.addAttribute("chatRooms", chatRooms);
     return "chat/chat-rooms";
@@ -79,6 +85,17 @@ public class ChatRoomController {
         .build();
     model.addAttribute("chatRoomEnterResponse", chatRoomEnterResponse);
     return "chat/chat-room";
+  }
+
+  @ResponseBody
+  @PostMapping("/get/read-count")
+  public ReadCountResponse getReadCount(@AuthenticationPrincipal UserDetails userDetails,@RequestBody String roomId) {
+    String userEmail = userDetails.getUsername();
+    log.info("roomId: {}", roomId.substring(7).trim());
+    Member member = memberRepository.findByEmail(userEmail).orElseThrow();
+    Integer readCount = chatMessageService.getReadCount(member.getId(), Integer.parseInt(roomId.substring(7).trim()));
+    log.info("getReadCount: {}", readCount);
+    return new ReadCountResponse(readCount);
   }
 
   private static List<SelectOption> getSelectChatRoomOptions() {

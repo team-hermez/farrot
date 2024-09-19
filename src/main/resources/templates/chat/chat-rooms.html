@@ -10,6 +10,7 @@
   <title>Bigshop | Responsive E-commerce Template</title>
   <link rel="icon" href="/img/core-img/favicon.ico">
   <link rel="stylesheet" href="/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script>
     function selectForm() {
       document.getElementById('selectForm').submit();
@@ -137,25 +138,33 @@
                   <img class="hover_img" src="/img/product-img/best-1.png" alt="">
 
                   <!-- Product Badge -->
-                  <div class="product_badge">
-                    <span>New</span>
+                  <div th:id="${chatRoom.chatRoomId}" class="product_badge read-count">
                   </div>
+                    <script th:inline="javascript">
+                      console.log([[${chatRoom.chatRoomId}]])
+                      $.ajax({
+                        url: '/chat-room/get/read-count',
+                        type: 'post',
+                        data:{"roomId":[[${chatRoom.chatRoomId}]]},
+                        success: data => {
+                          console.log(data.readCount)
+                          const makeSpan = document.createElement('span')
+                          makeSpan.textContent = data.readCount
+                          const spanDiv = document.getElementById([[${chatRoom.chatRoomId}]])
+                          spanDiv.append(makeSpan)
+                        },
+                        error: data =>{
+                          console.log("실패",data)
+                        }
+                      })
+                    </script>
 
-                  <!-- Wishlist -->
-                  <div class="product_wishlist">
-                    <a href="/wishlist.html"><i class="icofont-heart"></i></a>
-                  </div>
-
-                  <!-- Compare -->
-                  <div class="product_compare">
-                    <a href="/compare.html"><i class="icofont-exchange"></i></a>
-                  </div>
                 </div>
 
                 <div class="product_description">
                   <p class="brand_name">Top</p>
                   <a th:href="@{|/chat-room/room?roomId=${chatRoom.chatRoomId}&productId=${chatRoom.productId}|}"
-                     th:text="${chatRoom.productName()}">대화 상대 닉네임</a>
+                     th:text="${chatRoom.productName}">대화 상대 닉네임</a>
                   <h6 class="product-price"
                       th:text="${#temporals.format(chatRoom.latestSendTime,'yyyy.MM.dd HH:mm')}">
                     날짜??</h6>
