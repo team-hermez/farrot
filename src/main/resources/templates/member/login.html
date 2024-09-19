@@ -9,57 +9,45 @@
     <title>Bigshop | Responsive E-commerce Template</title>
     <link rel="icon" href="/img/core-img/favicon.ico">
     <link rel="stylesheet" href="/style.css">
+    <script>
+        function openNaverLogin() {
+            const url = '/oauth2/authorization/naver'; // Naver 로그인 URL
+            const options = 'width=600,height=600,resizable=yes,scrollbars=yes,status=yes';
+            window.open(url, 'Naver Login', options);
+        }
+    </script>
 </head>
 
 <body>
 
 <div th:replace="/layout/header :: header"></div>
 
-    <div class="breadcumb_area">
-        <div class="container h-100">
-            <div class="row h-100 align-items-center">
-                <div class="col-12">
-                    <h5>로그인</h5>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Login &amp; Register</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="bigshop_reg_log_area section_padding_100_50">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="login_form mb-50">
-                        <h5 class="mb-3">로그인</h5>
-                        <form th:action="@{/member/login}" method="post">
-                            <div class="form-group">
-                                <input type="email" class="form-control" id="email" placeholder="Email" name="email">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control" id="password" placeholder="Password" name="password">
-                            </div>
-                            <div class="form-check">
-                                <div class="custom-control custom-checkbox mb-3 pl-1">
-                                    <input type="checkbox" class="custom-control-input" id="customChe">
-                                    <label class="custom-control-label" for="customChe">Remember me for this computer</label>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm">Login</button>
-                        </form>
-                        <div class="forget_pass mt-15">
-                            <a href="#">Forget Password?</a>
+<div class="bigshop_reg_log_area section_padding_100_50">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="login_form mb-50">
+                    <h5 class="mb-3">로그인</h5>
+                    <form th:action="@{/member/login}" method="post">
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="email" placeholder="Email" name="email">
                         </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Login</button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="openNaverLogin()">Naver 로그인</button>
+                    </form>
+                    <div class="forget_pass mt-15">
+                        <a href="#">Forget Password?</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 <div th:replace="/layout/footer :: footer"></div>
 
 </body>
-
 </html>
