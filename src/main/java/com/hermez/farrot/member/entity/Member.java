@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "MEMBER")
@@ -34,7 +34,7 @@ public class Member {
     private String account;
 
     @Column(name="create_at", nullable = false, length = 100)
-    private LocalDate createAt;
+    private LocalDateTime createAt;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -48,7 +48,7 @@ public class Member {
 
     // 기본 유저용 생성자
     @Builder
-    public Member(String memberName, String email, String password, String phone, String nickname, String account, LocalDate createAt, Role role) {
+    public Member(String memberName, String email, String password, String phone, String nickname, String account, LocalDateTime createAt, Role role) {
         this.memberName = memberName;
         this.email = email;
         this.password = password;
@@ -61,7 +61,7 @@ public class Member {
 
     //소셜 로그인용
     @Builder(builderMethodName = "toOAuth2")
-    public Member(String memberName, String email, String password, String phone, String nickname, Date createAt,
+    public Member(String memberName, String email, String password, String phone, String nickname, LocalDateTime createAt,
             Role role, String provider, String attributeCode) {
         this.memberName = memberName;
         this.email = email;
