@@ -113,6 +113,7 @@
                                             <input type="checkbox" id="check-all" class="flat" onclick="toggleAll(this)">
                                         </th>
                                         <th class="column-title">회원번호 </th>
+                                        <th class="column-title">이름 </th>
                                         <th class="column-title">닉네임 </th>
                                         <th class="column-title">계정 </th>
                                         <th class="column-title">전화번호 </th>
@@ -127,8 +128,9 @@
                                         </td>
                                         <td th:text="${list.id}" class=" "></td>
                                         <td>
-                                            <a style="text-decoration: underline;" th:href="@{/admin/member-detail/{id}(id=${list.id})}" th:text="${list.nickname}"></a>
+                                            <a style="text-decoration: underline;" th:href="@{/admin/member-detail/{id}(id=${list.id})}" th:text="${list.memberName}"></a>
                                         </td>
+                                        <td th:text="${list.nickname}" class=" "></td>
                                         <td th:text="${list.email}" class=" "></td>
                                         <td th:text="${list.phone}" class=" "></td>
                                         <td th:text="${list.createAt}" class=" "></td>

@@ -67,7 +67,7 @@ public class AdminController {
     }
 
     @GetMapping("/member-disable")
-    public String getMemberDisable(Model model, @PageableDefault(size = 6) Pageable pageable) {
+    public String getMemberDisable(Model model, @PageableDefault(size = 8) Pageable pageable) {
         Page<Member> memberList = adminService.getMemberList(pageable);
         model.addAttribute("memberList", memberList);
         return "admin/member/admin-member-disable";
@@ -187,14 +187,24 @@ public class AdminController {
     }
 
     @PostMapping("/process-action")
-    public String processAction(@RequestParam(value = "id", required = false) List<Integer> selectedIds,
+    public String postProcessAction(@RequestParam(value = "id", required = false) List<Integer> selectedIds,
                                 @RequestParam("action") String action) {
-
         if (action.equals("alert")) {
             System.out.println("알림!");
         }
-
         return "redirect:/admin/member";
+    }
+
+    @PostMapping("/change-status/{id}")
+    public String processAction(@PathVariable("id") Integer id,
+                                @RequestParam("action") String action) {
+        if (action.equals("able")) {
+            System.out.println("회원 전환!");
+            System.out.println("@@@@"+id);
+        } else if (action.equals("disable")) {
+            System.out.println("비회원 전환!");
+        }
+        return "redirect:/admin/member-disable";
     }
 
 }
