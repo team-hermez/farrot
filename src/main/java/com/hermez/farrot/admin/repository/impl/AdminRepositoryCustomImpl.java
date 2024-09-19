@@ -72,7 +72,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 "    COALESCE(COUNT(m.member_id), 0) AS signup_count " +
                 "FROM " +
                 "    DateRange d " +
-                "    LEFT JOIN member m ON DATE(m.created_at) = d.signup_date " +
+                "    LEFT JOIN member m ON DATE(m.create_at) = d.signup_date " +
                 "GROUP BY " +
                 "    d.signup_date " +
                 "ORDER BY " +
@@ -117,7 +117,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         return Math.toIntExact(queryFactory
                 .select(member.count())
                 .from(member)
-                .where(member.createdAt.between(today.atStartOfDay(), today.plusDays(1).atStartOfDay()))
+                .where(member.createAt.between(today.atStartOfDay(), today.plusDays(1).atStartOfDay()))
                 .fetchOne());
     }
 
