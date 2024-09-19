@@ -49,9 +49,9 @@ public class AdminController {
     @GetMapping("/member-detail/{id}")
     public String getMemberDetail(@PageableDefault(size = 5) Pageable pageable, @PathVariable("id") Integer id, Model model) {
         Member member = adminService.findMemberById(id);
-//        Page<Product> myProductList = adminService.getProductByMemberIdOrderByCreatedAtDesc(pageable, id);
+        Page<Product> myProductList = adminService.getProductByMemberIdOrderByCreatedAtDesc(pageable, id);
         model.addAttribute("member", member);
-//        model.addAttribute("myProductList", myProductList);
+        model.addAttribute("myProductList", myProductList);
         return "admin/member/admin-member-detail";
     }
 
@@ -59,9 +59,9 @@ public class AdminController {
     @GetMapping("/member-detail/transactions/{id}")
     public String getMemberTransDetail(@PageableDefault(size = 5) Pageable pageable, @PathVariable("id") Integer id, Model model) {
         Member member = adminService.findMemberById(id);
-//        Page<Product> myProductList = adminService.getProductByMemberIdOrderByCreatedAtDesc(pageable, id);
+        Page<Product> myProductList = adminService.getProductByMemberIdOrderByCreatedAtDesc(pageable, id);
         model.addAttribute("member", member);
-//        model.addAttribute("myProductList", myProductList);
+        model.addAttribute("myProductList", myProductList);
         return "admin/member/admin-member-trans-detail";
     }
 

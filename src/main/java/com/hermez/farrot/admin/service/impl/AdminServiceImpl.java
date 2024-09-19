@@ -66,8 +66,8 @@ public class AdminServiceImpl implements AdminService {
         return adminRepository.findSignupWeeklyCounts();
     }
 
-//    public Page<Product> getProductByMemberIdOrderByCreatedAtDesc(Pageable pageable, Integer memberId) {
-//        return productRepository.findByMemberIdOrderByCreatedAtDesc(memberId, pageable);
-//    }
+    public Page<Product> getProductByMemberIdOrderByCreatedAtDesc(Pageable pageable, Integer memberId) {
+        return productRepository.findByMemberIdOrderByCreatedAtDesc(memberId, pageable);
+    }
 
 }

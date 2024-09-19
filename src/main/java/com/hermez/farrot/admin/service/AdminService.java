@@ -20,5 +20,5 @@ public interface AdminService {
     Member findMemberById(Integer memberId);
     int countByCreatedAtToday();
     List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts();
-//    Page<Product> getProductByMemberIdOrderByCreatedAtDesc(Pageable pageable, Integer memberId);
+    Page<Product> getProductByMemberIdOrderByCreatedAtDesc(Pageable pageable, Integer memberId);
 }
