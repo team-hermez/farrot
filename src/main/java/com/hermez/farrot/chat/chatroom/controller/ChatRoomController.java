@@ -71,10 +71,9 @@ public class ChatRoomController {
   }
 
   @GetMapping("/room")
-  public String chatRoomPage(@RequestParam Integer roomId,@RequestParam Integer productId,Model model) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    UserDetails principal = (UserDetails) authentication.getPrincipal();
-    String userEmail = principal.getUsername();
+  public String chatRoomPage(@RequestParam Integer roomId,@RequestParam Integer productId,@AuthenticationPrincipal UserDetails userDetails,Model model) {
+    if (userDetails == null) return "redirect:/login";
+    String userEmail = userDetails.getUsername();
     Member sender = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버없음"));
     ChatRoomEnterResponse chatRoomEnterResponse = ChatRoomEnterResponse.builder()
         .roomId(roomId)
@@ -85,6 +84,23 @@ public class ChatRoomController {
         .build();
     model.addAttribute("chatRoomEnterResponse", chatRoomEnterResponse);
     return "chat/chat-room";
+  }
+
+  @ResponseBody
+  @PostMapping("/room")
+  public ChatRoomEnterResponse chatRoomPageReload(@RequestBody ChatRoomRequest chatRoomRequest) {
+    log.info("reload chat room request: {}", chatRoomRequest);
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetails principal = (UserDetails) authentication.getPrincipal();
+    String userEmail = principal.getUsername();
+    Member sender = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버없음"));
+    return ChatRoomEnterResponse.builder()
+        .roomId(chatRoomRequest.roomId())
+        .email(userEmail)
+        .productId(chatRoomRequest.productId())
+        .senderId(sender.getId())
+        .nickName(sender.getNickname())
+        .build();
   }
 
   @ResponseBody

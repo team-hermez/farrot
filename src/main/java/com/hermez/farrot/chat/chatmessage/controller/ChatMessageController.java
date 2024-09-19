@@ -9,9 +9,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Controller;
 public class ChatMessageController {
 
   private final ChatMessageService chatMessageService;
+  private final SimpMessagingTemplate messagingTemplate;
 
   @MessageMapping("/message/{roomId}")
   @SendTo("/room/{roomId}")
@@ -42,8 +45,16 @@ public class ChatMessageController {
 
   @MessageMapping("/enter/{roomId}")
   public void sendBeforeMessage(@Payload ChatRoomEnterResponse chatRoomEnterResponse, StompHeaderAccessor accessor) {
+    log.info("Sending before message: {}", chatRoomEnterResponse);
+    log.info("===============sesionid: {}",accessor.getSessionId());
       chatMessageService.findAllByChatRoomId(chatRoomEnterResponse)
     .forEach(chatMessage -> chatMessageService.sendMessageToUser(accessor.getSessionId(), "/room/" + chatRoomEnterResponse.roomId(), chatMessage));
+  }
+
+  @MessageMapping("/connect/{roomId}")
+  public void connectMessage(@DestinationVariable Integer roomId,@Payload ConnectRequest connectRequest){
+    log.info("Connecting to room 이죠: {}", roomId);
+    messagingTemplate.convertAndSend("/room/connect/"+roomId,new ConnectResponse("CONNECT",connectRequest.userEmail()));
   }
 
   private String formatTime(LocalDateTime time) {
