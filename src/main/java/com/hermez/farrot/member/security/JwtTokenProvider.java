@@ -1,5 +1,7 @@
 package com.hermez.farrot.member.security;
 
+import com.hermez.farrot.member.entity.Member;
+import com.hermez.farrot.member.entity.Role;
 import com.hermez.farrot.member.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -64,13 +66,14 @@ public class JwtTokenProvider {
     }
 
     // JWTToken 생성
-    public String generateToken(String email) {
+    public String generateToken(String email, Integer id, Role role) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(email)
-                        .claim(AUTHORIZATION_KEY, "user")
+                        .claim("id", id)
+                        .claim(AUTHORIZATION_KEY, role.name())
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
