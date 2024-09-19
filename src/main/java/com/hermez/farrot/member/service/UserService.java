@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class UserService implements MemberService{
     @Transactional
     @Override
     public int save(MemberRegisterRequest memberRegisterRequest) {
-        LocalDate now = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
         return memberRepository.save(Member.builder()
                 .memberName(memberRegisterRequest.getMemberName())
                 .email(memberRegisterRequest.getEmail())
