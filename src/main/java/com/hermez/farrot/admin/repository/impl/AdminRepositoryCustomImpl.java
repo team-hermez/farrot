@@ -1,6 +1,7 @@
 package com.hermez.farrot.admin.repository.impl;
 
 import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
+import com.hermez.farrot.admin.dto.AdminProductMonthTotalSalesResponse;
 import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
 import com.hermez.farrot.admin.repository.AdminRepositoryCustom;
 import com.hermez.farrot.product.entity.Product;
@@ -118,5 +119,24 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 .from(member)
                 .where(member.createdAt.between(today.atStartOfDay(), today.plusDays(1).atStartOfDay()))
                 .fetchOne());
+    }
+
+    public List<AdminProductMonthTotalSalesResponse> findMonthTotalSales() {
+        String sql = "select " +
+                "month(created_at) as month, " +
+                "sum(price) as total_sales " +
+                "from product " +
+                "where product_status_id = 3 " +
+                "group by month(created_at) " +
+                "order by month(created_at)";
+
+        return jdbcTemplate.query(sql, new RowMapper<AdminProductMonthTotalSalesResponse>() {
+            @Override
+            public AdminProductMonthTotalSalesResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+                int month = rs.getInt("month");
+                int total_sales = rs.getInt("total_sales");
+                return new AdminProductMonthTotalSalesResponse(month + "월", total_sales);
+            }
+        });
     }
 }

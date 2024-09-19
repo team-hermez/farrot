@@ -1,6 +1,7 @@
 package com.hermez.farrot.admin.service;
 
 import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
+import com.hermez.farrot.admin.dto.AdminProductMonthTotalSalesResponse;
 import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.product.entity.Product;
@@ -20,5 +21,6 @@ public interface AdminService {
     Member findMemberById(Integer memberId);
     int countByCreatedAtToday();
     List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts();
+    List<AdminProductMonthTotalSalesResponse> findMonthTotalSales();
     Page<Product> getProductByMemberIdOrderByCreatedAtDesc(Pageable pageable, Integer memberId);
 }

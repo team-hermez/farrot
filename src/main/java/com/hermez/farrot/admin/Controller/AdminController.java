@@ -3,6 +3,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
+import com.hermez.farrot.admin.dto.AdminProductMonthTotalSalesResponse;
 import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
@@ -101,7 +102,7 @@ public class AdminController {
     }
 
     @GetMapping("/products/monthly")
-    public String getProductsMonthly(Model model, @PageableDefault(size = 6) Pageable pageable) {
+    public String getProductsMonthly(Model model, @PageableDefault(size = 5) Pageable pageable) {
         Page<Product> productList = adminService.getProductList(pageable);
         model.addAttribute("productList", productList);
         return "admin/product/admin-product-monthly";
@@ -155,6 +156,30 @@ public class AdminController {
 
             jsonObject.addProperty("count", count);
             jsonObject.addProperty("SignupDate", String.valueOf(SignupDate));
+            jArray.add(jsonObject);
+        }
+        String jsonString = gson.toJson(jArray);
+        return jsonString;
+    }
+
+    @ResponseBody
+    @PostMapping("/product-month-totalSales")
+    public String postProductMonthTotalSales() {
+        List<AdminProductMonthTotalSalesResponse> productMonthTotalSalesResponsesList = adminService.findMonthTotalSales();
+        Gson gson = new Gson();
+        JsonArray jArray = new JsonArray();
+
+        Iterator<AdminProductMonthTotalSalesResponse> it = productMonthTotalSalesResponsesList.iterator();
+
+        while(it.hasNext()){
+            AdminProductMonthTotalSalesResponse productMonthTotalSalesResponse = it.next();
+            JsonObject jsonObject = new JsonObject();
+
+            String month = productMonthTotalSalesResponse.getMonth();
+            int total_sales = productMonthTotalSalesResponse.getTotal_sales();
+
+            jsonObject.addProperty("month", month);
+            jsonObject.addProperty("total_sales", total_sales);
             jArray.add(jsonObject);
         }
         String jsonString = gson.toJson(jArray);
