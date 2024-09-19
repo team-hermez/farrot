@@ -30,7 +30,7 @@ public class Member {
     @Column(nullable = false, length = 100)
     private String nickname;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     private String account;
 
     @Column(name="create_at", nullable = false, length = 100)
@@ -39,9 +39,11 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(nullable = false, length = 100)
+    //소셜 로그인용 column
+    @Column(nullable = true, length = 100)
     private String attributeCode;
 
+    @Column(nullable = true, length = 100)
     private String provider;
 
     public Member() {}
