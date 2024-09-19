@@ -54,7 +54,7 @@ public class ChatRoom {
     public static ChatRoom makeChatRoom(Member sender, Product product){
       return ChatRoom.builder()
           .sender(sender)
-          .connect(1)
+          .connect(0)
           .product(product)
           .createdAt(LocalDateTime.now())
           .build();
