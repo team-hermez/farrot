@@ -8,6 +8,7 @@ import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.product.entity.Product;
+import com.hermez.farrot.product.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,9 +25,11 @@ import java.util.List;
 public class AdminController {
 
     private AdminService adminService;
+    private ProductService productService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, ProductService productService) {
         this.adminService = adminService;
+        this.productService = productService;
     }
 
     @GetMapping("/form")
@@ -194,6 +197,12 @@ public class AdminController {
         }
         return "redirect:/admin/member";
     }
+
+//    @GetMapping("/latest-products")
+//    @ResponseBody
+//    public List<Product> getLatestProducts() {
+//        return productService.findTop5Latest();
+//    }
 
     @PostMapping("/change-status/{id}")
     public String processAction(@PathVariable("id") Integer id,
