@@ -48,7 +48,7 @@ public class MemberController {
     public String logIn(MemberLoginRequest memberLoginRequest, HttpServletResponse response) {
         userService.logIn(memberLoginRequest, response);
 
-        return "redirect:/";
+        return "redirect:/index/index";
     }
 
     @GetMapping("/logout")
@@ -66,4 +66,5 @@ public class MemberController {
     String memberDetailPage(Model model) {
         return "member/detail";
     }
-}
+
+  }

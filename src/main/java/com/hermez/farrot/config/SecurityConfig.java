@@ -1,5 +1,7 @@
 package com.hermez.farrot.config;
 
+import com.hermez.farrot.member.oauth.CustomOAuth2UserService;
+import com.hermez.farrot.member.oauth.OAuth2SuccessHandler;
 import com.hermez.farrot.member.security.JwtAuthenticationFilter;
 import com.hermez.farrot.member.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
+    private final CustomOAuth2UserService oAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final static int ONE_DAY = 24 * 60 * 60;
 
     @Bean
@@ -30,7 +34,9 @@ public class SecurityConfig {
         return (web) -> web.ignoring()
                 .requestMatchers(PathRequest
                         .toStaticResources()
-                        .atCommonLocations());
+                        .atCommonLocations()
+                )
+                .requestMatchers("/error","/favicon.ico");
     }
 
     @Bean
@@ -51,9 +57,15 @@ public class SecurityConfig {
                 )
                 .formLogin(login -> login
                         .loginPage("/member/login")
-                        .loginProcessingUrl("/")
+                        .loginProcessingUrl("/login")
                         .usernameParameter("email")
                         .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/oauth2/authorization/naver")
+                        .userInfoEndpoint(userInfo->userInfo
+                                .userService(oAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler)
                 )
                 .logout(Customizer.withDefaults())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
