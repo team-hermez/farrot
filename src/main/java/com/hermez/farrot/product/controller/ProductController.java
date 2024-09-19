@@ -11,6 +11,7 @@ import com.hermez.farrot.product.dto.response.ProductDetailResponse;
 import com.hermez.farrot.product.dto.response.ProductSearchResponse;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.service.ProductService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +39,8 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public String getSearchProducts(@ModelAttribute ProductSearchRequest productSearchRequest, Model model) {
+    public String getSearchProducts(@ModelAttribute ProductSearchRequest productSearchRequest,@RequestParam(required = false) String sort,
+                                    Model model, HttpSession session) {
         List<Category> categories = productService.getAllCategories();
         ProductSearchResponse response = productService.getProductsByFilters(productSearchRequest);
         model.addAttribute("categories", categories);
@@ -48,9 +50,14 @@ public class ProductController {
     }
 
     @GetMapping("/product-detail")
-    public String getProductDetail(@RequestParam("productId") Integer productId, Model model) {
+    public String getProductDetail(@RequestParam("productId") Integer productId,Model model) {
         ProductDetailResponse productDetailResponse = productService.getProductDetail(productId);
+        ProductSearchRequest productSearchRequest = new ProductSearchRequest();
+        productSearchRequest.setSize(4);
+        productSearchRequest.setPage(0);
+        ProductSearchResponse response = productService.getProductsByFilters(productSearchRequest);
         model.addAttribute("productDetail", productDetailResponse);
+        model.addAttribute("response", response);
         return "product/product-detail";
     }
 
@@ -87,6 +94,7 @@ public class ProductController {
 
     @PostMapping("/update-sell")
     public String updateProduct(@ModelAttribute Product product) {
+        System.out.println(product.getId());
         Member member = memberRepository.getReferenceById(1);
         product.setMember(member);
         productService.saveProduct(product);

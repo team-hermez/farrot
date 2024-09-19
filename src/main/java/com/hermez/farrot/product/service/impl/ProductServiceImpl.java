@@ -14,6 +14,7 @@ import com.hermez.farrot.product.exception.ResourceNotFoundException;
 import com.hermez.farrot.product.repository.ProductRepository;
 import com.hermez.farrot.product.repository.ProductStatusRepository;
 import com.hermez.farrot.product.service.ProductService;
+import com.hermez.farrot.util.DateUtils;
 import com.hermez.farrot.util.PriceFormatUtil;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
@@ -70,8 +71,12 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll((Specification<Product>) (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.conjunction();
 
-            if (request.getCategoryId() != null) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("category").get("id"), request.getCategoryId()));
+            if (request.getProductName() != null && !request.getProductName().isEmpty()) {
+                String productNamePattern = "%" + request.getProductName() + "%";
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("productName"), productNamePattern));
+            }
+            if (request.getCategoryId() != null && !request.getCategoryId().isEmpty()) {
+                predicate = criteriaBuilder.and(predicate, root.get("category").get("id").in(request.getCategoryId()));
             }
             if (request.getMinPrice() != null) {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThanOrEqualTo(root.get("price"), request.getMinPrice()));
@@ -93,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
                 Image defaultImage = Image.builder()
                         .path("/default-product-image.png")
                         .build();
-                images = Collections.singletonList(defaultImage);
+                images.add(defaultImage);
             }
             productImages.put(product.getId(), images);
         }
@@ -128,7 +133,7 @@ public class ProductServiceImpl implements ProductService {
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .productStatus(product.getProductStatus().getStatus())
-                .createdAt(product.getCreatedAt())
+                .createdAt(DateUtils.timeAgoOrFormatted(product.getCreatedAt(), "yyyy-MM-dd HH:mm"))
                 .view(product.getView())
                 .images(images)
                 .build();
