@@ -14,14 +14,24 @@ import java.util.List;
 public class ProductDetailResponse {
 
     private Integer productId;
+
     private Integer sellerId;
+
     private String sellerName;
+
     private String categoryName;
+
     private String productName;
+
     private String description;
-    private String price;
+
+    private Integer price;
+
     private String productStatus;
+
     private LocalDateTime createdAt;
+
     private Integer view;
+
     private List<Image> images;
 }

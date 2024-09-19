@@ -17,6 +17,7 @@ import java.util.List;
 public class ProductWithImage {
 
     private Product product;
+
     private List<Image> images;
 
 }

@@ -101,63 +101,32 @@
                 <div class="single_product_thumb">
                     <div id="product_details_slider" class="carousel slide" data-ride="carousel">
 
-                        <!-- Carousel Inner -->
+                        <!-- 이미지영역 -->
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <a class="gallery_img" href="/img/product-img/pd-big-thumb-1.png" title="First Slide">
-                                    <img class="d-block w-100" th:src="${productDetail.images.get(0).getPath()}"
-                                         alt="First slide">
+                                <a class="gallery_img" th:href="@{${productDetail.images.get(0).getPath()}}" title="First Slide">
+                                    <img class="d-block w-100" th:src="@{${productDetail.images.get(0).getPath()}}" alt="First slide">
                                 </a>
-                                <!-- Product Badge -->
-                                <div class="product_badge">
-                                    <span class="badge-new">New</span>
+                            </div>
+                            <div th:each="image, iterStat : ${productDetail.images}">
+                                <div class="carousel-item" th:if="${iterStat.index > 0}">
+                                    <a class="gallery_img" th:href="@{${image.getPath()}}" title="Slide">
+                                        <img class="d-block w-100" th:src="@{${image.getPath()}}" alt="Slide">
+                                    </a>
                                 </div>
                             </div>
-                            <div class="carousel-item">
-                                <a class="gallery_img" href="/img/product-img/pd-big-thumb-2.png" title="Second Slide">
-                                    <img class="d-block w-100" src="/img/product-img/pd-big-thumb-2.png"
-                                         alt="Second slide">
-                                </a>
-                                <!-- Product Badge -->
-                                <div class="product_badge">
-                                    <span class="badge-new">Sale</span>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <a class="gallery_img" href="/img/product-img/pd-big-thumb-3.png" title="Third Slide">
-                                    <img class="d-block w-100" src="/img/product-img/pd-big-thumb-3.png"
-                                         alt="Third slide">
-                                </a>
-                                <!-- Product Badge -->
-                                <div class="product_badge">
-                                    <span class="badge-new">-20%</span>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <a class="gallery_img" href="/img/product-img/pd-big-thumb-4.png" title="Fourth Slide">
-                                    <img class="d-block w-100" src="/img/product-img/pd-big-thumb-4.png"
-                                         alt="Fourth slide">
-                                </a>
-                                <!-- Product Badge -->
-                                <div class="product_badge">
-                                    <span class="badge-new">Hot</span>
-                                </div>
-                            </div>
+
                         </div>
 
-                        <!-- Carosel Indicators -->
+                        <!-- 작은 이미지 영역 -->
                         <ol class="carousel-indicators">
                             <li class="active" data-target="#product_details_slider" data-slide-to="0"
-                                style="background-image: url(/img/product-img/pd-big-thumb-1.png);">
+                                th:style="'background-image: url(' + @{${productDetail.images.get(0).getPath()}} + ');'">
                             </li>
-                            <li data-target="#product_details_slider" data-slide-to="1"
-                                style="background-image: url(/img/product-img/pd-big-thumb-2.png);">
-                            </li>
-                            <li data-target="#product_details_slider" data-slide-to="2"
-                                style="background-image: url(/img/product-img/pd-big-thumb-3.png);">
-                            </li>
-                            <li data-target="#product_details_slider" data-slide-to="3"
-                                style="background-image: url(/img/product-img/pd-big-thumb-4.png);">
+
+                            <li th:each="image, iterStat : ${productDetail.images}"
+                                th:if="${iterStat.index > 0 && iterStat.index <= 3}" data-target="#product_details_slider" th:data-slide-to="${iterStat.index}"
+                                th:style="'background-image: url(' + @{${image.getPath()}} + ');'">
                             </li>
                         </ol>
                     </div>
@@ -187,6 +156,11 @@
                            class="btn btn-primary mt-1 mt-md-0 ml-1 ml-md-3">수정하기</a>
                         <form action="#" th:action="@{/product/delete(id=${productDetail.productId})}" method="post">
                             <button type="submit" class="btn btn-danger mt-1 mt-md-0 ml-1 ml-md-3">삭제하기</button>
+                        </form>
+                        <form action="#" th:action="@{/payment/init-payment}" method="post">
+                            <input type="hidden" name="productId" th:value="${productDetail.productId}" />
+                            <input type="hidden" name="amount" th:value="${productDetail.price}" />
+                            <button type="submit" class="btn btn-danger mt-1 mt-md-0 ml-1 ml-md-3">안전거래</button>
                         </form>
                     </div>
                 </div>

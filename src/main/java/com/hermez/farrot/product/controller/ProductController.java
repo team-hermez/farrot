@@ -70,7 +70,6 @@ public class ProductController {
         productService.saveProduct(product);
         for (MultipartFile file : imageFiles) {
             if (!file.isEmpty()) {
-                System.out.println(imageFiles.toString());
                 imageService.save(new ImageRequest<>(product, file));
             }
         }

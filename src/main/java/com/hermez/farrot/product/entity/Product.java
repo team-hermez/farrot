@@ -2,12 +2,14 @@ package com.hermez.farrot.product.entity;
 
 import com.hermez.farrot.category.entity.Category;
 import com.hermez.farrot.member.entity.Member;
+import com.hermez.farrot.payment.entity.Payment;
 import jakarta.persistence.*;
 import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,6 +31,9 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @OneToMany(mappedBy = "product")
+    private List<Payment> payments;
 
     @Column(nullable = false, length = 255)
     private String productName;
