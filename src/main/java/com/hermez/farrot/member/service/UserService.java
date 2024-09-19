@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class UserService implements MemberService{
     @Transactional
     @Override
     public int save(MemberRegisterRequest memberRegisterRequest) {
-        Date now = new Date();
+        LocalDate now = LocalDate.now();
         return memberRepository.save(Member.builder()
                 .memberName(memberRegisterRequest.getMemberName())
                 .email(memberRegisterRequest.getEmail())
