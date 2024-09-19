@@ -3,13 +3,15 @@ package com.hermez.farrot.product.dto.request;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class ProductSearchRequest {
 
     private String productName;
 
-    private Integer categoryId;
+    private List<Integer> categoryId;
 
     private Integer minPrice;
 

@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="">
@@ -104,8 +104,10 @@
                         <!-- 이미지영역 -->
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <a class="gallery_img" th:href="@{${productDetail.images.get(0).getPath()}}" title="First Slide">
-                                    <img class="d-block w-100" th:src="@{${productDetail.images.get(0).getPath()}}" alt="First slide">
+                                <a class="gallery_img" th:href="@{${productDetail.images.get(0).getPath()}}"
+                                   title="First Slide">
+                                    <img class="d-block w-100" th:src="@{${productDetail.images.get(0).getPath()}}"
+                                         alt="First slide">
                                 </a>
                             </div>
                             <div th:each="image, iterStat : ${productDetail.images}">
@@ -125,7 +127,8 @@
                             </li>
 
                             <li th:each="image, iterStat : ${productDetail.images}"
-                                th:if="${iterStat.index > 0 && iterStat.index <= 3}" data-target="#product_details_slider" th:data-slide-to="${iterStat.index}"
+                                th:if="${iterStat.index > 0 && iterStat.index <= 3}"
+                                data-target="#product_details_slider" th:data-slide-to="${iterStat.index}"
                                 th:style="'background-image: url(' + @{${image.getPath()}} + ');'">
                             </li>
                         </ol>
@@ -144,23 +147,25 @@
                     </div>
                     <p>가격: <span th:text="${productDetail.price} + 원">가격</span></p>
                     <p>상태: <span th:text="${productDetail.productStatus}">상태</span></p>
-                    <p>등록일: <span th:text="${productDetail.createdAt}">등록일</span></p>
+                    <p>등록시간: <span th:text="${productDetail.createdAt}">등록시간</span></p>
                     <p>조회수: <span th:text="${productDetail.view}">조회수</span></p>
-                    <div>
-                        <form class="cart clearfix my-5 d-flex flex-wrap align-items-center" th:action="@{/chat-room/enter/{id}(id=${productDetail.productId})}" method="POST">
-                            <button type="submit" value="5"
-                                    class="btn btn-primary mt-1 mt-md-0 ml-1 ml-md-3">채팅하기
-                            </button>
+                    <div class="d-flex flex-row justify-content-start align-items-center">
+                        <form class="cart clearfix my-5 d-flex flex-wrap align-items-center"
+                              th:action="@{/chat-room/enter/{id}(id=${productDetail.productId})}" method="POST">
+                            <button type="submit" value="5" class="btn btn-secondary mt-1 ml-1">채팅하기</button>
                         </form>
+
+                        <form action="#" th:action="@{/payment/init-payment}" method="post" >
+                            <input type="hidden" name="productId" th:value="${productDetail.productId}"/>
+                            <input type="hidden" name="amount" th:value="${productDetail.price}"/>
+                            <button type="submit" class="btn btn-success mt-1 ml-1">안전거래</button>
+                        </form>
+
                         <a th:href="@{/product/update-sell(id=${productDetail.productId})}"
-                           class="btn btn-primary mt-1 mt-md-0 ml-1 ml-md-3">수정하기</a>
-                        <form action="#" th:action="@{/product/delete(id=${productDetail.productId})}" method="post">
-                            <button type="submit" class="btn btn-danger mt-1 mt-md-0 ml-1 ml-md-3">삭제하기</button>
-                        </form>
-                        <form action="#" th:action="@{/payment/init-payment}" method="post">
-                            <input type="hidden" name="productId" th:value="${productDetail.productId}" />
-                            <input type="hidden" name="amount" th:value="${productDetail.price}" />
-                            <button type="submit" class="btn btn-danger mt-1 mt-md-0 ml-1 ml-md-3">안전거래</button>
+                           class="btn btn-warning mt-1 ml-1">수정하기</a>
+
+                        <form action="#" th:action="@{/product/delete(id=${productDetail.productId})}" method="post" >
+                            <button type="submit" class="btn btn-danger mt-1 ml-1">삭제하기</button>
                         </form>
                     </div>
                 </div>
@@ -173,341 +178,38 @@
         <div class="row">
             <div class="col-12">
                 <div class="section_heading new_arrivals">
-                    <h5>You May Also Like</h5>
+                    <h5>추천 상품</h5>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
                 <div class="you_make_like_slider owl-carousel">
-                    <!-- Single Product -->
-                    <div class="single-product-area">
+                    <div class="single-product-area" th:each="product : ${response.productPage}">
                         <div class="product_image">
-                            <!-- Product Image -->
-                            <img class="normal_img" src="/img/product-img/new-1-back.png" alt="">
-                            <img class="hover_img" src="/img/product-img/new-1.png" alt="">
-
-                            <!-- Wishlist -->
-                            <div class="product_wishlist">
-                                <a href="/wishlist.html"><i class="icofont-heart"></i></a>
-                            </div>
-
-                            <!-- Compare -->
-                            <div class="product_compare">
-                                <a href="/compare.html"><i class="icofont-exchange"></i></a>
-                            </div>
+                            <img class="normal_img" th:src="${response.productImages[product.id].get(0).getPath()}"
+                                 alt="상품 이미지" style="width: 300px; height: 300px;">
                         </div>
-
-                        <!-- Product Description -->
                         <div class="product_description">
-                            <!-- Add to cart -->
                             <div class="product_add_to_cart">
-                                <a href="#"><i class="icofont-shopping-cart"></i> Add to Cart</a>
+                                <form id="enterChatRoom" th:method="POST"
+                                      th:action="@{/chat-room/enter/{id}(id=${product.id})}">
+                                </form>
+                                <a href="#" onclick="enterChatRoom()"><i class="icofont-shopping-cart"></i> 채팅하기</a>
                             </div>
-
-                            <!-- Quick View -->
                             <div class="product_quick_view">
-                                <a href="#" data-toggle="modal" data-target="#quickview"><i class="icofont-eye-alt"></i>
-                                    Quick View</a>
+                                <a th:href="@{/product/product-detail(productId=${product.id})}">
+                                    <i class="fa fa-reply"></i> 보러 가기
+                                </a>
                             </div>
-
-                            <p class="brand_name">Top</p>
-                            <a href="#">Boutique Silk Dress</a>
-                            <h6 class="product-price">$48.99</h6>
-                        </div>
-                    </div>
-
-                    <!-- Single Product -->
-                    <div class="single-product-area">
-                        <div class="product_image">
-                            <!-- Product Image -->
-                            <img class="normal_img" src="/img/product-img/new-6.png" alt="">
-                            <img class="hover_img" src="/img/product-img/new-6-back.png" alt="">
-
-                            <!-- Product Badge -->
-                            <div class="product_badge">
-                                <span>New</span>
+                            <p class="brand_name" th:text="${product.category.code}">카테고리명</p>
+                            <a th:href="@{/product/product-detail(productId=${product.id})}"
+                               th:text="${product.productName}">상품명</a>
+                            <h6 class="product-price" th:text="'₩' + ${product.price}">가격</h6>
+                            <div>
+                                <i class="icofont-eye-alt"></i>
+                                <span th:text="${product.view}"></span>
                             </div>
-
-                            <!-- Wishlist -->
-                            <div class="product_wishlist">
-                                <a href="/wishlist.html"><i class="icofont-heart"></i></a>
-                            </div>
-
-                            <!-- Compare -->
-                            <div class="product_compare">
-                                <a href="/compare.html"><i class="icofont-exchange"></i></a>
-                            </div>
-                        </div>
-
-                        <!-- Product Description -->
-                        <div class="product_description">
-                            <!-- Add to cart -->
-                            <div class="product_add_to_cart">
-                                <a href="#"><i class="icofont-shopping-cart"></i> Add to Cart</a>
-                            </div>
-
-                            <!-- Quick View -->
-                            <div class="product_quick_view">
-                                <a href="#" data-toggle="modal" data-target="#quickview"><i class="icofont-eye-alt"></i>
-                                    Quick View</a>
-                            </div>
-
-                            <p class="brand_name">Lim</p>
-                            <a href="#">Gracia Plaid Dress</a>
-                            <h6 class="product-price">$17.63</h6>
-                        </div>
-                    </div>
-
-                    <!-- Single Product -->
-                    <div class="single-product-area">
-                        <div class="product_image">
-                            <!-- Product Image -->
-                            <img class="normal_img" src="/img/product-img/new-2.png" alt="">
-                            <img class="hover_img" src="/img/product-img/new-2-back.png" alt="">
-
-                            <!-- Product Badge -->
-                            <div class="product_badge">
-                                <span>New</span>
-                            </div>
-
-                            <!-- Wishlist -->
-                            <div class="product_wishlist">
-                                <a href="/wishlist.html"><i class="icofont-heart"></i></a>
-                            </div>
-
-                            <!-- Compare -->
-                            <div class="product_compare">
-                                <a href="/compare.html"><i class="icofont-exchange"></i></a>
-                            </div>
-                        </div>
-
-                        <!-- Product Description -->
-                        <div class="product_description">
-                            <!-- Add to cart -->
-                            <div class="product_add_to_cart">
-                                <a href="#"><i class="icofont-shopping-cart"></i> Add to Cart</a>
-                            </div>
-
-                            <!-- Quick View -->
-                            <div class="product_quick_view">
-                                <a href="#" data-toggle="modal" data-target="#quickview"><i class="icofont-eye-alt"></i>
-                                    Quick View</a>
-                            </div>
-
-                            <p class="brand_name">Sarah</p>
-                            <a href="#">Flower Textured Dress</a>
-                            <h6 class="product-price">$24 <span>$49</span></h6>
-                        </div>
-                    </div>
-
-                    <!-- Single Product -->
-                    <div class="single-product-area">
-                        <div class="product_image">
-                            <!-- Product Image -->
-                            <img class="normal_img" src="/img/product-img/new-4.png" alt="">
-                            <img class="hover_img" src="/img/product-img/new-4-back.png" alt="">
-
-                            <!-- Product Badge -->
-                            <div class="product_badge">
-                                <span>New</span>
-                            </div>
-
-                            <!-- Wishlist -->
-                            <div class="product_wishlist">
-                                <a href="/wishlist.html"><i class="icofont-heart"></i></a>
-                            </div>
-
-                            <!-- Compare -->
-                            <div class="product_compare">
-                                <a href="/compare.html"><i class="icofont-exchange"></i></a>
-                            </div>
-                        </div>
-
-                        <!-- Product Description -->
-                        <div class="product_description">
-                            <!-- Add to cart -->
-                            <div class="product_add_to_cart">
-                                <a href="#"><i class="icofont-shopping-cart"></i> Add to Cart</a>
-                            </div>
-
-                            <!-- Quick View -->
-                            <div class="product_quick_view">
-                                <a href="#" data-toggle="modal" data-target="#quickview"><i class="icofont-eye-alt"></i>
-                                    Quick View</a>
-                            </div>
-
-                            <p class="brand_name">Lim</p>
-                            <a href="#">Gracia Plaid Dress</a>
-                            <h6 class="product-price">$78.24</h6>
-                        </div>
-                    </div>
-
-                    <!-- Single Product -->
-                    <div class="single-product-area">
-                        <div class="product_image">
-                            <!-- Product Image -->
-                            <img class="normal_img" src="/img/product-img/new-1-back.png" alt="">
-                            <img class="hover_img" src="/img/product-img/new-1.png" alt="">
-
-                            <!-- Product Badge -->
-                            <div class="product_badge">
-                                <span>New</span>
-                            </div>
-
-                            <!-- Wishlist -->
-                            <div class="product_wishlist">
-                                <a href="/wishlist.html"><i class="icofont-heart"></i></a>
-                            </div>
-
-                            <!-- Compare -->
-                            <div class="product_compare">
-                                <a href="/compare.html"><i class="icofont-exchange"></i></a>
-                            </div>
-                        </div>
-
-                        <!-- Product Description -->
-                        <div class="product_description">
-                            <!-- Add to cart -->
-                            <div class="product_add_to_cart">
-                                <a href="#"><i class="icofont-shopping-cart"></i> Add to Cart</a>
-                            </div>
-
-                            <!-- Quick View -->
-                            <div class="product_quick_view">
-                                <a href="#" data-toggle="modal" data-target="#quickview"><i class="icofont-eye-alt"></i>
-                                    Quick View</a>
-                            </div>
-
-                            <p class="brand_name">Top</p>
-                            <a href="#">Boutique Silk Dress</a>
-                            <h6 class="product-price">$48.99</h6>
-                        </div>
-                    </div>
-
-                    <!-- Single Product -->
-                    <div class="single-product-area">
-                        <div class="product_image">
-                            <!-- Product Image -->
-                            <img class="normal_img" src="/img/product-img/new-6.png" alt="">
-                            <img class="hover_img" src="/img/product-img/new-6-back.png" alt="">
-
-                            <!-- Product Badge -->
-                            <div class="product_badge">
-                                <span>New</span>
-                            </div>
-
-                            <!-- Wishlist -->
-                            <div class="product_wishlist">
-                                <a href="/wishlist.html"><i class="icofont-heart"></i></a>
-                            </div>
-
-                            <!-- Compare -->
-                            <div class="product_compare">
-                                <a href="/compare.html"><i class="icofont-exchange"></i></a>
-                            </div>
-                        </div>
-
-                        <!-- Product Description -->
-                        <div class="product_description">
-                            <!-- Add to cart -->
-                            <div class="product_add_to_cart">
-                                <a href="#"><i class="icofont-shopping-cart"></i> Add to Cart</a>
-                            </div>
-
-                            <!-- Quick View -->
-                            <div class="product_quick_view">
-                                <a href="#" data-toggle="modal" data-target="#quickview"><i class="icofont-eye-alt"></i>
-                                    Quick View</a>
-                            </div>
-
-                            <p class="brand_name">Lim</p>
-                            <a href="#">Gracia Plaid Dress</a>
-                            <h6 class="product-price">$17.63</h6>
-                        </div>
-                    </div>
-
-                    <!-- Single Product -->
-                    <div class="single-product-area">
-                        <div class="product_image">
-                            <!-- Product Image -->
-                            <img class="normal_img" src="/img/product-img/new-2.png" alt="">
-                            <img class="hover_img" src="/img/product-img/new-2-back.png" alt="">
-
-                            <!-- Product Badge -->
-                            <div class="product_badge">
-                                <span>New</span>
-                            </div>
-
-                            <!-- Wishlist -->
-                            <div class="product_wishlist">
-                                <a href="/wishlist.html"><i class="icofont-heart"></i></a>
-                            </div>
-
-                            <!-- Compare -->
-                            <div class="product_compare">
-                                <a href="/compare.html"><i class="icofont-exchange"></i></a>
-                            </div>
-                        </div>
-
-                        <!-- Product Description -->
-                        <div class="product_description">
-                            <!-- Add to cart -->
-                            <div class="product_add_to_cart">
-                                <a href="#"><i class="icofont-shopping-cart"></i> Add to Cart</a>
-                            </div>
-
-                            <!-- Quick View -->
-                            <div class="product_quick_view">
-                                <a href="#" data-toggle="modal" data-target="#quickview"><i class="icofont-eye-alt"></i>
-                                    Quick View</a>
-                            </div>
-
-                            <p class="brand_name">Sarah</p>
-                            <a href="#">Flower Textured Dress</a>
-                            <h6 class="product-price">$24 <span>$49</span></h6>
-                        </div>
-                    </div>
-
-                    <!-- Single Product -->
-                    <div class="single-product-area">
-                        <div class="product_image">
-                            <!-- Product Image -->
-                            <img class="normal_img" src="/img/product-img/new-4.png" alt="">
-                            <img class="hover_img" src="/img/product-img/new-4-back.png" alt="">
-
-                            <!-- Product Badge -->
-                            <div class="product_badge">
-                                <span>New</span>
-                            </div>
-
-                            <!-- Wishlist -->
-                            <div class="product_wishlist">
-                                <a href="/wishlist.html"><i class="icofont-heart"></i></a>
-                            </div>
-
-                            <!-- Compare -->
-                            <div class="product_compare">
-                                <a href="/compare.html"><i class="icofont-exchange"></i></a>
-                            </div>
-                        </div>
-
-                        <!-- Product Description -->
-                        <div class="product_description">
-                            <!-- Add to cart -->
-                            <div class="product_add_to_cart">
-                                <a href="#"><i class="icofont-shopping-cart"></i> Add to Cart</a>
-                            </div>
-
-                            <!-- Quick View -->
-                            <div class="product_quick_view">
-                                <a href="#" data-toggle="modal" data-target="#quickview"><i class="icofont-eye-alt"></i>
-                                    Quick View</a>
-                            </div>
-
-                            <p class="brand_name">Lim</p>
-                            <a href="#">Gracia Plaid Dress</a>
-                            <h6 class="product-price">$78.24</h6>
                         </div>
                     </div>
                 </div>
