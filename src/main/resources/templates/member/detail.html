@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -33,24 +33,24 @@
                     <div class="my-account-content mb-50">
                         <h5 class="mb-3">이거뜨면 로그인 된거읾</h5>
 
-                        <form action="#" method="post">
+                        <form action="#" method="post" th:object="${member}">
                             <div class="row">
                                 <div class="col-12 col-lg-6">
                                     <div class="form-group">
-                                        <label for="firstName">아이디</label>
-                                        <input type="text" class="form-control" id="firstName" placeholder="사용자 아이디">
+                                        <label for="memberName">이름</label>
+                                        <input type="text" class="form-control" id="memberName" th:field="*{memberName}" th:readonly="readonly">
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <label for="displayName">닉네임</label>
-                                        <input type="text" class="form-control" id="displayName" placeholder="사용자 이름">
+                                        <label for="email">이메일 주소</label>
+                                        <input type="email" class="form-control" id="email" th:field="*{email}" th:readonly="readonly">
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <label for="emailAddress">이메일 주소</label>
-                                        <input type="email" class="form-control" id="emailAddress" placeholder="signingworld@gmail.com">
+                                        <label for="nickname">닉네임</label>
+                                        <input type="text" class="form-control" id="nickname" th:field="*{nickname}">
                                     </div>
                                 </div>
                                 <div class="col-12">
