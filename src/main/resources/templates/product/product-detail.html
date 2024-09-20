@@ -9,6 +9,65 @@
     <title>Bigshop | Responsive E-commerce Template</title>
     <link rel="icon" href="/img/core-img/favicon.ico">
     <link rel="stylesheet" href="/style.css">
+    <style>
+        <style>
+        .single_product_desc {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .product-title {
+            font-size: 1.8rem;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .seller-info, .category-info, .price-info, .status-info, .created-at-info, .view-info {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .short_overview h6 {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .short_overview p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .price-info span {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .status-info span {
+            font-size: 0.9rem;
+            padding: 0.2rem 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0px 10px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+        }
+
+        .btn {
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+
+    </style>
+    </style>
 </head>
 
 <body>
@@ -137,35 +196,61 @@
             </div>
 
             <div class="col-12 col-lg-6">
-                <div class="single_product_desc">
-                    <h1 th:text="${productDetail.productName}">상품명</h1>
-                    <p>판매자: <span th:text="${productDetail.sellerName}">판매자명</span></p>
-                    <p>카테고리: <span th:text="${productDetail.categoryName}">카테고리</span></p>
+                <div class="single_product_desc card p-4 shadow-sm">
+                    <h1 th:text="${productDetail.productName}" class="product-title mb-3 text-primary font-weight-bold">상품명</h1>
+
+                    <p class="seller-info mb-2">
+                        <strong>판매자:</strong>
+                        <span th:text="${productDetail.sellerName}" class="text-muted">판매자명</span>
+                    </p>
+
+                    <p class="category-info mb-2">
+                        <strong>카테고리:</strong>
+                        <span th:text="${productDetail.categoryName}" class="text-muted">카테고리</span>
+                    </p>
+
                     <div class="short_overview mb-4">
-                        <h6>상품 설명</h6>
-                        <p th:text="${productDetail.description}"></p>
+                        <h6 class="font-weight-bold">상품 설명</h6>
+                        <p th:text="${productDetail.description}" class="text-muted"></p>
                     </div>
-                    <p>가격: <span th:text="${productDetail.price} + 원">가격</span></p>
-                    <p>상태: <span th:text="${productDetail.productStatus}">상태</span></p>
-                    <p>등록시간: <span th:text="${productDetail.createdAt}">등록시간</span></p>
-                    <p>조회수: <span th:text="${productDetail.view}">조회수</span></p>
-                    <div class="d-flex flex-row justify-content-start align-items-center">
-                        <form class="cart clearfix my-5 d-flex flex-wrap align-items-center"
+
+                    <p class="price-info mb-2">
+                        <strong>가격:</strong>
+                        <span th:text="${productDetail.price} + ' 원'" class="text-success">가격</span>
+                    </p>
+
+                    <p class="status-info mb-2">
+                        <strong>상태:</strong>
+                        <span th:text="${productDetail.productStatus}" class="badge badge-info">판매중</span>
+                    </p>
+
+                    <p class="created-at-info mb-2">
+                        <strong>등록시간:</strong>
+                        <span th:text="${productDetail.createdAt}" class="text-muted">등록시간</span>
+                    </p>
+
+                    <p class="view-info mb-2">
+                        <strong>조회수:</strong>
+                        <span th:text="${productDetail.view}" class="text-muted">조회수</span>
+                    </p>
+
+                    <div class="d-flex flex-wrap justify-content-start align-items-center mt-4">
+                        <form class="cart clearfix d-flex align-items-center"
                               th:action="@{/chat-room/enter/{id}(id=${productDetail.productId})}" method="POST">
-                            <button type="submit" value="5" class="btn btn-secondary mt-1 ml-1">채팅하기</button>
+                            <button type="submit" value="5" class="btn btn-secondary btn-sm mx-1">채팅하기</button>
                         </form>
 
-                        <form action="#" th:action="@{/payment/init-payment}" method="post" >
+                        <form th:action="@{/payment/init-payment}" method="post">
                             <input type="hidden" name="productId" th:value="${productDetail.productId}"/>
                             <input type="hidden" name="amount" th:value="${productDetail.price}"/>
-                            <button type="submit" class="btn btn-success mt-1 ml-1">안전거래</button>
+                            <button type="submit" class="btn btn-success btn-sm mx-1">안전거래</button>
                         </form>
 
                         <a th:href="@{/product/update-sell(id=${productDetail.productId})}"
-                           class="btn btn-warning mt-1 ml-1">수정하기</a>
+                           class="btn btn-warning btn-sm mx-1">수정하기</a>
 
-                        <form action="#" th:action="@{/product/delete(id=${productDetail.productId})}" method="post" >
-                            <button type="submit" class="btn btn-danger mt-1 ml-1">삭제하기</button>
+                        <form th:action="@{/product/delete(id=${productDetail.productId})}" method="post">
+                            <button type="submit" class="btn btn-danger btn-sm mx-1">삭제하기</button>
                         </form>
                     </div>
                 </div>
