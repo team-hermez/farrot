@@ -28,10 +28,6 @@
     <div class="main_container">
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
-                <div class="navbar nav_title" style="border: 0;">
-                    <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
-                </div>
-
                 <div class="clearfix"></div>
 
                 <br />
@@ -164,10 +160,10 @@
                 <div class="clearfix"></div>
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2>비회원 전환</h2>
+                                <h2>회원</h2>
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
@@ -178,7 +174,6 @@
                                         <th style="width: 1%">#</th>
                                         <th style="width: 20%">이름</th>
                                         <th>이메일</th>
-                                        <th>전화번호</th>
                                         <th>비회원 전환</th>
                                     </tr>
                                     </thead>
@@ -191,20 +186,16 @@
                                             <small th:text="${list.createAt}"></small>
                                         </td>
                                         <td>
-                                            <ul class="list-inline">
-                                                <a th:text="${list.email}"></a>
-                                            </ul>
-                                        </td>
-                                        <td class="project_progress">
-                                            <a th:text="${list.phone}"></a>
-                                        </td>
 
+                                                <a th:text="${list.email}"></a>
+
+                                        </td>
                                         <form th:action="@{/admin/change-status/{id}(id=${list.id})}" method="post">
                                             <td>
                                             <a th:href="@{/admin/member-detail/{id}(id=${list.id})}" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> 상세페이지 </a>
-                                                <button type="submit" name="action" value="able" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> 회원 전환 </button>
+                                                <button type="submit" name="action" value="enable" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> 회원 전환 </button>
                                                 <button type="submit" name="action" value="disable" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> 비회원 전환 </button>
-                                        </td>
+                                            </td>
                                         </form>
                                     </tr>
                                     </tbody>
@@ -229,7 +220,7 @@
                                             th:each="i : ${#numbers.sequence((memberList.number - 2 > 0 ? memberList.number - 2 : 0),
                                              (memberList.number + 2 < memberList.totalPages - 1 ? memberList.number + 2 : memberList.totalPages - 1))}"
                                             th:classappend="${i == memberList.number} ? 'active'">
-                                            <a class="page-link" th:text="${i + 1}"
+                                            <a class="page-link" th:text="${i + 1}" th:if="${i + 1} == 0? false : true"
                                                th:href="@{/admin/member-disable(page=${i}, size=${memberList.size})}"></a>
                                         </li>
 
@@ -249,6 +240,52 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>비회원 전환</h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <!-- start project list -->
+                                <table class="table table-striped projects">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 1%">#</th>
+                                        <th style="width: 20%">이름</th>
+                                        <th>이메일</th>
+                                        <th>비회원 전환</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="list : ${disabledMemberList}">
+                                        <td th:text="${list.id}"></td>
+                                        <td>
+                                            <a th:text="${list.memberName}"></a>
+                                            <br />
+                                            <small th:text="${list.createAt}"></small>
+                                        </td>
+                                        <td>
+
+                                                <a th:text="${list.email}"></a>
+
+                                        </td>
+                                        <form th:action="@{/admin/change-status/{id}(id=${list.id})}" method="post">
+                                            <td>
+                                                <a th:href="@{/admin/member-detail/{id}(id=${list.id})}" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> 상세페이지 </a>
+                                                <button type="submit" name="action" value="enable" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> 회원 전환 </button>
+                                                <button type="submit" name="action" value="disable" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> 비회원 전환 </button>
+                                            </td>
+                                        </form>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                                <!-- end project list -->
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

@@ -17,10 +17,15 @@ public interface AdminService {
     int getMemberTotalCount();
     Page<Product> getProductList(Pageable pageable);
     List<AdminCategorySalesTop5Response> getCategorySalesTop5();
-    Page<Product> findProductsSoldToday(Pageable pageable);
+    Page<Product> findProductsSoldRegisterToday(Pageable pageable);
     Member findMemberById(Integer memberId);
+    Page<Member> getMemberByStatusOrderById(int status, Pageable pageable);
+    void updateMemberDisableStatus(Integer memberId, String action);
     int countByCreatedAtToday();
     List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts();
     List<AdminProductMonthTotalSalesResponse> findMonthTotalSales();
     Page<Product> getProductByMemberIdOrderByCreatedAtDesc(Pageable pageable, Integer memberId);
+
+    List<Member> getMemberByStatus(int status);
+
 }

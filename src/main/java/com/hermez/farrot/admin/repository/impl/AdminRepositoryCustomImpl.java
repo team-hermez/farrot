@@ -89,7 +89,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public Page<Product> findProductsSoldToday(LocalDate today, Pageable pageable) {
+    public Page<Product> findProductsSoldRegisterToday(LocalDate today, Pageable pageable) {
         List<Product> products = queryFactory
                 .selectFrom(product)
                 .where(createdAtIsToday(today))

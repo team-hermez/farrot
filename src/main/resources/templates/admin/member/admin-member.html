@@ -165,7 +165,7 @@
                                              (memberList.number + 2 < memberList.totalPages - 1 ? memberList.number + 2 : memberList.totalPages - 1))}"
                                             th:classappend="${i == memberList.number} ? 'active'">
                                             <a class="page-link" th:text="${i + 1}"
-                                               th:href="@{/admin/member(page=${i}, size=${memberList.size})}"></a>
+                                               th:href="@{/admin/member(page=${i}, size=${memberList.size})}" th:if="${i + 1} == 0? false : true"></a>
                                         </li>
 
                                         <li class="page-item" th:classappend="${memberList.hasNext()} ? '' : 'disabled'">

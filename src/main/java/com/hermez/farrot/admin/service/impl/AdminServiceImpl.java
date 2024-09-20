@@ -52,9 +52,9 @@ public class AdminServiceImpl implements AdminService {
         return productRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
-    public Page<Product> findProductsSoldToday(Pageable pageable) {
+    public Page<Product> findProductsSoldRegisterToday(Pageable pageable) {
         LocalDate today = LocalDate.now();
-        return adminRepository.findProductsSoldToday(today, pageable);
+        return adminRepository.findProductsSoldRegisterToday(today, pageable);
     }
 
     public Member findMemberById(Integer memberId){
@@ -75,4 +75,24 @@ public class AdminServiceImpl implements AdminService {
         return productRepository.findByMemberIdOrderByCreatedAtDesc(memberId, pageable);
     }
 
+    public Page<Member> getMemberByStatusOrderById(int status, Pageable pageable) {
+        return adminRepository.findMemberByStatusOrderById(status, pageable);
+    }
+
+    public List<Member> getMemberByStatus(int status){
+        return adminRepository.findByStatus(status);
+    }
+
+
+    public void updateMemberDisableStatus(Integer memberId, String action) {
+        if (action.equals("enable")){
+            Member member= adminRepository.findById(memberId).get();
+//            member.setStatus(1);
+//            adminRepository.save(member);
+        } else if(action.equals("disable")){
+            Member member= adminRepository.findById(memberId).get();
+//            member.setStatus(2);
+//            adminRepository.save(member);
+        }
+    }
 }

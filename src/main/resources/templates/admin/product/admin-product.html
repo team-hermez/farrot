@@ -119,6 +119,7 @@
                                             <th class="column-title">금액 </th>
                                             <th class="column-title">조회수 </th>
                                             <th class="column-title">상품 설명</th>
+                                            <th class="column-title">상품 상태</th>
                                             <th class="column-title">등록 일자</th>
                                             </th>
                                             <th class="bulk-actions" colspan="7">
@@ -133,11 +134,13 @@
                                                 <input type="checkbox" class="flat" name="table_records">
                                             </td>
                                             <td th:text="${list.id}" class=" "></td>
-                                            <td th:text="${list.productName}" class=" "></td>
+                                            <td>
+                                            <a th:href="@{/product/product-detail?productId={productId}(productId=${list.id})}" th:text="${list.productName}" ></a>
                                             <td th:text="${list.category.code}" class=" "><i class="success fa fa-long-arrow-up"></i></td>
                                             <td th:text="${list.price}" class=" "></td>
                                             <td th:text="${list.view}" class=" "></td>
                                             <td th:text="${list.description}" class="a-right a-right "></td>
+                                            <td th:text="${list.productStatus.status}" class="a-right a-right "></td>
                                             <td th:text="${list.createdAt}" class=" last"><a href="#"></a>
                                             </td>
                                         </tr>
@@ -177,7 +180,7 @@
                                              (productList.number + 2 < productList.totalPages - 1 ? productList.number + 2 : productList.totalPages - 1))}"
                                             th:classappend="${i == productList.number} ? 'active'">
                                             <a class="page-link" th:text="${i + 1}"
-                                               th:href="@{/admin/product-manage(page=${i}, size=${productList.size})}"></a>
+                                               th:href="@{/admin/product-manage(page=${i}, size=${productList.size})}"  th:if="${i + 1} == 0? false : true"></a>
                                         </li>
 
                                         <li class="page-item" th:classappend="${productList.hasNext()} ? '' : 'disabled'">

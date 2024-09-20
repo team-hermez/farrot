@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface AdminRepositoryCustom {
     List<AdminCategorySalesTop5Response> findCategorySales();
-    Page<Product> findProductsSoldToday(LocalDate today, Pageable pageable);
+    Page<Product> findProductsSoldRegisterToday(LocalDate today, Pageable pageable);
     int countByCreatedAtToday(LocalDate today);
     List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts();
     List<AdminProductMonthTotalSalesResponse> findMonthTotalSales();
