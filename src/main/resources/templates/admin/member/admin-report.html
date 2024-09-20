@@ -106,13 +106,13 @@
             <nav aria-label="Page navigation">
               <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${memberList.first} ? 'disabled' : ''">
-                  <a class="page-link" th:href="@{/admin/member-form(page=0, size=${memberList.size})}" aria-label="First">
+                  <a class="page-link" th:href="@{/admin/report(page=0, size=${memberList.size})}" aria-label="First">
                     <span aria-hidden="true">맨 처음</span>
                   </a>
                 </li>
 
                 <li class="page-item" th:classappend="${memberList.hasPrevious()} ? '' : 'disabled'">
-                  <a class="page-link" th:href="@{/admin/member-form(page=${memberList.number - 1}, size=${memberList.size})}" aria-label="Previous">
+                  <a class="page-link" th:href="@{/admin/report(page=${memberList.number - 1}, size=${memberList.size})}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                   </a>
                 </li>
@@ -122,17 +122,17 @@
                                              (memberList.number + 2 < memberList.totalPages - 1 ? memberList.number + 2 : memberList.totalPages - 1))}"
                     th:classappend="${i == memberList.number} ? 'active'">
                   <a class="page-link" th:text="${i + 1}"
-                     th:href="@{/admin/member-form(page=${i}, size=${memberList.size})}"></a>
+                     th:href="@{/admin/report(page=${i}, size=${memberList.size})}" th:if="${i + 1} == 0? false : true"></a>
                 </li>
 
                 <li class="page-item" th:classappend="${memberList.hasNext()} ? '' : 'disabled'">
-                  <a class="page-link" th:href="@{/admin/member-form(page=${memberList.number + 1}, size=${memberList.size})}" aria-label="Next">
+                  <a class="page-link" th:href="@{/admin/report(page=${memberList.number + 1}, size=${memberList.size})}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                   </a>
                 </li>
 
                 <li class="page-item" th:classappend="${memberList.last} ? 'disabled' : ''">
-                  <a class="page-link" th:href="@{/admin/member-form(page=${memberList.totalPages - 1}, size=${memberList.size})}" aria-label="Last">
+                  <a class="page-link" th:href="@{/admin/report(page=${memberList.totalPages - 1}, size=${memberList.size})}" aria-label="Last">
                     <span aria-hidden="true">끝으로</span>
                   </a>
                 </li>

@@ -1,4 +1,5 @@
 package com.hermez.farrot.admin.Controller;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -70,11 +71,14 @@ public class AdminController {
     }
 
     @GetMapping("/member-disable")
-    public String getMemberDisable(Model model, @PageableDefault(size = 8) Pageable pageable) {
-        Page<Member> memberList = adminService.getMemberList(pageable);
+    public String getMemberDisable(Model model, @PageableDefault(size = 10) Pageable pageable) {
+        Page<Member> memberList = adminService.getMemberByStatusOrderById(1, pageable);
+        List<Member> disabledMemberList = adminService.getMemberByStatus(2);
         model.addAttribute("memberList", memberList);
+        model.addAttribute("disabledMemberList", disabledMemberList);
         return "admin/member/admin-member-disable";
     }
+
 
     @GetMapping("/report")
     public String getReports(Model model, @PageableDefault(size = 6) Pageable pageable) {
@@ -92,7 +96,7 @@ public class AdminController {
 
     @GetMapping("/products/today")
     public String getProductsToday(Model model, @PageableDefault(size = 6) Pageable pageable) {
-        Page<Product> productList = adminService.findProductsSoldToday(pageable);
+        Page<Product> productList = adminService.findProductsSoldRegisterToday(pageable);
         model.addAttribute("productList", productList);
         return "admin/product/admin-product-today";
     }
@@ -120,13 +124,13 @@ public class AdminController {
     @ResponseBody
     @PostMapping("/category-sales")
     public String postCategorySalesTop5() {
-       List<AdminCategorySalesTop5Response> categorySalesTop5ResponseList = adminService.getCategorySalesTop5();
-       Gson gson = new Gson();
-       JsonArray jArray = new JsonArray();
+        List<AdminCategorySalesTop5Response> categorySalesTop5ResponseList = adminService.getCategorySalesTop5();
+        Gson gson = new Gson();
+        JsonArray jArray = new JsonArray();
 
-       Iterator<AdminCategorySalesTop5Response> it = categorySalesTop5ResponseList.iterator();
+        Iterator<AdminCategorySalesTop5Response> it = categorySalesTop5ResponseList.iterator();
 
-        while(it.hasNext()){
+        while (it.hasNext()) {
             AdminCategorySalesTop5Response adminCategorySalesTop5Response = it.next();
             JsonObject jsonObject = new JsonObject();
 
@@ -150,7 +154,7 @@ public class AdminController {
 
         Iterator<AdminRegisterWeeklyResponse> it = adminRegisterWeeklyResponseList.iterator();
 
-        while(it.hasNext()){
+        while (it.hasNext()) {
             AdminRegisterWeeklyResponse adminRegisterWeeklyResponse = it.next();
             JsonObject jsonObject = new JsonObject();
 
@@ -174,7 +178,7 @@ public class AdminController {
 
         Iterator<AdminProductMonthTotalSalesResponse> it = productMonthTotalSalesResponsesList.iterator();
 
-        while(it.hasNext()){
+        while (it.hasNext()) {
             AdminProductMonthTotalSalesResponse productMonthTotalSalesResponse = it.next();
             JsonObject jsonObject = new JsonObject();
 
@@ -191,7 +195,7 @@ public class AdminController {
 
     @PostMapping("/process-action")
     public String postProcessAction(@RequestParam(value = "id", required = false) List<Integer> selectedIds,
-                                @RequestParam("action") String action) {
+                                    @RequestParam("action") String action) {
         if (action.equals("alert")) {
             System.out.println("알림!");
         }
@@ -207,13 +211,16 @@ public class AdminController {
     @PostMapping("/change-status/{id}")
     public String processAction(@PathVariable("id") Integer id,
                                 @RequestParam("action") String action) {
-        if (action.equals("able")) {
-            System.out.println("회원 전환!");
-            System.out.println("@@@@"+id);
+        if (action.equals("enable")) {
+            adminService.updateMemberDisableStatus(id, action);
+            return "redirect:/admin/member-disable";
         } else if (action.equals("disable")) {
-            System.out.println("비회원 전환!");
+            adminService.updateMemberDisableStatus(id, action);
+            return "redirect:/admin/member-disable";
+        } else {
+            return "redirect:/admin/member-disable";
         }
-        return "redirect:/admin/member-disable";
+
     }
 
 }

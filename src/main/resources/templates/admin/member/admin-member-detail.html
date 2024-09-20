@@ -195,7 +195,7 @@
                                              (myProductList.number + 2 < myProductList.totalPages - 1 ? myProductList.number + 2 : myProductList.totalPages - 1))}"
                                                             th:classappend="${i == myProductList.number} ? 'active'">
                                                             <a class="page-link" th:text="${i + 1}"
-                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${i}, size=${myProductList.size})}"></a>
+                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${i}, size=${myProductList.size})}" th:if="${i + 1} == 0? false : true"></a>
                                                         </li>
 
                                                         <!-- 다음 페이지 버튼 -->

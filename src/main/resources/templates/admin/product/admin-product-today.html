@@ -113,16 +113,18 @@
                                             <th>
                                                 <input type="checkbox" id="check-all" class="flat">
                                             </th>
-                                            <th class="column-title">상품번호 </th>
-                                            <th class="column-title">상품명 </th>
-                                            <th class="column-title">카테고리 </th>
-                                            <th class="column-title">금액 </th>
-                                            <th class="column-title">조회수 </th>
+                                            <th class="column-title">상품번호</th>
+                                            <th class="column-title">상품명</th>
+                                            <th class="column-title">카테고리</th>
+                                            <th class="column-title">금액</th>
+                                            <th class="column-title">조회수</th>
                                             <th class="column-title">상품 설명</th>
+                                            <th class="column-title">상품 상태</th>
                                             <th class="column-title">등록 일자</th>
                                             </th>
                                             <th class="bulk-actions" colspan="7">
-                                                <a class="antoo" style="color:#fff; font-weight:500;">선택됨 ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                                                <a class="antoo" style="color:#fff; font-weight:500;">선택됨 ( <span
+                                                        class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
                                             </th>
                                         </tr>
                                         </thead>
@@ -133,11 +135,15 @@
                                                 <input type="checkbox" class="flat" name="table_records">
                                             </td>
                                             <td th:text="${list.id}" class=" "></td>
-                                            <td th:text="${list.productName}" class=" "></td>
-                                            <td th:text="${list.category.code}" class=" "><i class="success fa fa-long-arrow-up"></i></td>
+                                            <td>
+                                                <a th:href="@{/product/product-detail?productId={productId}(productId=${list.id})}"
+                                                   th:text="${list.productName}"></a>
+                                            <td th:text="${list.category.code}" class=" "><i
+                                                    class="success fa fa-long-arrow-up"></i></td>
                                             <td th:text="${list.price}" class=" "></td>
                                             <td th:text="${list.view}" class=" "></td>
                                             <td th:text="${list.description}" class="a-right a-right "></td>
+                                            <td th:text="${list.productStatus.status}" class="a-right a-right "></td>
                                             <td th:text="${list.createdAt}" class=" last"><a href="#"></a>
                                             </td>
                                         </tr>
@@ -148,10 +154,10 @@
                                 <div class="row justify-content-end">
                                     <div class="btn-group form-check" data-toggle="buttons">
                                         <label class="btn btn-secondary">
-                                            <input type="radio" class="join-btn" name="options" id="option1">  알림
+                                            <input type="radio" class="join-btn" name="options" id="option1"> 알림
                                         </label>
                                         <label class="btn btn-secondary">
-                                            <input type="radio" name="options" class="join-btn" id="option2">  수정
+                                            <input type="radio" name="options" class="join-btn" id="option2"> 수정
                                         </label>
                                         <label class="btn btn-secondary">
                                             <input type="radio" name="options" class="join-btn" id="option3"> 내보내기
@@ -161,13 +167,18 @@
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination justify-content-center">
                                         <li class="page-item" th:classappend="${productList.first} ? 'disabled' : ''">
-                                            <a class="page-link" th:href="@{/admin/products/today(page=0, size=${productList.size})}" aria-label="First">
+                                            <a class="page-link"
+                                               th:href="@{/admin/products/today(page=0, size=${productList.size})}"
+                                               aria-label="First">
                                                 <span aria-hidden="true">맨 처음</span>
                                             </a>
                                         </li>
 
-                                        <li class="page-item" th:classappend="${productList.hasPrevious()} ? '' : 'disabled'">
-                                            <a class="page-link" th:href="@{/admin/products/today(page=${productList.number - 1}, size=${productList.size})}" aria-label="Previous">
+                                        <li class="page-item"
+                                            th:classappend="${productList.hasPrevious()} ? '' : 'disabled'">
+                                            <a class="page-link"
+                                               th:href="@{/admin/products/today(page=${productList.number - 1}, size=${productList.size})}"
+                                               aria-label="Previous">
                                                 <span aria-hidden="true">&laquo;</span>
                                             </a>
                                         </li>
@@ -177,17 +188,22 @@
                                              (productList.number + 2 < productList.totalPages - 1 ? productList.number + 2 : productList.totalPages - 1))}"
                                             th:classappend="${i == productList.number} ? 'active'">
                                             <a class="page-link" th:text="${i + 1}"
-                                               th:href="@{/admin/products/today(page=${i}, size=${productList.size})}"></a>
+                                               th:href="@{/admin/products/today(page=${i}, size=${productList.size})}"  th:if="${i + 1} == 0? false : true"></a>
                                         </li>
 
-                                        <li class="page-item" th:classappend="${productList.hasNext()} ? '' : 'disabled'">
-                                            <a class="page-link" th:href="@{/admin/products/today(page=${productList.number + 1}, size=${productList.size})}" aria-label="Next">
+                                        <li class="page-item"
+                                            th:classappend="${productList.hasNext()} ? '' : 'disabled'">
+                                            <a class="page-link"
+                                               th:href="@{/admin/products/today(page=${productList.number + 1}, size=${productList.size})}"
+                                               aria-label="Next">
                                                 <span aria-hidden="true">&raquo;</span>
                                             </a>
                                         </li>
 
                                         <li class="page-item" th:classappend="${productList.last} ? 'disabled' : ''">
-                                            <a class="page-link" th:href="@{/admin/products/today(page=${productList.totalPages - 1}, size=${productList.size})}" aria-label="Last">
+                                            <a class="page-link"
+                                               th:href="@{/admin/products/today(page=${productList.totalPages - 1}, size=${productList.size})}"
+                                               aria-label="Last">
                                                 <span aria-hidden="true">끝으로</span>
                                             </a>
                                         </li>
