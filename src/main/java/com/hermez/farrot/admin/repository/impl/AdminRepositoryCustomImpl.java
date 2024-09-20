@@ -44,8 +44,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 "JOIN category c ON p.category_id = c.category_id " +
                 "JOIN product_status s ON p.product_status_id = s.product_status_id " +
                 "WHERE s.product_status_id = 3 " +
-                "and yearweek(created_at, 1) = yearweek(curdate(), 1) " +
-                "GROUP BY c.category_id " +
+                "and yearweek(p.created_at, 1) = yearweek(curdate(), 1) " +
+                "GROUP BY categoryCode " +
                 "ORDER BY count DESC " +
                 "LIMIT 5";
 
