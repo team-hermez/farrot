@@ -1,5 +1,6 @@
 package com.hermez.farrot.payment.service;
 
+import com.hermez.farrot.payment.dto.request.TrackingRequest;
 import com.hermez.farrot.payment.dto.request.PaymentFormRequest;
 import com.hermez.farrot.payment.dto.request.PurchaseConfirmRequest;
 import com.hermez.farrot.payment.dto.request.SaferrotPaymentRequest;
@@ -17,4 +18,10 @@ public interface PaymentService {
     void confirmPurchase(PurchaseConfirmRequest request);
 
     List<Payment> getPaymentsByMemberId(Integer memberId);
+
+    List<Payment> getPaymentsBySellerId(Integer sellerId);
+
+    void registerLogisticsInfo(TrackingRequest request);
+
+    String showShipmentTracking(String merchantUid);
 }

@@ -1,16 +1,14 @@
 package com.hermez.farrot.payment.controller;
 
+import com.hermez.farrot.payment.dto.request.TrackingRequest;
 import com.hermez.farrot.payment.dto.request.PaymentFormRequest;
 import com.hermez.farrot.payment.dto.request.PurchaseConfirmRequest;
 import com.hermez.farrot.payment.dto.response.PaymentResultResponse;
-import com.hermez.farrot.payment.entity.Payment;
 import com.hermez.farrot.payment.service.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/payment")
@@ -46,5 +44,23 @@ public class PaymentController {
         Integer memberId = 1;
         model.addAttribute("payments", paymentService.getPaymentsByMemberId(memberId));
         return "/payment/member-payments";
+    }
+
+    @GetMapping("/member-payments-sell")
+    public String getPaymentsSellPage(Model model) {
+        Integer memberId = 1;
+        model.addAttribute("payments", paymentService.getPaymentsBySellerId(memberId));
+        return "/payment/member-payments-sell";
+    }
+
+    @PostMapping("/register-logis")
+    public String registerLogistics(@ModelAttribute TrackingRequest request) {
+        paymentService.registerLogisticsInfo(request);
+        return "redirect:/payment/member-payments-sell";
+    }
+
+    @PostMapping("/request-shipment-tracking")
+    public void requestShipmentTracking(@RequestParam String merchantUid) {
+        paymentService.showShipmentTracking(merchantUid);
     }
 }
