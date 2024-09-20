@@ -2,12 +2,13 @@ package com.hermez.farrot.member.service;
 
 import com.hermez.farrot.member.dto.request.MemberLoginRequest;
 import com.hermez.farrot.member.dto.request.MemberRegisterRequest;
+import com.hermez.farrot.member.dto.request.MemberUpdateRequest;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.entity.Role;
-import com.hermez.farrot.member.security.JwtToken;
 import com.hermez.farrot.member.security.JwtTokenProvider;
 import com.hermez.farrot.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -71,7 +71,24 @@ public class UserService implements MemberService{
     }
     @Override
     public Member userDetail(String jwtToken) {
-        Optional<Member> member = memberRepository.findByEmail(jwtTokenProvider.parseClaims(jwtToken).getSubject());
-        return member.orElse(null);
+        Optional<Member> member =  memberRepository.findByEmail(jwtTokenProvider.parseClaims(jwtToken).getSubject());
+        return memberRepository.findByEmail(jwtTokenProvider.parseClaims(jwtToken).getSubject()).orElse(null);
+    }
+    public void updateUserDetail(MemberUpdateRequest memberUpdateRequest) {
+        memberRepository.saveAndFlush(Member.builder()
+                .account(memberUpdateRequest.getAccount())
+                .nickname(memberUpdateRequest.getNickname())
+                .password(passwordEncoder.encode(memberUpdateRequest.getPassword()))
+                .build()).getId();
+    }
+
+    public void activeStatus(Member member){
+        memberRepository.saveAndFlush(Member.builder()
+                .status(1)
+                .build()).getId();
+    }
+    @Override
+    public Member getMember(HttpServletRequest request){
+        return userDetail(jwtTokenProvider.resolveToken(request));
     }
 }

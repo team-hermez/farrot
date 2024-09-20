@@ -2,6 +2,8 @@ package com.hermez.farrot.member.controller;
 
 import com.hermez.farrot.member.dto.request.MemberLoginRequest;
 import com.hermez.farrot.member.dto.request.MemberRegisterRequest;
+import com.hermez.farrot.member.dto.request.MemberUpdateRequest;
+import com.hermez.farrot.member.dto.response.MemberDetailResponse;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
 import com.hermez.farrot.member.security.JwtTokenProvider;
@@ -15,17 +17,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequestMapping("/member")
 @Controller
 public class MemberController {
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
 
-    public MemberController(MemberRepository memberRepository, UserService userService, JwtTokenProvider jwtTokenProvider) {
+    public MemberController(MemberRepository memberRepository, UserService userService) {
         this.userService = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.memberRepository = memberRepository;
     }
 
     @GetMapping("/register")
@@ -53,7 +56,7 @@ public class MemberController {
     public String logIn(MemberLoginRequest memberLoginRequest, HttpServletResponse response) {
         userService.logIn(memberLoginRequest, response);
 
-        return "redirect:/index/index";
+        return "redirect:/";
     }
 
     @GetMapping("/logout")
@@ -68,11 +71,24 @@ public class MemberController {
     }
   
     @GetMapping("/detail")
-    String memberDetailPage(HttpServletRequest request, Member member,Model model) {
-        String jwtToken = jwtTokenProvider.resolveToken(request);
-        member = userService.userDetail(jwtToken);
-        model.addAttribute("member", member);
+    String memberDetailPage(HttpServletRequest request, Model model) {
+        model.addAttribute("member", userService.getMember(request));
         return "member/detail";
+    }
+
+    @PostMapping("/detail")
+    String updateMemberDetail(MemberUpdateRequest memberUpdateRequest,
+                              MultipartFile multipartFile, Model model) {
+        System.out.println("ex pass : "+memberUpdateRequest.getPassword());
+        System.out.println("new password : "+memberUpdateRequest.getNewPassword());
+        if (memberUpdateRequest.getNewPassword() != null && !memberUpdateRequest.getNewPassword().isEmpty()) {
+            MemberUpdateRequest.builder()
+                    .password(memberUpdateRequest.getNewPassword())
+                    .build();
+        }
+        userService.updateUserDetail(memberUpdateRequest);
+
+        return "redirect:/member/detail";
     }
 
   }
