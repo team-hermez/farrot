@@ -1,6 +1,7 @@
 package com.hermez.farrot.product.controller;
 
 import com.hermez.farrot.category.entity.Category;
+import com.hermez.farrot.category.service.CategoryService;
 import com.hermez.farrot.member.security.JwtTokenProvider;
 import com.hermez.farrot.member.service.MemberService;
 import com.hermez.farrot.member.service.UserService;
@@ -10,10 +11,14 @@ import com.hermez.farrot.product.dto.response.ProductDetailResponse;
 import com.hermez.farrot.product.dto.response.ProductSearchResponse;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.service.ProductService;
+import com.hermez.farrot.wishlist.dto.response.WishResponse;
+import com.hermez.farrot.wishlist.service.WishlistService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,12 +35,15 @@ public class ProductController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     private final MemberService memberService;
+    private final WishlistService wishlistService;
 
-    public ProductController(ProductService productService, JwtTokenProvider jwtTokenProvider, UserService userService, MemberService memberService) {
+    public ProductController(ProductService productService, JwtTokenProvider jwtTokenProvider, UserService userService, MemberService memberService,
+        WishlistService wishlistService) {
         this.productService = productService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
         this.memberService = memberService;
+      this.wishlistService = wishlistService;
     }
 
     @GetMapping("/products")
@@ -49,12 +57,16 @@ public class ProductController {
     }
 
     @GetMapping("/product-detail")
-    public String getProductDetail(@RequestParam("productId") Integer productId, Model model) {
+    public String getProductDetail(@RequestParam("productId") Integer productId,@AuthenticationPrincipal
+        UserDetails userDetails,Model model) {
+        String userEmail = userDetails.getUsername();
         ProductDetailResponse productDetailResponse = productService.getProductDetail(productId);
         ProductSearchRequest productSearchRequest = new ProductSearchRequest();
         productSearchRequest.setSize(4);
         productSearchRequest.setPage(0);
         ProductSearchResponse response = productService.getProductsByFilters(productSearchRequest);
+        WishResponse wishResponse = wishlistService.findOne(userEmail,productId);
+        model.addAttribute("wishResponse", wishResponse);
         model.addAttribute("productDetail", productDetailResponse);
         model.addAttribute("response", response);
         return "product/product-detail";

@@ -3,6 +3,7 @@ package com.hermez.farrot.notification.service;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.notification.dto.NotificationRequest;
+import com.hermez.farrot.product.entity.Product;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ public class NotificationService {
     tokenMap.put(userEmail, token);
   }
 
-  public void creatNotification(Member sender, Member receiver) {
+  public void createNotification(Member sender, Member receiver) {
     log.info("========={}=====",receiver.getEmail());
     log.info("=========={}======",getToken(receiver.getEmail()));
     try {
@@ -41,7 +42,20 @@ public class NotificationService {
     }
   }
 
-  public void creatNotification(List<Integer> selectedIds, String message) {
+  public void createWishNotification(Member receiver, Member wishMember,Product wishProduct) {
+    try {
+      NotificationRequest request = NotificationRequest.builder()
+          .title("안녕하세요 Farrot 입니다 \uD83D\uDC2D")
+          .token(getToken(receiver.getEmail()))
+          .message(receiver.getNickname()+"님!!! \n[ "+wishProduct.getProductName()+" ] 상품을 \n"+wishMember.getNickname()+" 님께서 찜하셨습니다")
+          .build();
+      sendNotification(request);
+    } catch (ExecutionException | InterruptedException e) {
+      log.info("알림 에러 발생", e);
+    }
+  }
+
+  public void createNotification(List<Integer> selectedIds, String message) {
     try {
       for(Integer selectId : selectedIds) {
         Member receiver = adminService.findMemberById(selectId);

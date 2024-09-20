@@ -1,55 +1,86 @@
 package com.hermez.farrot.wishlist.controller;
 
+import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepository;
+import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepositoryCustom;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
+import com.hermez.farrot.notification.service.NotificationService;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.service.ProductService;
-import com.hermez.farrot.wishlist.entity.Wishlist;
+import com.hermez.farrot.wishlist.dto.WishlistDTO;
+import com.hermez.farrot.wishlist.dto.request.WishRequest;
+import com.hermez.farrot.wishlist.dto.response.WishResponse;
 import com.hermez.farrot.wishlist.service.WishlistService;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/wishlist")
+@Slf4j
 public class WishlistController {
 
-    private final WishlistService wishlistService;
-    private final ProductService productService;
-    private final MemberRepository memberRepository;
+  private final WishlistService wishlistService;
+  private final ChatRoomRepositoryCustom chatRoomRepositoryCustom;
+  private final ProductService productService;
+  private final MemberRepository memberRepository;
+  private final NotificationService notificationService;
 
-    public WishlistController(WishlistService wishlistService, ProductService productService, MemberRepository memberRepository) {
-        this.wishlistService = wishlistService;
-        this.productService = productService;
-        this.memberRepository = memberRepository;
+  @ResponseBody
+  @PostMapping("wish")
+  public WishResponse wish(@RequestBody WishRequest wishRequest,
+      @AuthenticationPrincipal UserDetails userDetails) {
+    String userEmail = userDetails.getUsername();
+    Member wishMember = memberRepository.findByEmail(userEmail)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+    Member seller = chatRoomRepositoryCustom.findSellerByProductId(wishRequest.productId());
+    Product wishProduct = productService.getProductById(wishRequest.productId());
+    if (wishRequest.wishType().equals("NONE")) {
+      wishlistService.save(wishRequest, userEmail);
+      notificationService.createWishNotification(seller, wishMember, wishProduct);
+      return new WishResponse("WISH");
+    } else if (wishRequest.wishType().equals("WISH")) {
+      wishlistService.changeCancel(wishRequest.productId(), userEmail);
+      return new WishResponse("CANCEL");
     }
+    wishlistService.changeWish(wishRequest.productId(), userEmail);
+    notificationService.createWishNotification(seller, wishMember, wishProduct);
+    return new WishResponse("WISH");
+  }
 
-    @PostMapping("/add")
-    public String addProductToWishlist(@RequestParam("productId") Integer productId, Model model) {
-        Member member = memberRepository.getReferenceById(1);
-        Product product = productService.getProductById(productId);
-        wishlistService.addProductToWishlist(member, product);
-        return "redirect:";
-    }
+  @ResponseBody
+  @GetMapping("/count")
+  public Integer count(@AuthenticationPrincipal UserDetails userDetails) {
+    if (userDetails == null) return 0;
+    Integer result = wishlistService.findAll(userDetails.getUsername());
+    log.info("Wishlist count: {}", result);
+    return result == null ? 0 : result;
+  }
 
-    @PostMapping("/remove")
-    public String removeProductFromWishlist(@RequestParam("productId") Integer productId, Model model) {
-        Member member = memberRepository.getReferenceById(1);
-        Product product = productService.getProductById(productId);
-        wishlistService.removeProductFromWishlist(member, product);
-        return "redirect:";
-    }
+  @GetMapping("/wishlist")
+  public String wishlist(@AuthenticationPrincipal UserDetails userDetails, Pageable pageable, Model model) {
+    String userEmail = userDetails.getUsername();
+    Page<WishlistDTO> wishProductPage = wishlistService.findProductByMemberId(userEmail, pageable);
+    model.addAttribute("wishProductPage", wishProductPage);
+    return "wishlist/wishlist";
+  }
 
-    @GetMapping
-    public String viewWishlist(Model model) {
-        Member member = memberRepository.getReferenceById(1);
-        List<Wishlist> wishlist = wishlistService.getMemberWishlist(member);
-        model.addAttribute("wishlist", wishlist);
-        return "wishlist/view";
-    }
+  @ResponseBody
+  @GetMapping("/header-wish")
+  public List<WishlistDTO> wishlist(@AuthenticationPrincipal UserDetails userDetails) {
+    String userEmail = userDetails.getUsername();
+    return wishlistService.findWishTop3ByMemberId(userEmail);
+  }
 }
