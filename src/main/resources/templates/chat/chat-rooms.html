@@ -132,10 +132,7 @@
             <!-- Single Product -->
             <div class="col-12">
               <div class="single-product-area mb-30" th:each="chatRoom : ${chatRooms.content}">
-                <div class="product_image">
-                  <!-- Product Image -->
-                  <img class="normal_img" src="/img/product-img/onsale-1.png" alt="">
-                  <img class="hover_img" src="/img/product-img/best-1.png" alt="">
+
 
                   <!-- Product Badge -->
                   <div th:id="${chatRoom.chatRoomId}" class="product_badge read-count">
@@ -159,21 +156,20 @@
                       })
                     </script>
 
-                </div>
+
 
                 <div class="product_description">
-                  <p class="brand_name">Top</p>
                   <a th:href="@{|/chat-room/room?roomId=${chatRoom.chatRoomId}&productId=${chatRoom.productId}|}"
                      th:text="${chatRoom.productName}">대화 상대 닉네임</a>
                   <h6 class="product-price"
-                      th:text="${#temporals.format(chatRoom.latestSendTime,'yyyy.MM.dd HH:mm')}">
-                    날짜??</h6>
-                  <p class="product-short-desc"
                      th:if="${chatRoom.chatMessageType.description} == 'IMAGE'" th:text="|(사진)|">최근
-                    보낸 메세지</p>
-                  <p class="product-short-desc"
+                    보낸 메세지</h6>
+                  <h6 class="product-price"
                      th:if="${chatRoom.chatMessageType.description} == 'TEXT'"
-                     th:text="${chatRoom.message()}">최근 보낸 메세지</p>
+                     th:text="${chatRoom.message}">최근 보낸 메세지</h6>
+                  <p class="product-short-desc"
+                     th:text="${#temporals.format(chatRoom.latestSendTime,'yyyy.MM.dd E a hh:mm')}">
+                    날짜??</p>
                 </div>
               </div>
             </div>
@@ -194,7 +190,7 @@
                   th:each="pageNum : ${#numbers.sequence(0, chatRooms.totalPages - 1)}"
                   th:classappend="${pageNum == chatRooms.number} ? 'active' : ''">
                 <a class="page-link" th:href="@{rooms(page=${pageNum}, code=${selectOption.code})}"
-                   th:text="${pageNum + 1}"></a>
+                   th:text="${pageNum + 1}" th:if="${pageNum + 1} == 0? false : true"></a>
               </li>
 
               <li class="page-item" th:classappend="${chatRooms.hasNext()} ? '' : 'disabled'">
