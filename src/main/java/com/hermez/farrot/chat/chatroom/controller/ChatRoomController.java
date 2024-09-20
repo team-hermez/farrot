@@ -2,9 +2,12 @@ package com.hermez.farrot.chat.chatroom.controller;
 
 import com.hermez.farrot.chat.chatmessage.service.ChatMessageService;
 import com.hermez.farrot.chat.chatroom.dto.SelectOption;
+import com.hermez.farrot.chat.chatroom.dto.request.ChatRoomRequest;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomEnterResponse;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomsResponse;
+import com.hermez.farrot.chat.chatroom.dto.response.ReadCountResponse;
 import com.hermez.farrot.chat.chatroom.service.ChatRoomService;
+import com.hermez.farrot.image.service.FirebaseService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
 import java.util.ArrayList;
@@ -39,6 +42,7 @@ public class ChatRoomController {
   private final ChatRoomService chatRoomService;
   private final MemberRepository memberRepository;
   private final ChatMessageService chatMessageService;
+  private final FirebaseService firebaseService;
 
   @PostMapping("/enter/{productId}")
   public String enterChatRoom(@PathVariable Integer productId, RedirectAttributes redirectAttributes) {
@@ -74,6 +78,7 @@ public class ChatRoomController {
   public String chatRoomPage(@RequestParam Integer roomId,@RequestParam Integer productId,@AuthenticationPrincipal UserDetails userDetails,Model model) {
     if (userDetails == null) return "redirect:/login";
     String userEmail = userDetails.getUsername();
+    String publicImageUrl = firebaseService.getPublicImageUrl("farrotlogo.png");
     Member sender = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버없음"));
     ChatRoomEnterResponse chatRoomEnterResponse = ChatRoomEnterResponse.builder()
         .roomId(roomId)
@@ -83,6 +88,7 @@ public class ChatRoomController {
         .nickName(sender.getNickname())
         .build();
     model.addAttribute("chatRoomEnterResponse", chatRoomEnterResponse);
+    model.addAttribute("publicImageUrl", publicImageUrl);
     return "chat/chat-room";
   }
 
@@ -113,6 +119,8 @@ public class ChatRoomController {
     log.info("getReadCount: {}", readCount);
     return new ReadCountResponse(readCount);
   }
+
+
 
   private static List<SelectOption> getSelectChatRoomOptions() {
     List<SelectOption> selectOptions = new ArrayList<>();

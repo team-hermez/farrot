@@ -1,4 +1,4 @@
-package com.hermez.farrot.chat.chatroom.controller;
+package com.hermez.farrot.chat.chatroom.dto.response;
 
 public record ReadCountResponse(Integer readCount) {
 

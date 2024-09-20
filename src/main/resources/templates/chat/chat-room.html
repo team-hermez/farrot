@@ -41,7 +41,8 @@
 <input type="hidden" th:value="${chatRoomEnterResponse.email}" class="email">
 <input type="hidden" th:value="${chatRoomEnterResponse.productId}" class="product-id">
 <div class="wrapper">
-  <div class="display-container">
+  <div class="display-container"
+       th:style="'background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('+${publicImageUrl}+');  background-size: cover; background-repeat: no-repeat; background-position: center;'">
     <ul class="chatting-list">
 
     </ul>
