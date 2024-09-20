@@ -73,7 +73,6 @@ public class ChatRoomService {
 
   @Transactional
   public void connectChatRoom(Integer roomId) {
-    log.info("커넥트 메서드에 접속");
     ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(()->new RuntimeException("채팅방이 없습니다."));
     chatRoom.connect();
   }

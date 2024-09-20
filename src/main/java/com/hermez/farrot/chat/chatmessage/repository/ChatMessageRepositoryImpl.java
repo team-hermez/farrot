@@ -2,7 +2,6 @@ package com.hermez.farrot.chat.chatmessage.repository;
 
 import static com.hermez.farrot.chat.chatmessage.entity.QChatMessage.chatMessage;
 import static com.hermez.farrot.chat.chatroom.entity.QChatRoom.chatRoom;
-import static com.hermez.farrot.member.entity.QMember.member;
 
 import com.hermez.farrot.chat.chatmessage.entity.ChatMessage;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -38,7 +37,6 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepositoryCustom {
         .from(chatMessage)
         .where(chatRoomIdEq(chatRoomId),memberIdNe(memberId))
         .fetchOne();
-    log.info("Read count is {}", i);
     return i == null ? 0 : i;
   }
 
