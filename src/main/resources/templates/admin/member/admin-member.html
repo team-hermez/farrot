@@ -89,6 +89,8 @@
     <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- NProgress -->
     <link href="/vendors/nprogress/nprogress.css" rel="stylesheet">
     <!-- iCheck -->
@@ -180,12 +182,13 @@
                                 <div class="clearfix"></div>
                             </div>
 
+                            <form th:action="@{/admin/process-action}" method="post">
                                 <table class="table table-striped jambo_table bulk_action">
                                     <thead>
                                     <tr class="headings">
                                         <th>
                                             <input type="checkbox" id="check-all" class="flat"
-                                                   onclick="toggleAll(this)">
+                                                   onclick="this.form.querySelectorAll('input[name=selectedIds]').forEach(checkbox => checkbox.checked = this.checked);">
                                         </th>
                                         <th class="column-title">회원번호</th>
                                         <th class="column-title">이름</th>
@@ -199,58 +202,65 @@
                                     <tbody th:each="list : ${memberList}">
                                     <tr>
                                         <td class="a-center">
-                                            <input type="checkbox" name="id" th:value="${list.id}" class="flat"/>
+                                            <input type="checkbox" name="selectedIds" th:value="${list.id}" class="flat"/>
                                         </td>
-                                        <td th:text="${list.id}" class=" "></td>
+                                        <td th:text="${list.id}"></td>
                                         <td>
                                             <a style="text-decoration: underline;"
                                                th:href="@{/admin/member-detail/{id}(id=${list.id})}"
                                                th:text="${list.memberName}"></a>
                                         </td>
-                                        <td th:text="${list.nickname}" class=" "></td>
-                                        <td th:text="${list.email}" class=" "></td>
-                                        <td th:text="${list.phone}" class=" "></td>
-                                        <td th:text="${list.createAt}" class=" "></td>
-                                        <td th:text="${list.role}" class=" "></td>
+                                        <td th:text="${list.nickname}"></td>
+                                        <td th:text="${list.email}"></td>
+                                        <td th:text="${list.phone}"></td>
+                                        <td th:text="${list.createAt}"></td>
+                                        <td th:text="${list.role}"></td>
                                     </tr>
                                     </tbody>
                                 </table>
 
                                 <div class="row justify-content-end">
                                     <div class="btn-group form-check">
-                                        <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#userModal">수정
-                                        </button>
-
+                                        <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#userModal">수정</button>
                                     </div>
                                 </div>
 
-                            <form th:action="@{/admin/process-action}" method="post">
-                            <div class="modal fade" id="userModal" tabindex="-1"
-                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel">공지사항</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="col-md-4">
-                                                <label class="form-label">내용</label>
-                                                <input type="text" class="form-control is-valid"
-                                                       id="password_old" name="password_old" value=""
-                                                       required>
+                                <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">공지사항</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form>
+                                                    <div class="mb-3">
+                                                        <label for="content" class="form-label">공지사항 내용</label>
+                                                        <textarea class="form-control" name="content" id="content" rows="4" required></textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="priority" class="form-label">우선순위</label>
+                                                        <select class="form-select" id="priority" name="priority">
+                                                            <option selected>선택하세요...</option>
+                                                            <option value="⭐⭐⭐⭐⭐">높음</option>
+                                                            <option value="⭐⭐⭐">보통</option>
+                                                            <option value="⭐">낮음</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="date" class="form-label">시작 날짜</label>
+                                                        <input type="date" class="form-control" id="date" name="date">
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                                                <button type="submit" name="action" value="alert" class="btn btn-primary">알림</button>
                                             </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">닫기
-                                            </button>
-                                            <button type="submit" name="action" class="btn btn-primary">알림</button>
-                                        </div>
                                     </div>
                                 </div>
-                            </div>
+
                             </form>
 
                             <nav aria-label="Page navigation">
