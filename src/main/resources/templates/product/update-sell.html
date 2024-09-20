@@ -41,7 +41,7 @@
                 <div class="my-account-content mb-50">
                     <h5 class="mb-3">상품 수정</h5>
 
-                    <form action="#" method="post" th:action="@{/product/update-sell}" th:object="${product}">
+                    <form action="#" method="post" th:action="@{/product/update-sell}" th:object="${product}" enctype="multipart/form-data">
                         <div class="row">
                             <input type="hidden" th:field="*{id}" />
                             <input type="hidden" th:field="*{view}" />
@@ -71,8 +71,8 @@
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label for="imageFile">이미지 등록</label>
-                                    <input type="file" class="form-control" id="imageFile" name="imageFile">
+                                    <label for="imageFiles">이미지 등록</label>
+                                    <input type="file" class="form-control" id="imageFiles" name="imageFiles" multiple>
                                 </div>
                             </div>
                             <div class="col-12">

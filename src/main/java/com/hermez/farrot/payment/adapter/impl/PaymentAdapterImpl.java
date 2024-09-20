@@ -111,16 +111,4 @@ public class PaymentAdapterImpl implements PaymentAdapter {
         }
     }
 
-    @Override
-    public String showShipmentTracking(String merchantUid) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("merchantUid", merchantUid);
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-        restTemplate.postForEntity(url+ "/shipping/track-shipment", request, String.class);
-        return null;
-    }
 }

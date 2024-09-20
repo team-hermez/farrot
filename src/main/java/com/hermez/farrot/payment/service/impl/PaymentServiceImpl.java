@@ -1,6 +1,9 @@
 package com.hermez.farrot.payment.service.impl;
 
+import com.google.api.Http;
+import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
+import com.hermez.farrot.member.service.MemberService;
 import com.hermez.farrot.payment.adapter.PaymentAdapter;
 import com.hermez.farrot.payment.dto.request.TrackingRequest;
 import com.hermez.farrot.payment.dto.request.PaymentFormRequest;
@@ -14,6 +17,7 @@ import com.hermez.farrot.payment.repository.PaymentStatusRepository;
 import com.hermez.farrot.payment.service.PaymentService;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,35 +34,38 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentStatusRepository paymentStatusRepository;
     private final ProductService productService;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
-    public PaymentServiceImpl(PaymentAdapter paymentAdapter, PaymentRepository paymentRepository, PaymentStatusRepository paymentStatusRepository, ProductService productService, MemberRepository memberRepository) {
+    public PaymentServiceImpl(PaymentAdapter paymentAdapter, PaymentRepository paymentRepository, PaymentStatusRepository paymentStatusRepository, ProductService productService, MemberRepository memberRepository, MemberService memberService) {
         this.paymentAdapter = paymentAdapter;
         this.paymentRepository = paymentRepository;
         this.paymentStatusRepository = paymentStatusRepository;
         this.productService = productService;
         this.memberRepository = memberRepository;
+        this.memberService = memberService;
     }
 
     @Value("${safe-payment.api.key}")
     protected String apiKey;
 
-
     @Override
-    public SaferrotPaymentRequest initPayment(PaymentFormRequest paymentFormRequest) {
+    public SaferrotPaymentRequest initPayment(PaymentFormRequest paymentFormRequest, HttpServletRequest servletRequest) {
+        Member buyerMember = memberService.getMember(servletRequest);
+        Product product = productService.getProductById(paymentFormRequest.getProductId());
         return SaferrotPaymentRequest.builder()
                 .serverName("farrot")
                 .apiKey(apiKey)
-                .callbackUrl("http://localhost:8080/product/product-detail?productId=204")
-                .buyerId(1)
-                .productId(1)
-                .sellerAccount("0000-0000-0000-0000")
+                .callbackUrl("http://localhost:8080/product/product-detail?productId=" + paymentFormRequest.getProductId())
+                .buyerId(buyerMember.getId())
+                .productId(product.getId())
+                .sellerAccount("3020000011519")
                 .safeDay(5)
                 .merchantUid("merchant_" + new Date().getTime())
                 .paymentUrl(paymentAdapter.initPayment().getPaymentUrl())
-                .amount(10)
-                .productName("상품1")
+                .amount(product.getPrice())
+                .productName(product.getProductName())
                 .resultUrl("http://localhost:8080/payment/payment-result")
-                .buyerEmail("aaa@aaa")
+                .buyerEmail(buyerMember.getEmail())
                 .build();
     }
 
@@ -88,19 +95,16 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<Payment> getPaymentsByMemberId(Integer memberId) {
-        return paymentRepository.findByMemberId(memberId);
+    public List<Payment> getPaymentsByMemberId(HttpServletRequest servletRequest) {
+        return paymentRepository.findByMemberId(memberService.getMember(servletRequest).getId());
     }
 
     @Override
-    public List<Payment> getPaymentsBySellerId(Integer sellerId) {
-
-        List<Product> products = productService.getProductsByMember(1);
-
+    public List<Payment> getPaymentsBySellerId(HttpServletRequest servletRequest) {
+        List<Product> products = productService.getProductsByMember(memberService.getMember(servletRequest).getId());
         List<Payment> payments = products.stream()
                 .flatMap(product -> paymentRepository.findByProduct(product).stream())
                 .toList();
-
         return payments;
     }
 
@@ -108,20 +112,13 @@ public class PaymentServiceImpl implements PaymentService {
     public void registerLogisticsInfo(TrackingRequest request) {
         Payment payment = paymentRepository.findById(request.getPaymentId())
                 .orElseThrow(() -> new IllegalArgumentException("없는 id입니다"));
-
         payment.setCourierCode(request.getCourierCode());
         payment.setTrackingNumber(request.getTrackingNumber());
         paymentStatusRepository.findById(2).ifPresent(payment::setPaymentStatus);
         paymentRepository.save(payment);
-
         Product product = payment.getProduct();
         productService.updateProductStatus(product.getId(),2);
         paymentAdapter.registerLogisticsInfo(request, payment.getMerchantUid());
     }
 
-    @Override
-    public String showShipmentTracking(String merchantUid){
-        paymentAdapter.showShipmentTracking( merchantUid);
-        return null;
-    }
 }

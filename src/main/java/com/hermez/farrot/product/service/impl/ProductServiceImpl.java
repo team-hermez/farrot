@@ -2,6 +2,7 @@ package com.hermez.farrot.product.service.impl;
 
 import com.hermez.farrot.category.entity.Category;
 import com.hermez.farrot.category.service.CategoryService;
+import com.hermez.farrot.image.dto.request.ImageRequest;
 import com.hermez.farrot.image.entity.Image;
 import com.hermez.farrot.image.repository.ImageRepository;
 import com.hermez.farrot.image.service.ImageService;
@@ -22,6 +23,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -31,24 +34,30 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final ProductStatusRepository productStatusRepository;
-    private final ImageRepository imageRepository;
     private final ImageService imageService;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, ProductStatusRepository productStatusRepository, ImageRepository imageRepository, ImageService imageService) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, ProductStatusRepository productStatusRepository, ImageService imageService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.productStatusRepository = productStatusRepository;
-        this.imageRepository = imageRepository;
         this.imageService = imageService;
     }
 
+    @Transactional
     @Override
-    public Product saveProduct(Product product) {
+    public Product saveProduct(Product product, MultipartFile[] imageFiles) {
         ProductStatus defaultStatus = productStatusRepository.findByStatus("판매중")
                 .orElseThrow(() -> new ResourceNotFoundException("판매중 상태 존재하지 않습니다."));
         product.setProductStatus(defaultStatus);
+        productRepository.save(product);
+        for (MultipartFile file : imageFiles) {
+            if (!file.isEmpty()) {
+                imageService.save(new ImageRequest<>(product, file));
+            }
+        }
         return productRepository.save(product);
     }
+
     @Override
     public List<Category> getAllCategories() {
         return categoryService.getAllCategories();
