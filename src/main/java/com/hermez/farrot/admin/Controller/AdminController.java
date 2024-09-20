@@ -202,11 +202,11 @@ public class AdminController {
         return "redirect:/admin/member";
     }
 
-//    @GetMapping("/latest-products")
-//    @ResponseBody
-//    public List<Product> getLatestProducts() {
-//        return productService.findTop5Latest();
-//    }
+    @GetMapping("/latest-products")
+    @ResponseBody
+    public List<Product> getLatestProducts() {
+        return productService.findTop5Latest();
+    }
 
     @PostMapping("/change-status/{id}")
     public String processAction(@PathVariable("id") Integer id,
