@@ -113,7 +113,7 @@ sendButton.addEventListener('click', sendMessage);
 
 function getMessageEnter() {
 
-  stompClient.subscribe('/user/room/'+roomId.value, (data) => {
+  stompClient.subscribe(`/user/room/${roomId.value}`, data => {
     console.log(data);
     const {nickName, senderId,message,type,readCount ,sendTime} = JSON.parse(data.body);
     const item = new LiModel(nickName, senderId,message,type,readCount,sendTime )

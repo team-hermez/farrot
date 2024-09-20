@@ -39,12 +39,9 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepositoryCustom {
         .where(chatRoomIdEq(chatRoomId),memberIdNe(memberId))
         .fetchOne();
     log.info("Read count is {}", i);
-    return i;
+    return i == null ? 0 : i;
   }
 
-  private BooleanExpression checkReadCount(Integer chatRoomId, Integer memberId) {
-   return chatRoomIdEq(chatRoomId).and(member.id.eq(memberId));
-  }
 
   private BooleanExpression chatRoomIdEq(Integer chatRoomId) {
     return chatRoomId != null? chatMessage.chatRoom.id.eq(chatRoomId) : null;

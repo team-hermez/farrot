@@ -60,7 +60,7 @@ public class ChatMessageService {
     return chatMessageRepository.save(chatMessage).getReadCount();
   }
 
-  public Integer getReadCount(Integer memberId, Integer chatRoomId) {
+  public int getReadCount(Integer memberId, Integer chatRoomId) {
     return chatMessageRepositoryImpl.countReadCountByChatRoomId(memberId, chatRoomId);
   }
 
@@ -79,7 +79,7 @@ public class ChatMessageService {
               .sendTime(formatTime(c.getCreatedAt()))
               .build();
         }
-    ).collect(Collectors.toList());
+    ).toList();
   }
 
 

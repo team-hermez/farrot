@@ -12,6 +12,7 @@ import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -68,10 +69,24 @@ public class ChatRoomController {
     List<SelectOption> selectOptions = getSelectChatRoomOptions();
     Member findMember = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버없음"));
     Page<ChatRoomsResponse> chatRooms = chatRoomService.findAll(findMember.getId(),selectOption.code(),pageable);//쿼리2
-
     model.addAttribute("selectOptions",selectOptions);
     model.addAttribute("chatRooms", chatRooms);
     return "chat/chat-rooms";
+  }
+
+  @ResponseBody
+  @GetMapping("/notification")
+  public ReadCountResponse getReadCount(@AuthenticationPrincipal UserDetails userDetails) {
+    String userEmail = userDetails.getUsername();
+    Member findMember = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버없음"));
+    List<ChatRoomsResponse> chatRooms = chatRoomService.findBasicAll(findMember.getId(),"All");//쿼리2
+    int sum = chatRooms
+        .stream()
+        .map(c -> chatMessageService.getReadCount(findMember.getId(), c.chatRoomId()))
+        .toList()
+        .stream().mapToInt(Integer::intValue)
+        .sum();
+    return new ReadCountResponse(sum);
   }
 
   @GetMapping("/room")
