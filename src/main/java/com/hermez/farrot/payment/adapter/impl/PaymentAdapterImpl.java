@@ -2,13 +2,14 @@ package com.hermez.farrot.payment.adapter.impl;
 
 import com.hermez.farrot.payment.adapter.PaymentAdapter;
 import com.hermez.farrot.payment.dto.request.PurchaseConfirmRequest;
+import com.hermez.farrot.payment.dto.request.TrackingEscrowRequest;
+import com.hermez.farrot.payment.dto.request.TrackingRequest;
 import com.hermez.farrot.payment.dto.response.PaymentResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -33,7 +34,7 @@ public class PaymentAdapterImpl implements PaymentAdapter {
     public PaymentResponse initPayment() {
         try {
             ResponseEntity<PaymentResponse> response = restTemplate.postForEntity(
-                    url + "/initiate-payment",
+                    url + "/escrow/initiate-payment",
                     apiKey,
                     PaymentResponse.class
             );
@@ -55,7 +56,7 @@ public class PaymentAdapterImpl implements PaymentAdapter {
             HttpEntity<PurchaseConfirmRequest> httpEntity = new HttpEntity<>(request);
 
             ResponseEntity<String> response = restTemplate.exchange(
-                    url + "/confirm",
+                    url + "/escrow/confirm",
                     HttpMethod.POST,
                     httpEntity,
                     String.class
@@ -75,4 +76,51 @@ public class PaymentAdapterImpl implements PaymentAdapter {
         }
     }
 
+    @Override
+    public void registerLogisticsInfo(TrackingRequest request,String merchantId) {
+        try {
+
+
+            HttpEntity<TrackingEscrowRequest> httpEntity = new HttpEntity<>(TrackingEscrowRequest.builder()
+                    .courierCode(request.getCourierCode())
+                    .paymentId(request.getPaymentId())
+                    .trackingNumber(request.getTrackingNumber())
+                    .merchantId(merchantId)
+                    .serverName("farrot")
+                    .apiKey(apiKey)
+                    .build());
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url + "/api/shipping/register-logistics",
+                    HttpMethod.POST,
+                    httpEntity,
+                    String.class
+            );
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                System.out.println("운송장 등록 요청이 성공적으로 처리되었습니다.");
+            } else {
+                System.out.println("운송장 등록 요청 실패: " + response.getStatusCode());
+            }
+        } catch (HttpClientErrorException e) {
+            throw new ResponseStatusException(e.getStatusCode(), "운송장 등록 요청 중 오류가 발생했습니다.");
+        } catch (RestClientException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 통신 중 오류가 발생했습니다.");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "예기치 않은 서버 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public String showShipmentTracking(String merchantUid) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("merchantUid", merchantUid);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+        restTemplate.postForEntity(url+ "/shipping/track-shipment", request, String.class);
+        return null;
+    }
 }

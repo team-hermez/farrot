@@ -29,4 +29,6 @@ public interface ProductService {
     Page<Product> searchProductsByName(String productName, Pageable pageable);
 
     ProductSearchResponse getProductsByFilters(ProductSearchRequest productSearchRequest);
+
+    List<Product> findTop5Latest();
 }

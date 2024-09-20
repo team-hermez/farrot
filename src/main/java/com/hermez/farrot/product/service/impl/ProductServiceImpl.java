@@ -84,7 +84,9 @@ public class ProductServiceImpl implements ProductService {
             if (request.getMaxPrice() != null) {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThanOrEqualTo(root.get("price"), request.getMaxPrice()));
             }
-
+            if (request.getMemberId() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("member").get("id"), request.getMemberId()));
+            }
             query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
             return predicate;
         }, pageable);
@@ -176,4 +178,6 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findByProductNameContainingIgnoreCase(productName, pageable);
     }
 
+    @Override
+    public List<Product> findTop5Latest() { return productRepository.findTop5ByOrderByCreatedAtDesc(); }
 }

@@ -22,4 +22,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
     List<Product> findByMemberId(Integer memberId);
 
     Page<Product> findByProductNameContainingIgnoreCase(String productName, Pageable pageable);
+
+    List<Product> findTop5ByOrderByCreatedAtDesc();
 }

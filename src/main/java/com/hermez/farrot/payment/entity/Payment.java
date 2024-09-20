@@ -1,5 +1,6 @@
 package com.hermez.farrot.payment.entity;
 
+import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,8 +29,9 @@ public class Payment {
     @JoinColumn(name = "PAYMENT_STATUS_ID", nullable = false)
     private PaymentStatus paymentStatus;
 
-    @Column(name = "MEMBER_ID")
-    private Integer memberId;
+    @ManyToOne
+    @JoinColumn(name = "MEMBER_ID", nullable = false)
+    private Member member;
 
     @Column(name = "CREATED_AT")
     private Timestamp createdAt;
@@ -42,4 +44,11 @@ public class Payment {
 
     @Column(name = "ESCROW_CODE")
     private String escrowCode;
+
+    @Column(name = "COURIER_CODE")
+    private String courierCode;
+
+    @Column(name = "TRACKING_NUMBER")
+    private String trackingNumber;
+
 }
