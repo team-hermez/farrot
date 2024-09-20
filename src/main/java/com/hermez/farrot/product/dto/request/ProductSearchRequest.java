@@ -9,6 +9,8 @@ import java.util.List;
 @Setter
 public class ProductSearchRequest {
 
+    private Integer memberId;
+
     private String productName;
 
     private List<Integer> categoryId;

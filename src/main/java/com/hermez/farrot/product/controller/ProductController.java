@@ -39,7 +39,7 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public String getSearchProducts(@ModelAttribute ProductSearchRequest productSearchRequest,@RequestParam(required = false) String sort,
+    public String getSearchProducts(@ModelAttribute ProductSearchRequest productSearchRequest, @RequestParam(required = false) String sort,
                                     Model model, HttpSession session) {
         List<Category> categories = productService.getAllCategories();
         ProductSearchResponse response = productService.getProductsByFilters(productSearchRequest);
@@ -50,7 +50,7 @@ public class ProductController {
     }
 
     @GetMapping("/product-detail")
-    public String getProductDetail(@RequestParam("productId") Integer productId,Model model) {
+    public String getProductDetail(@RequestParam("productId") Integer productId, Model model) {
         ProductDetailResponse productDetailResponse = productService.getProductDetail(productId);
         ProductSearchRequest productSearchRequest = new ProductSearchRequest();
         productSearchRequest.setSize(4);
@@ -71,7 +71,7 @@ public class ProductController {
 
     @Transactional
     @PostMapping("/register-sell")
-    public String postRegisterSell(@ModelAttribute Product product, @RequestParam("imageFiles") MultipartFile[] imageFiles , BindingResult result) {
+    public String postRegisterSell(@ModelAttribute Product product, @RequestParam("imageFiles") MultipartFile[] imageFiles, BindingResult result) {
         Member member = memberRepository.getReferenceById(1);
         product.setMember(member);
         productService.saveProduct(product);
@@ -98,7 +98,7 @@ public class ProductController {
         Member member = memberRepository.getReferenceById(1);
         product.setMember(member);
         productService.saveProduct(product);
-        return "redirect:/product/product-detail?productId="+product.getId();
+        return "redirect:/product/product-detail?productId=" + product.getId();
     }
 
     @PostMapping("/delete")
@@ -119,5 +119,14 @@ public class ProductController {
         model.addAttribute("productName", productsSearchRequest.getProductName());
 
         return "product/search-products";
+    }
+
+    @GetMapping("/member-products")
+    public String getMemberProducts(@ModelAttribute ProductSearchRequest productSearchRequest, Model model) {
+        productSearchRequest.setMemberId(1);
+        ProductSearchResponse response = productService.getProductsByFilters(productSearchRequest);
+        model.addAttribute("response", response);
+
+        return "product/member-products";
     }
 }
