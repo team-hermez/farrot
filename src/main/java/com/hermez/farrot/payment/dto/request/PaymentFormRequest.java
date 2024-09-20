@@ -1,14 +1,12 @@
 package com.hermez.farrot.payment.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class PaymentFormRequest {
     private Integer buyerId;
     private Integer productId;

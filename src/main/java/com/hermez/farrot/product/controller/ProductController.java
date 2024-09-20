@@ -1,22 +1,20 @@
 package com.hermez.farrot.product.controller;
 
 import com.hermez.farrot.category.entity.Category;
-import com.hermez.farrot.image.dto.request.ImageRequest;
-import com.hermez.farrot.image.service.ImageService;
-import com.hermez.farrot.member.entity.Member;
-import com.hermez.farrot.member.repository.MemberRepository;
+import com.hermez.farrot.member.security.JwtTokenProvider;
+import com.hermez.farrot.member.service.MemberService;
+import com.hermez.farrot.member.service.UserService;
 import com.hermez.farrot.product.dto.request.ProductSearchRequest;
 import com.hermez.farrot.product.dto.request.ProductsSearchRequest;
 import com.hermez.farrot.product.dto.response.ProductDetailResponse;
 import com.hermez.farrot.product.dto.response.ProductSearchResponse;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.service.ProductService;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -29,18 +27,19 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final MemberRepository memberRepository;
-    private final ImageService imageService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
+    private final MemberService memberService;
 
-    public ProductController(ProductService productService, MemberRepository memberRepository, ImageService imageService) {
+    public ProductController(ProductService productService, JwtTokenProvider jwtTokenProvider, UserService userService, MemberService memberService) {
         this.productService = productService;
-        this.memberRepository = memberRepository;
-        this.imageService = imageService;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userService = userService;
+        this.memberService = memberService;
     }
 
     @GetMapping("/products")
-    public String getSearchProducts(@ModelAttribute ProductSearchRequest productSearchRequest, @RequestParam(required = false) String sort,
-                                    Model model, HttpSession session) {
+    public String getSearchProducts(@ModelAttribute ProductSearchRequest productSearchRequest, Model model) {
         List<Category> categories = productService.getAllCategories();
         ProductSearchResponse response = productService.getProductsByFilters(productSearchRequest);
         model.addAttribute("categories", categories);
@@ -69,17 +68,10 @@ public class ProductController {
         return "product/register-sell";
     }
 
-    @Transactional
     @PostMapping("/register-sell")
-    public String postRegisterSell(@ModelAttribute Product product, @RequestParam("imageFiles") MultipartFile[] imageFiles, BindingResult result) {
-        Member member = memberRepository.getReferenceById(1);
-        product.setMember(member);
-        productService.saveProduct(product);
-        for (MultipartFile file : imageFiles) {
-            if (!file.isEmpty()) {
-                imageService.save(new ImageRequest<>(product, file));
-            }
-        }
+    public String postRegisterSell(@ModelAttribute Product product, @RequestParam("imageFiles") MultipartFile[] imageFiles, BindingResult result, HttpServletRequest servletRequest) {
+        product.setMember(memberService.getMember(servletRequest));
+        productService.saveProduct(product, imageFiles);
         return "redirect:/product/products";
     }
 
@@ -93,16 +85,13 @@ public class ProductController {
     }
 
     @PostMapping("/update-sell")
-    public String updateProduct(@ModelAttribute Product product) {
-        System.out.println(product.getId());
-        Member member = memberRepository.getReferenceById(1);
-        product.setMember(member);
-        productService.saveProduct(product);
+    public String updateProduct(@ModelAttribute Product product, @RequestParam("imageFiles") MultipartFile[] imageFiles) {;
+        productService.saveProduct(product, imageFiles);
         return "redirect:/product/product-detail?productId=" + product.getId();
     }
 
     @PostMapping("/delete")
-    public String deleteProduct(@RequestParam("id") Integer productId, Model model) {
+    public String deleteProduct(@RequestParam("id") Integer productId) {
         productService.deleteProductById(productId);
         return "redirect:/product/products";
     }
@@ -122,11 +111,10 @@ public class ProductController {
     }
 
     @GetMapping("/member-products")
-    public String getMemberProducts(@ModelAttribute ProductSearchRequest productSearchRequest, Model model) {
-        productSearchRequest.setMemberId(1);
+    public String getMemberProducts(@ModelAttribute ProductSearchRequest productSearchRequest, Model model, HttpServletRequest servletRequest) {
+        productSearchRequest.setMemberId(userService.userDetail(jwtTokenProvider.resolveToken(servletRequest)).getId());
         ProductSearchResponse response = productService.getProductsByFilters(productSearchRequest);
         model.addAttribute("response", response);
-
         return "product/member-products";
     }
 }
