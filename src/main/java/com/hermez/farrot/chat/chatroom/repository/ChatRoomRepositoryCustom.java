@@ -114,7 +114,6 @@ public class ChatRoomRepositoryCustom {
         .fetchOne();
   }
 
-  //나중에 지울거
   public Member findSellerByProductId(Integer productId){
     return queryFactory
         .select(product.member)

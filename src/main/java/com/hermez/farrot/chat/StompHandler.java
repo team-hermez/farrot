@@ -53,7 +53,7 @@ public class StompHandler implements ChannelInterceptor {
   private void handleMessage(StompCommand stompCommand,StompHeaderAccessor accessor, String senderId, String roomId) {
     switch (stompCommand) {
       case CONNECT:
-        connectToChatRoom(accessor,roomId,senderId); break;
+        connectToChatRoom(roomId,senderId); break;
       case SUBSCRIBE:
       case SEND:
         verifyAccessToken(); break;
@@ -64,15 +64,12 @@ public class StompHandler implements ChannelInterceptor {
 
   private void disConnectToChatRoom(String roomId) {
     log.info("disconnect ");
-    Integer roomId_ = Integer.parseInt(roomId);
-    chatRoomService.disconnectChatRoom(roomId_);
+    chatRoomService.disconnectChatRoom(Integer.parseInt(roomId));
   }
 
-  private void connectToChatRoom(StompHeaderAccessor accessor, String roomId,String senderId) {
-    Integer roomId_ = Integer.parseInt(roomId);
-    Integer senderId_ = Integer.parseInt(senderId);
-    chatRoomService.readMessage(roomId_,senderId_);
-    chatRoomService.connectChatRoom(roomId_);
+  private void connectToChatRoom(String roomId,String senderId) {
+    chatRoomService.readMessage(Integer.parseInt(roomId), Integer.parseInt(senderId));
+    chatRoomService.connectChatRoom(Integer.parseInt(roomId));
   }
 
   private void verifyAccessToken() {

@@ -161,9 +161,6 @@ function LiModel(name, senderId ,msg, type,readCount,time) {
     li.classList.add(userId.value === this.senderId.toString() ? 'sent' : 'received')
     const dom = ` <span class="profile">
           <span class="user">${this.name}</span>
-          <img class="image"
-            src=""
-            alt="any">
         </span>
         <span class="message">${this.msg}</span>
         <ul>
@@ -180,9 +177,6 @@ function LiModel(name, senderId ,msg, type,readCount,time) {
     li.classList.add(userId.value === this.senderId.toString() ? 'sent' : 'received')
     const dom = ` <span class="profile">
           <span class="user">${this.name}</span>
-          <img class="image"
-          src=""
-            alt="any">
         </span>
         <span class="message"><img src="${this.msg}" alt="text-img" class="message-img"></span>
         <ul>

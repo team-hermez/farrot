@@ -12,7 +12,6 @@ import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -68,7 +67,7 @@ public class ChatRoomController {
     String userEmail = userDetails.getUsername();
     List<SelectOption> selectOptions = getSelectChatRoomOptions();
     Member findMember = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버없음"));
-    Page<ChatRoomsResponse> chatRooms = chatRoomService.findAll(findMember.getId(),selectOption.code(),pageable);//쿼리2
+    Page<ChatRoomsResponse> chatRooms = chatRoomService.findAll(findMember.getId(),selectOption.code(),pageable);
     model.addAttribute("selectOptions",selectOptions);
     model.addAttribute("chatRooms", chatRooms);
     return "chat/chat-rooms";
@@ -79,7 +78,7 @@ public class ChatRoomController {
   public ReadCountResponse getReadCount(@AuthenticationPrincipal UserDetails userDetails) {
     String userEmail = userDetails.getUsername();
     Member findMember = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버없음"));
-    List<ChatRoomsResponse> chatRooms = chatRoomService.findBasicAll(findMember.getId(),"All");//쿼리2
+    List<ChatRoomsResponse> chatRooms = chatRoomService.findBasicAll(findMember.getId(),"All");
     int sum = chatRooms
         .stream()
         .map(c -> chatMessageService.getReadCount(findMember.getId(), c.chatRoomId()))
@@ -110,7 +109,6 @@ public class ChatRoomController {
   @ResponseBody
   @PostMapping("/room")
   public ChatRoomEnterResponse chatRoomPageReload(@RequestBody ChatRoomRequest chatRoomRequest) {
-    log.info("reload chat room request: {}", chatRoomRequest);
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails principal = (UserDetails) authentication.getPrincipal();
     String userEmail = principal.getUsername();
@@ -128,10 +126,8 @@ public class ChatRoomController {
   @PostMapping("/get/read-count")
   public ReadCountResponse getReadCount(@AuthenticationPrincipal UserDetails userDetails,@RequestBody String roomId) {
     String userEmail = userDetails.getUsername();
-    log.info("roomId: {}", roomId.substring(7).trim());
     Member member = memberRepository.findByEmail(userEmail).orElseThrow();
     Integer readCount = chatMessageService.getReadCount(member.getId(), Integer.parseInt(roomId.substring(7).trim()));
-    log.info("getReadCount: {}", readCount);
     return new ReadCountResponse(readCount);
   }
 

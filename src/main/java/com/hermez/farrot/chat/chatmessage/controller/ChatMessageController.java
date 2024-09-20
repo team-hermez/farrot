@@ -1,7 +1,9 @@
 package com.hermez.farrot.chat.chatmessage.controller;
 
+import com.hermez.farrot.chat.chatmessage.dto.request.ConnectRequest;
 import com.hermez.farrot.chat.chatmessage.dto.request.SendMessageRequest;
 import com.hermez.farrot.chat.chatmessage.dto.response.ChatResponse;
+import com.hermez.farrot.chat.chatmessage.dto.response.ConnectResponse;
 import com.hermez.farrot.chat.chatmessage.service.ChatMessageService;
 import com.hermez.farrot.chat.chatroom.dto.response.ChatRoomEnterResponse;
 import java.time.LocalDateTime;
@@ -45,20 +47,16 @@ public class ChatMessageController {
 
   @MessageMapping("/enter/{roomId}")
   public void sendBeforeMessage(@Payload ChatRoomEnterResponse chatRoomEnterResponse, StompHeaderAccessor accessor) {
-    log.info("Sending before message: {}", chatRoomEnterResponse);
-    log.info("===============sesionid: {}",accessor.getSessionId());
       chatMessageService.findAllByChatRoomId(chatRoomEnterResponse)
     .forEach(chatMessage -> chatMessageService.sendMessageToUser(accessor.getSessionId(), "/room/" + chatRoomEnterResponse.roomId(), chatMessage));
   }
 
   @MessageMapping("/connect/{roomId}")
   public void connectMessage(@DestinationVariable Integer roomId,@Payload ConnectRequest connectRequest){
-    log.info("Connecting to room 이죠: {}", roomId);
     messagingTemplate.convertAndSend("/room/connect/"+roomId,new ConnectResponse("CONNECT",connectRequest.userEmail()));
   }
 
   private String formatTime(LocalDateTime time) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("a h:mm");
-    return time.format(formatter);
+    return time.format(DateTimeFormatter.ofPattern("a h:mm"));
   }
 }

@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.MessageHeaders;
@@ -110,8 +109,7 @@ public class ChatMessageService {
   }
 
   private String formatTime(LocalDateTime time) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("a h:mm");
-    return time.format(formatter);
+    return time.format(DateTimeFormatter.ofPattern("a h:mm"));
   }
 
 }
