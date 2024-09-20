@@ -50,6 +50,25 @@ public class ChatRoomRepositoryCustom {
     return new PageImpl<>(content, pageable, allContent.size());
   }
 
+  public List<ChatRoomsResponse> findAllBasicById(List<Integer> chatRoomIds) {
+   return chatRoomIds.stream().map(
+            chatRoomId ->
+                queryFactory
+                    .select(constructor(ChatRoomsResponse.class,
+                        chatRoom.id, chatRoom.product.id,
+                        chatRoom.product.productName, chatMessage.type,
+                        chatMessage.message, chatMessage.createdAt,
+                        chatMessage.readCount))
+                    .from(chatMessage)
+                    .join(chatMessage.chatRoom, chatRoom)
+                    .where(chatRoom.id.eq(chatRoomId))
+                    .orderBy(chatMessage.createdAt.desc())
+                    .fetchFirst()
+        )
+        .filter(Objects::nonNull)
+        .toList();
+  }
+
 
   public Integer findChatRoomIdBySenderId(Integer senderId) {
     return queryFactory
