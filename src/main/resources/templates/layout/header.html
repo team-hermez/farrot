@@ -1,7 +1,11 @@
 <header class="header_area">
   <script type="module">
     import {initializeApp} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-    import {getMessaging, getToken, onMessage} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-messaging.js";
+    import {
+      getMessaging,
+      getToken,
+      onMessage
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-messaging.js";
 
     const firebaseFcm = (
         () => {
@@ -48,7 +52,7 @@
                         })
                       })
                       .catch((error) => {
-                        console.log('푸시 토큰 가져오는 중에 에러 발생',error)
+                        console.log('푸시 토큰 가져오는 중에 에러 발생', error)
                       })
                     } else {
                       console.log('푸시 알림 거부됨');
@@ -61,6 +65,7 @@
               })
             }
           }
+
           return {
             init: function () {
               init()
@@ -69,6 +74,7 @@
         })()
     firebaseFcm.init()
   </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <div class="bigshop-main-menu">
     <div class="container">
       <div class="classy-nav-container breakpoint-off">
@@ -152,9 +158,26 @@
 
             <!-- Wishlist -->
             <div class="cart-area">
-              <div th:href="@{notification/list}" class="cart--btn"><span
-                  class="cart_quantity">2</span>
-                <i class="icofont-heart"></i></div>
+              <div id="read-count" class="cart--btn">
+                <span class="cart_quantity read-count"></span>
+                <script th:inline="javascript">
+                  $.ajax({
+                    url: '/chat-room/notification',
+                    type: 'get',
+                    success: data => {
+
+                      const notificationSpan = document.querySelector('.read-count')
+                      notificationSpan.textContent = data.readCount
+                      const spanDiv = document.getElementById('read-count')
+                      spanDiv.append(notificationSpan)
+                    },
+                    error: data => {
+                      console.log("실패", data)
+                    }
+                  })
+                </script>
+                <a th:href="@{/chat-room/rooms}"><i class="icofont-heart"></i></a>
+              </div>
 
               <!-- Cart Dropdown Content -->
               <div class="cart-dropdown-content">

@@ -5,6 +5,7 @@ import com.hermez.farrot.payment.dto.request.PaymentFormRequest;
 import com.hermez.farrot.payment.dto.request.PurchaseConfirmRequest;
 import com.hermez.farrot.payment.dto.response.PaymentResultResponse;
 import com.hermez.farrot.payment.service.PaymentService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,8 +22,9 @@ public class PaymentController {
     }
 
     @PostMapping("/init-payment")
-    public String initPayment(@ModelAttribute PaymentFormRequest paymentFormRequest, Model model) {
-        model.addAttribute("request",paymentService.initPayment(paymentFormRequest));
+    public String initPayment(@ModelAttribute PaymentFormRequest paymentFormRequest, Model model, HttpServletRequest servletRequest) {
+        System.out.println(paymentFormRequest.toString());
+        model.addAttribute("request", paymentService.initPayment(paymentFormRequest, servletRequest));
         return "payment/redirect-form";
     }
 
@@ -40,16 +42,14 @@ public class PaymentController {
     }
 
     @GetMapping("/member-payments")
-    public String getPaymentsPage(Model model) {
-        Integer memberId = 1;
-        model.addAttribute("payments", paymentService.getPaymentsByMemberId(memberId));
+    public String getPaymentsPage(Model model,HttpServletRequest servletRequest) {
+        model.addAttribute("payments", paymentService.getPaymentsByMemberId(servletRequest));
         return "/payment/member-payments";
     }
 
     @GetMapping("/member-payments-sell")
-    public String getPaymentsSellPage(Model model) {
-        Integer memberId = 1;
-        model.addAttribute("payments", paymentService.getPaymentsBySellerId(memberId));
+    public String getPaymentsSellPage(Model model, HttpServletRequest servletRequest) {
+        model.addAttribute("payments", paymentService.getPaymentsBySellerId(servletRequest));
         return "/payment/member-payments-sell";
     }
 
@@ -57,10 +57,5 @@ public class PaymentController {
     public String registerLogistics(@ModelAttribute TrackingRequest request) {
         paymentService.registerLogisticsInfo(request);
         return "redirect:/payment/member-payments-sell";
-    }
-
-    @PostMapping("/request-shipment-tracking")
-    public void requestShipmentTracking(@RequestParam String merchantUid) {
-        paymentService.showShipmentTracking(merchantUid);
     }
 }

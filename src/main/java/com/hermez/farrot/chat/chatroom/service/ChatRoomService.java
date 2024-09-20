@@ -51,6 +51,10 @@ public class ChatRoomService {
     return chatRoomCustomRepository.findAllById(chatRoomIdList,pageable);
   }
 
+  public List<ChatRoomsResponse> findBasicAll(Integer senderId, String code){
+    List<Integer> chatRoomIdList = getChatRoomIdList(senderId, code);
+    return chatRoomCustomRepository.findAllBasicById(chatRoomIdList);
+  }
 
   public Integer findBySenderId(Integer senderId) {
     return chatRoomCustomRepository.findChatRoomIdBySenderId(senderId);

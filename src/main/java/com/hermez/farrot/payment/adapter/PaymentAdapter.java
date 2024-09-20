@@ -13,5 +13,4 @@ public interface PaymentAdapter {
 
     void registerLogisticsInfo(TrackingRequest request,String merchantId); // 추가된 메서드
 
-    String showShipmentTracking(String request);
 }
