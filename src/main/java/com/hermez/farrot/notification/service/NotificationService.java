@@ -1,5 +1,6 @@
 package com.hermez.farrot.notification.service;
 
+import com.hermez.farrot.admin.dto.AdminNotificationRequest;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.notification.dto.NotificationRequest;
@@ -42,6 +43,7 @@ public class NotificationService {
     }
   }
 
+
   public void createWishNotification(Member receiver, Member wishMember,Product wishProduct) {
     try {
       NotificationRequest request = NotificationRequest.builder()
@@ -55,15 +57,23 @@ public class NotificationService {
     }
   }
 
-  public void createNotification(List<Integer> selectedIds, String message) {
+
+  public void creatNotification(AdminNotificationRequest adminNotificationRequest) {
+
     try {
-      for(Integer selectId : selectedIds) {
+      for(Integer selectId : adminNotificationRequest.getSelectedIds()) {
         Member receiver = adminService.findMemberById(selectId);
 
         NotificationRequest request = NotificationRequest.builder()
-                .title("안녕하세요 관리자 입니다 \uD83D\uDE47")
+                .title("\uD83D\uDCE2 안녕하세요 관리자 입니다 \uD83D\uDE47")
                 .token(getToken(receiver.getEmail()))
-                .message(receiver.getNickname()+"님!!! "+ message)
+                .message(String.format(
+                        "%s\n중요: %s\n%s님!!! \n %s",
+                        adminNotificationRequest.getDate(),
+                        adminNotificationRequest.getPriority(),
+                        receiver.getNickname(),
+                        adminNotificationRequest.getContent()
+                ))
                 .build();
         sendNotification(request);
       }

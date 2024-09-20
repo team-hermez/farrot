@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
+import com.hermez.farrot.admin.dto.AdminNotificationRequest;
 import com.hermez.farrot.admin.dto.AdminProductMonthTotalSalesResponse;
 import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
 import com.hermez.farrot.admin.service.AdminService;
@@ -197,14 +198,13 @@ public class AdminController {
     }
 
     @PostMapping("/process-action")
-    public String postProcessAction(@RequestParam(value = "id", required = false) List<Integer> selectedIds,
-                                    @RequestParam("action") String action) {
-        if (action.equals("alert")) {
-            System.out.println("알림!");
-            System.out.println("selectedIds = " + selectedIds);
-            System.out.println("action@@@@ = " + action);
-            notificationService.creatNotification(selectedIds, action);
-        }
+    public String postProcessAction(@ModelAttribute AdminNotificationRequest adminNotificationRequest) {
+        System.out.println("adminNotificationRequest.getSelectedIds() = " + adminNotificationRequest.getSelectedIds());
+        System.out.println("adminNotificationRequest.getContent() = " + adminNotificationRequest.getContent());
+        System.out.println("adminNotificationRequest.getDate() = " + adminNotificationRequest.getDate());
+        System.out.println("adminNotificationRequest.getPriority() = " + adminNotificationRequest.getPriority());
+        
+        notificationService.creatNotification(adminNotificationRequest);
         return "redirect:/admin/member";
     }
 
