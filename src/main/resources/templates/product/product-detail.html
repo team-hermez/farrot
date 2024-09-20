@@ -10,7 +10,6 @@
     <link rel="icon" href="/img/core-img/favicon.ico">
     <link rel="stylesheet" href="/style.css">
     <style>
-        <style>
         .single_product_desc {
             background-color: #fff;
             border-radius: 8px;
@@ -66,7 +65,6 @@
         }
 
 
-    </style>
     </style>
 </head>
 
@@ -162,12 +160,57 @@
 
                         <!-- 이미지영역 -->
                         <div class="carousel-inner">
-                            <div class="carousel-item active">
+                            <div class="carousel-item active single-product-area">
+                                <div class="product_image">
                                 <a class="gallery_img" th:href="@{${productDetail.images.get(0).getPath()}}"
                                    title="First Slide">
                                     <img class="d-block w-100" th:src="@{${productDetail.images.get(0).getPath()}}"
                                          alt="First slide">
+
+                                    <div class="wish-check product_wish_badge">
+                                        <span th:if="${wishResponse.wishType}=='WISH'" class="badge-new"><i class="icofont-heart"></i></span>
+                                    </div>
+
+                                    <div id="wish" class="product_wishlist">
+                                        <a href="#"><i class="icofont-heart"></i></a>
+                                    </div>
+                                    <input type="hidden" id="wish-type" th:value="${wishResponse.wishType}">
+                                    <script th:inline="javascript">
+                                        const wish = document.getElementById('wish');
+                                        const wishType = document.getElementById('wish-type');
+                                        const wishCheck = document.querySelector('.wish-check')
+                                        wish.addEventListener('click',()=>{
+                                            console.log('위쉬리스트 클릭')
+                                            console.log(wishType.value)
+                                            $.ajax({
+                                                url:'/wishlist/wish',
+                                                contentType: 'application/json',
+                                                type:'post',
+                                                data:
+                                                    JSON.stringify({
+                                                        productId:[[${productDetail.productId}]],
+                                                        wishType:wishType.value
+                                                    }),
+                                                success:data=>{
+                                                    console.log('성공')
+                                                    console.log(data)
+                                                    if (data.wishType==='WISH'){
+                                                        wishType.value ='WISH'
+                                                    const wishIco = '<span class="badge-new"><i class="icofont-heart"></i></span>'
+                                                        wishCheck.innerHTML= wishIco;
+                                                    }else {
+                                                        wishType.value ='CANCEL'
+                                                        wishCheck.innerHTML='';
+                                                    }
+                                                },
+                                                error:data=>{
+                                                    console.log('에러',data)
+                                                }
+                                            })
+                                        })
+                                    </script>
                                 </a>
+                                </div>
                             </div>
                             <div th:each="image, iterStat : ${productDetail.images}">
                                 <div class="carousel-item" th:if="${iterStat.index > 0}">

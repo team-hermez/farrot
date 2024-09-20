@@ -96,7 +96,7 @@
                     <li><a href="/member/register">회원가입</a></li>
                     <li><a href="/member/login">로그인</a>
                     <li><a href="/chat-room/rooms">채팅방</a></li>
-                    <li><a href="#">찜목록</a></li>
+                    <li><a href="/wishlist/wishlist">찜목록</a></li>
                     <li><a href="/member/detail">마이페이지</a></li>
                   </ul>
                 </li>
@@ -159,7 +159,7 @@
             <!-- Wishlist -->
             <div class="cart-area">
               <div id="read-count" class="cart--btn">
-                <span class="cart_quantity read-count"></span>
+                <span class="cart_quantity read-count">0</span>
                 <script th:inline="javascript">
                   $.ajax({
                     url: '/chat-room/notification',
@@ -200,56 +200,59 @@
 
             <!-- Cart -->
             <div class="cart-area">
-              <div class="cart--btn"><i class="icofont-cart"></i> <span
-                  class="cart_quantity">2</span>
+              <div class="cart--btn"><i class="icofont-cart"></i>
+                <span class="cart_quantity wish-count">0</span>
+                <script th:inline="javascript">
+                  $.ajax({
+                    url: '/wishlist/count',
+                    type: 'get',
+                    success: data => {
+                      const wishSpan = document.querySelector('.wish-count')
+                      wishSpan.textContent = data
+                    },
+                    error: data => {
+                      console.log("실패", data)
+                    }
+                  })
+                </script>
               </div>
 
               <!-- Cart Dropdown Content -->
               <div class="cart-dropdown-content">
-                <ul class="cart-list">
-                  <li>
+                <ul class="cart-list" id="wish-drop">
+                  <script th:inline="javascript">
+                    $.ajax({
+                      url: '/wishlist/header-wish',
+                      type: 'get',
+                      success: data => {
+                        console.log(data[0].id)
+                        const items = [];
+                        data.forEach(product => {
+                          const li = `<li>
                     <div class="cart-item-desc">
-                      <a href="#" class="image">
+                      <a href="/product/product-detail?productId=${product.id}" class="image">
                         <img src="/img/product-img/top-1.png" class="cart-thumb" alt="">
                       </a>
                       <div>
-                        <a href="#">Kid's Fashion</a>
-                        <p>1 x - <span class="price">$32.99</span></p>
+                        <a href="/product/product-detail?productId=${product.id}">${product.productName}</a>
+                        <p>1 x - <span class="price">${product.price}</span></p>
                       </div>
                     </div>
                     <span class="dropdown-product-remove"><i class="icofont-bin"></i></span>
-                  </li>
-                  <li>
-                    <div class="cart-item-desc">
-                      <a href="#" class="image">
-                        <img src="/img/product-img/best-4.png" class="cart-thumb" alt="">
-                      </a>
-                      <div>
-                        <a href="#">Headphone</a>
-                        <p>2x - <span class="price">$49.99</span></p>
-                      </div>
-                    </div>
-                    <span class="dropdown-product-remove"><i class="icofont-bin"></i></span>
-                  </li>
+                  </li>`
+                          items.push(li)
+                        })
+                        const wishDrop = document.getElementById('wish-drop');
+                        wishDrop.innerHTML = items.join('');
+                      },
+                      error: data => {
+                        console.log("실패", data)
+                      }
+                    })
+                  </script>
                 </ul>
-                <div class="cart-pricing my-4">
-                  <ul>
-                    <li>
-                      <span>Sub Total:</span>
-                      <span>$822.96</span>
-                    </li>
-                    <li>
-                      <span>Shipping:</span>
-                      <span>$30.00</span>
-                    </li>
-                    <li>
-                      <span>Total:</span>
-                      <span>$856.63</span>
-                    </li>
-                  </ul>
-                </div>
                 <div class="cart-box">
-                  <a href="checkout-1.html" class="btn btn-primary d-block">Checkout</a>
+                  <a href="/wishlist/wishlist" class="btn btn-primary d-block">찜목록 더보기</a>
                 </div>
               </div>
             </div>
