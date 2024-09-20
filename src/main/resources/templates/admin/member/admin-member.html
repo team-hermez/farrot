@@ -1,6 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <script type="module">
+        import {initializeApp} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import {
+            getMessaging,
+            getToken,
+            onMessage
+        } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-messaging.js";
+
+        const firebaseFcm = (
+            () => {
+                async function init() {
+                    if ('serviceWorker' in navigator) {
+                        window.addEventListener('load', () => {
+                            navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                                .then(() => {
+                                    const firebaseConfig = {
+                                        apiKey: "",
+                                        authDomain: "",
+                                        projectId: "",
+                                        storageBucket: "",
+                                        messagingSenderId: "",
+                                        appId: "",
+                                        measurementId: ""
+                                    };
+
+                                    const app = initializeApp(firebaseConfig);
+                                    const message = getMessaging(app);
+                                    Notification.requestPermission().then(permission => {
+                                        if (permission === 'granted') {
+                                            console.log('허용된 곳에 들어옴')
+                                            // new Notification('알림 권한이 허용되었습니다!', {body: '푸시 알림이 활성화되었습니다.'})
+                                            return getToken(message, {
+                                                vapidKey: ""
+                                            })
+                                                .then(async function (token) {
+                                                    console.log(`푸쉬 토큰 발급 완료 : ${token}`);
+                                                    await fetch('/notification/register', {
+                                                        method: 'post',
+                                                        body: token
+                                                    })
+                                                    onMessage(message, payload => {
+                                                        console.log('message received!!!!', payload);
+                                                        const notificationTitle = payload.notification.title;
+                                                        const notificationOptions = {
+                                                            body: payload.notification.body,
+                                                            icon: '/default-icon.png'
+                                                        }
+                                                        if (Notification.permission === 'granted') {
+                                                            new Notification(notificationTitle, notificationOptions);
+                                                        }
+                                                    })
+                                                })
+                                                .catch((error) => {
+                                                    console.log('푸시 토큰 가져오는 중에 에러 발생', error)
+                                                })
+                                        } else {
+                                            console.log('푸시 알림 거부됨');
+                                        }
+                                    })
+                                        .catch((error) => {
+                                            console.error('Firebase 토큰 가져오기 실패:', error);
+                                        });
+                                });
+                        })
+                    }
+                }
+
+                return {
+                    init: function () {
+                        init()
+                    }
+                }
+            })()
+        firebaseFcm.init()
+    </script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
@@ -63,7 +139,6 @@
                                 <div class="dashboard-widget-content">
                                     <div class="col-md-4 hidden-small">
                                         <h2 class="line_30">여기 차트</h2>
-
                                         <table class="countries_list">
                                             <tbody>
                                             <tr>
@@ -105,18 +180,18 @@
                                 <div class="clearfix"></div>
                             </div>
 
-                            <form th:action="@{/admin/process-action}" method="post">
                                 <table class="table table-striped jambo_table bulk_action">
                                     <thead>
                                     <tr class="headings">
                                         <th>
-                                            <input type="checkbox" id="check-all" class="flat" onclick="toggleAll(this)">
+                                            <input type="checkbox" id="check-all" class="flat"
+                                                   onclick="toggleAll(this)">
                                         </th>
-                                        <th class="column-title">회원번호 </th>
-                                        <th class="column-title">이름 </th>
-                                        <th class="column-title">닉네임 </th>
-                                        <th class="column-title">계정 </th>
-                                        <th class="column-title">전화번호 </th>
+                                        <th class="column-title">회원번호</th>
+                                        <th class="column-title">이름</th>
+                                        <th class="column-title">닉네임</th>
+                                        <th class="column-title">계정</th>
+                                        <th class="column-title">전화번호</th>
                                         <th class="column-title">생성일</th>
                                         <th class="column-title">상태</th>
                                     </tr>
@@ -124,11 +199,13 @@
                                     <tbody th:each="list : ${memberList}">
                                     <tr>
                                         <td class="a-center">
-                                            <input type="checkbox" name="id" th:value="${list.id}" class="flat" />
+                                            <input type="checkbox" name="id" th:value="${list.id}" class="flat"/>
                                         </td>
                                         <td th:text="${list.id}" class=" "></td>
                                         <td>
-                                            <a style="text-decoration: underline;" th:href="@{/admin/member-detail/{id}(id=${list.id})}" th:text="${list.memberName}"></a>
+                                            <a style="text-decoration: underline;"
+                                               th:href="@{/admin/member-detail/{id}(id=${list.id})}"
+                                               th:text="${list.memberName}"></a>
                                         </td>
                                         <td th:text="${list.nickname}" class=" "></td>
                                         <td th:text="${list.email}" class=" "></td>
@@ -141,47 +218,85 @@
 
                                 <div class="row justify-content-end">
                                     <div class="btn-group form-check">
-                                        <button type="submit" name="action" value="alert" class="btn btn-secondary">알림</button>
+                                        <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#userModal">수정
+                                        </button>
+
                                     </div>
                                 </div>
+
+                            <form th:action="@{/admin/process-action}" method="post">
+                            <div class="modal fade" id="userModal" tabindex="-1"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">공지사항</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="col-md-4">
+                                                <label class="form-label">내용</label>
+                                                <input type="text" class="form-control is-valid"
+                                                       id="password_old" name="password_old" value=""
+                                                       required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">닫기
+                                            </button>
+                                            <button type="submit" name="action" class="btn btn-primary">알림</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             </form>
 
                             <nav aria-label="Page navigation">
-                                    <ul class="pagination justify-content-center">
-                                        <li class="page-item" th:classappend="${memberList.first} ? 'disabled' : ''">
-                                            <a class="page-link" th:href="@{/admin/member(page=0, size=${memberList.size})}" aria-label="First">
-                                                <span aria-hidden="true">맨 처음</span>
-                                            </a>
-                                        </li>
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item" th:classappend="${memberList.first} ? 'disabled' : ''">
+                                        <a class="page-link" th:href="@{/admin/member(page=0, size=${memberList.size})}"
+                                           aria-label="First">
+                                            <span aria-hidden="true">맨 처음</span>
+                                        </a>
+                                    </li>
 
-                                        <li class="page-item" th:classappend="${memberList.hasPrevious()} ? '' : 'disabled'">
-                                            <a class="page-link" th:href="@{/admin/member(page=${memberList.number - 1}, size=${memberList.size})}" aria-label="Previous">
-                                                <span aria-hidden="true">&laquo;</span>
-                                            </a>
-                                        </li>
+                                    <li class="page-item"
+                                        th:classappend="${memberList.hasPrevious()} ? '' : 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{/admin/member(page=${memberList.number - 1}, size=${memberList.size})}"
+                                           aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
 
-                                        <li class="page-item"
-                                            th:each="i : ${#numbers.sequence((memberList.number - 2 > 0 ? memberList.number - 2 : 0),
+                                    <li class="page-item"
+                                        th:each="i : ${#numbers.sequence((memberList.number - 2 > 0 ? memberList.number - 2 : 0),
                                              (memberList.number + 2 < memberList.totalPages - 1 ? memberList.number + 2 : memberList.totalPages - 1))}"
-                                            th:classappend="${i == memberList.number} ? 'active'">
-                                            <a class="page-link" th:text="${i + 1}"
-                                               th:href="@{/admin/member(page=${i}, size=${memberList.size})}" th:if="${i + 1} == 0? false : true"></a>
-                                        </li>
+                                        th:classappend="${i == memberList.number} ? 'active'">
+                                        <a class="page-link" th:text="${i + 1}"
+                                           th:href="@{/admin/member(page=${i}, size=${memberList.size})}"
+                                           th:if="${i + 1} == 0? false : true"></a>
+                                    </li>
 
-                                        <li class="page-item" th:classappend="${memberList.hasNext()} ? '' : 'disabled'">
-                                            <a class="page-link" th:href="@{/admin/member(page=${memberList.number + 1}, size=${memberList.size})}" aria-label="Next">
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                        </li>
+                                    <li class="page-item" th:classappend="${memberList.hasNext()} ? '' : 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{/admin/member(page=${memberList.number + 1}, size=${memberList.size})}"
+                                           aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
 
-                                        <li class="page-item" th:classappend="${memberList.last} ? 'disabled' : ''">
-                                            <a class="page-link" th:href="@{/admin/member(page=${memberList.totalPages - 1}, size=${memberList.size})}" aria-label="Last">
-                                                <span aria-hidden="true">끝으로</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
+                                    <li class="page-item" th:classappend="${memberList.last} ? 'disabled' : ''">
+                                        <a class="page-link"
+                                           th:href="@{/admin/member(page=${memberList.totalPages - 1}, size=${memberList.size})}"
+                                           aria-label="Last">
+                                            <span aria-hidden="true">끝으로</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>
@@ -210,6 +325,9 @@
 <script src="/vendors/nprogress/nprogress.js"></script>
 <!-- iCheck -->
 <script src="/vendors/iCheck/icheck.min.js"></script>
+
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
 
 <!-- Custom Theme Scripts -->
 <script src="/build/js/custom.min.js"></script>

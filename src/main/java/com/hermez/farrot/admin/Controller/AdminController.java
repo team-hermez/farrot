@@ -8,6 +8,7 @@ import com.hermez.farrot.admin.dto.AdminProductMonthTotalSalesResponse;
 import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
+import com.hermez.farrot.notification.service.NotificationService;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.service.ProductService;
 import org.springframework.data.domain.Page;
@@ -27,10 +28,12 @@ public class AdminController {
 
     private AdminService adminService;
     private ProductService productService;
+    private NotificationService notificationService;
 
-    public AdminController(AdminService adminService, ProductService productService) {
+    public AdminController(AdminService adminService, ProductService productService, NotificationService notificationService) {
         this.adminService = adminService;
         this.productService = productService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/form")
@@ -198,6 +201,9 @@ public class AdminController {
                                     @RequestParam("action") String action) {
         if (action.equals("alert")) {
             System.out.println("알림!");
+            System.out.println("selectedIds = " + selectedIds);
+            System.out.println("action@@@@ = " + action);
+            notificationService.creatNotification(selectedIds, action);
         }
         return "redirect:/admin/member";
     }
@@ -217,9 +223,8 @@ public class AdminController {
         } else if (action.equals("disable")) {
             adminService.updateMemberDisableStatus(id, action);
             return "redirect:/admin/member-disable";
-        } else {
-            return "redirect:/admin/member-disable";
         }
+        return "redirect:/admin/member-disable";
 
     }
 

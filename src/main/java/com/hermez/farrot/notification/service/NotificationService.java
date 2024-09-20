@@ -1,8 +1,10 @@
 package com.hermez.farrot.notification.service;
 
+import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.notification.dto.NotificationRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class NotificationService {
 
   private final FcmService fcmService;
+  private final AdminService adminService;
 
   private static final Map<String, String> tokenMap = new HashMap<>();
 
@@ -38,12 +41,30 @@ public class NotificationService {
     }
   }
 
+  public void creatNotification(List<Integer> selectedIds, String message) {
+    try {
+      for(Integer selectId : selectedIds) {
+        Member receiver = adminService.findMemberById(selectId);
+
+        NotificationRequest request = NotificationRequest.builder()
+                .title("안녕하세요 관리자 입니다 \uD83D\uDE47")
+                .token(getToken(receiver.getEmail()))
+                .message(receiver.getNickname()+"님!!! "+ message)
+                .build();
+        sendNotification(request);
+      }
+
+    } catch (ExecutionException | InterruptedException e) {
+      log.info("알림 에러 발생", e);
+    }
+  }
+
   private String getToken(String receiverEmail) {
     return tokenMap.get(receiverEmail);
   }
 
   private void sendNotification(NotificationRequest request)
-      throws ExecutionException, InterruptedException {
+          throws ExecutionException, InterruptedException {
     fcmService.send(request);
   }
 
