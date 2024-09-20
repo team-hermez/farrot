@@ -39,6 +39,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(nullable = false, length = 1)
+    private int status;
+
     //소셜 로그인용 column
     @Column(nullable = true, length = 100)
     private String attributeCode;
@@ -50,7 +53,8 @@ public class Member {
 
     // 기본 유저용 생성자
     @Builder
-    public Member(String memberName, String email, String password, String phone, String nickname, String account, LocalDateTime createAt, Role role) {
+    public Member(String memberName, String email, String password, String phone, String nickname, String account,
+                  LocalDateTime createAt, Role role, int status) {
         this.memberName = memberName;
         this.email = email;
         this.password = password;
@@ -59,12 +63,13 @@ public class Member {
         this.account = account;
         this.createAt = createAt;
         this.role = role;
+        this.status = status;
     }
 
     //소셜 로그인용
     @Builder(builderMethodName = "toOAuth2")
     public Member(String memberName, String email, String password, String phone, String nickname, LocalDateTime createAt,
-            Role role, String provider, String attributeCode) {
+            Role role, String provider, String attributeCode, int status) {
         this.memberName = memberName;
         this.email = email;
         this.password = password;
@@ -74,5 +79,6 @@ public class Member {
         this.role = role;
         this.provider = provider;
         this.attributeCode = attributeCode;
+        this.status = status;
     }
 }

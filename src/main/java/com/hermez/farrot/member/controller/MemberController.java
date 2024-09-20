@@ -2,9 +2,12 @@ package com.hermez.farrot.member.controller;
 
 import com.hermez.farrot.member.dto.request.MemberLoginRequest;
 import com.hermez.farrot.member.dto.request.MemberRegisterRequest;
+import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
+import com.hermez.farrot.member.security.JwtTokenProvider;
 import com.hermez.farrot.member.service.UserService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,9 +21,11 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class MemberController {
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberRepository memberRepository, UserService userService) {
+    public MemberController(MemberRepository memberRepository, UserService userService, JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @GetMapping("/register")
@@ -63,7 +68,10 @@ public class MemberController {
     }
   
     @GetMapping("/detail")
-    String memberDetailPage(Model model) {
+    String memberDetailPage(HttpServletRequest request, Member member,Model model) {
+        String jwtToken = jwtTokenProvider.resolveToken(request);
+        member = userService.userDetail(jwtToken);
+        model.addAttribute("member", member);
         return "member/detail";
     }
 

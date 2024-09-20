@@ -4,6 +4,7 @@ import com.hermez.farrot.member.dto.request.MemberLoginRequest;
 import com.hermez.farrot.member.dto.request.MemberRegisterRequest;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.entity.Role;
+import com.hermez.farrot.member.security.JwtToken;
 import com.hermez.farrot.member.security.JwtTokenProvider;
 import com.hermez.farrot.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
@@ -39,6 +40,7 @@ public class UserService implements MemberService{
                 .nickname(memberRegisterRequest.getNickname())
                 .createAt(now)
                 .role(Role.ROLE_USER)
+                .status(1) // 가입시 활성화
                 .build()).getId();
     }
 
@@ -66,5 +68,10 @@ public class UserService implements MemberService{
 
         System.out.println(cookie);
         response.addCookie(cookie);
+    }
+    @Override
+    public Member userDetail(String jwtToken) {
+        Optional<Member> member = memberRepository.findByEmail(jwtTokenProvider.parseClaims(jwtToken).getSubject());
+        return member.orElse(null);
     }
 }
