@@ -189,4 +189,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> findTop5Latest() { return productRepository.findTop5ByOrderByCreatedAtDesc(); }
+
+    @Override
+    public void completeSale(Product product) {
+        product.markAsSold();
+        productRepository.save(product);
+    }
+
 }

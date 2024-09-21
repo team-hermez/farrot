@@ -54,10 +54,18 @@ public class Product {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column
+    private LocalDateTime soldAt;
+
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.view=1;
+    }
+
+    public void markAsSold() {
+        this.soldAt = LocalDateTime.now();
     }
 }
 
