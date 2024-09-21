@@ -1,5 +1,6 @@
 package com.hermez.farrot.config;
 
+import com.hermez.farrot.member.entity.Role;
 import com.hermez.farrot.member.oauth.CustomOAuth2UserService;
 import com.hermez.farrot.member.oauth.OAuth2SuccessHandler;
 import com.hermez.farrot.member.security.JwtAuthenticationFilter;
@@ -52,7 +53,8 @@ public class SecurityConfig {
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         (authorize) -> authorize
-                                .requestMatchers("/member/detail").authenticated()
+                                .requestMatchers("/admin/**").hasRole("admin")
+                                .requestMatchers("/member/detail","/chat-room/**","/product/register-sell").authenticated()
                                 .anyRequest().permitAll()
                 )
                 .formLogin(login -> login
@@ -60,6 +62,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")
                         .usernameParameter("email")
                         .permitAll()
+                        .successForwardUrl("/")
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/oauth2/authorization/naver")
