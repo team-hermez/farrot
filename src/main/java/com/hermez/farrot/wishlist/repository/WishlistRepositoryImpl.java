@@ -49,19 +49,23 @@ public class WishlistRepositoryImpl implements WishlistRepositoryCustom {
   }
 
   @Override
-  public Page<WishlistDTO> findProductByMemberId(Integer memberId, Pageable pageable) {
-    List<WishlistDTO> content = queryFactory
+  public List<WishlistDTO> findProductByMemberId(Integer memberId) {
+    return queryFactory
         .select(wishlist.product)
         .from(wishlist)
         .where(MemberIdEq(memberId), wishlist.wishType.eq(WISH))
         .fetch().stream().map(WishlistDTO::new).toList();
-    int count = queryFactory
+  }
+
+  public int findCountProductByMemberId(Integer memberId) {
+
+    return queryFactory
         .selectFrom(wishlist)
         .where(MemberIdEq(memberId), wishlist.wishType.eq(WISH))
         .fetch()
         .size();
-    return new PageImpl<>(content, pageable, count);
   }
+
 
   @Override
   public List<WishlistDTO> findWishTop3ByMemberId(Integer memberId) {
