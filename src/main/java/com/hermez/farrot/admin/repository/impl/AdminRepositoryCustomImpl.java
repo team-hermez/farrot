@@ -296,6 +296,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 "SUM(price) AS total_sales " +
                 "FROM product " +
                 "WHERE sold_at >= curdate() " +
+                "AND product_status_id = 3 " +
                 "GROUP BY HOUR(sold_at) " +
                 "ORDER BY HOUR(sold_at)";
 
@@ -324,6 +325,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 "    COALESCE(SUM(p.price), 0) AS total_sales " +
                 "FROM DateRange dr " +
                 "LEFT JOIN product p ON DATE(p.sold_at) = dr.sale_date " +
+                "AND p.product_status_id = 3 " +
                 "GROUP BY dr.sale_date " +
                 "ORDER BY dr.sale_date;";
 
@@ -345,6 +347,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 "FROM product " +
                 "WHERE sold_at >= DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01') " +
                 "AND sold_at < DATE_FORMAT(CURRENT_DATE() + INTERVAL 1 MONTH, '%Y-%m-01') " +
+                "AND product_status_id = 3 " +
                 "GROUP BY MONTH(sold_at) " +
                 "ORDER BY MONTH(sold_at)";
 
