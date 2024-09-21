@@ -1,9 +1,11 @@
 package com.hermez.farrot.member.controller;
 
+import com.hermez.farrot.image.entity.Image;
 import com.hermez.farrot.image.service.ImageService;
 import com.hermez.farrot.member.dto.request.MemberLoginRequest;
 import com.hermez.farrot.member.dto.request.MemberRegisterRequest;
 import com.hermez.farrot.member.dto.request.MemberUpdateRequest;
+import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
 import com.hermez.farrot.member.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -17,18 +19,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Slf4j
 @RequestMapping("/member")
 @Controller
 public class MemberController {
     private final UserService userService;
     private final MemberRepository memberRepository;
-    private final ImageService imageService;
 
-    public MemberController(MemberRepository memberRepository, UserService userService, ImageService imageService) {
+    public MemberController(MemberRepository memberRepository, UserService userService) {
         this.userService = userService;
         this.memberRepository = memberRepository;
-        this.imageService = imageService;
     }
 
     @GetMapping("/register")
@@ -72,19 +74,26 @@ public class MemberController {
   
     @GetMapping("/detail")
     String memberDetailPage(HttpServletRequest request, Model model) {
-        model.addAttribute("member", userService.getMember(request));
+        Member member= userService.getMember(request);
+        List<Image> image = userService.userImage(member).getImages();
+        int lastIndex = image.size() - 1;
+        System.out.println("lastIndex: " + lastIndex);
+        System.out.println("imagePath: "+image.get(lastIndex).getPath());
+
+        model.addAttribute("member", member);
+        model.addAttribute("image", image.get(lastIndex));
+
         return "member/detail";
     }
 
     @PostMapping("/detail")
     String updateMemberDetail(@ModelAttribute MemberUpdateRequest memberUpdateRequest,
-                              Model model) {
-        System.out.println("테스트: "+memberUpdateRequest.getEmail());
-        boolean complete = userService.updateUserDetail(memberUpdateRequest);
+                              @RequestPart(name = "profileImage") MultipartFile file) {
+        boolean complete = userService.updateUserDetail(memberUpdateRequest, file);
 
-        if(complete) System.out.println("완료");
+        if(complete==true) System.out.println("완료");
+        else System.out.println("실패");
 
         return "redirect:/member/detail";
     }
-
-  }
+}
