@@ -79,8 +79,6 @@ public class PaymentAdapterImpl implements PaymentAdapter {
     @Override
     public void registerLogisticsInfo(TrackingRequest request,String merchantId) {
         try {
-
-
             HttpEntity<TrackingEscrowRequest> httpEntity = new HttpEntity<>(TrackingEscrowRequest.builder()
                     .courierCode(request.getCourierCode())
                     .paymentId(request.getPaymentId())
@@ -96,14 +94,13 @@ public class PaymentAdapterImpl implements PaymentAdapter {
                     httpEntity,
                     String.class
             );
-
             if (response.getStatusCode() == HttpStatus.OK) {
                 System.out.println("운송장 등록 요청이 성공적으로 처리되었습니다.");
             } else {
                 System.out.println("운송장 등록 요청 실패: " + response.getStatusCode());
             }
         } catch (HttpClientErrorException e) {
-            throw new ResponseStatusException(e.getStatusCode(), "운송장 등록 요청 중 오류가 발생했습니다.");
+            throw new ResponseStatusException(e.getStatusCode(), "등록되지 않은 운송장 번호 입니다.");
         } catch (RestClientException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 통신 중 오류가 발생했습니다.");
         } catch (Exception e) {

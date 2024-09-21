@@ -11,6 +11,6 @@ public interface PaymentAdapter {
 
     void confirmPurchase(PurchaseConfirmRequest request);
 
-    void registerLogisticsInfo(TrackingRequest request,String merchantId); // 추가된 메서드
+    void registerLogisticsInfo(TrackingRequest request,String merchantId);
 
 }

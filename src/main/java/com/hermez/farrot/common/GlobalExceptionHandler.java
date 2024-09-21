@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -36,6 +37,7 @@ public class GlobalExceptionHandler {
         return "error/500";
     }
 
+
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler
     @ResponseBody
@@ -48,5 +50,11 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ErrorResult handleNotFoundMemberException(NotFoundMemberException ex) {
         return new ErrorResult("BAD_REQUEST", ex.getMessage());
+      
+    @ExceptionHandler(ResponseStatusException.class)
+    public String handleResponseStatusException(ResponseStatusException ex, Model model) {
+        model.addAttribute("errorMessage", ex.getReason());
+        return "error/error";
+
     }
 }

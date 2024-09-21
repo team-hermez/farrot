@@ -17,6 +17,7 @@ import com.hermez.farrot.payment.repository.PaymentStatusRepository;
 import com.hermez.farrot.payment.service.PaymentService;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.service.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -52,12 +53,17 @@ public class PaymentServiceImpl implements PaymentService {
     public SaferrotPaymentRequest initPayment(PaymentFormRequest paymentFormRequest, HttpServletRequest servletRequest) {
         Member buyerMember = memberService.getMember(servletRequest);
         Product product = productService.getProductById(paymentFormRequest.getProductId());
+        Member sellerMember = memberRepository.findById(product.getMember().getId())
+                .orElseThrow(() -> new EntityNotFoundException("판매자 정보가 없습니다"));
+
         return SaferrotPaymentRequest.builder()
                 .serverName("farrot")
                 .apiKey(apiKey)
                 .callbackUrl("http://localhost:8080/product/product-detail?productId=" + paymentFormRequest.getProductId())
                 .buyerId(buyerMember.getId())
                 .productId(product.getId())
+                .sellerId(sellerMember.getId())
+                .sellerEmail(sellerMember.getEmail())
                 .sellerAccount("3020000011519")
                 .safeDay(5)
                 .merchantUid("merchant_" + new Date().getTime())
@@ -112,13 +118,13 @@ public class PaymentServiceImpl implements PaymentService {
     public void registerLogisticsInfo(TrackingRequest request) {
         Payment payment = paymentRepository.findById(request.getPaymentId())
                 .orElseThrow(() -> new IllegalArgumentException("없는 id입니다"));
+        paymentAdapter.registerLogisticsInfo(request, payment.getMerchantUid());
         payment.setCourierCode(request.getCourierCode());
         payment.setTrackingNumber(request.getTrackingNumber());
         paymentStatusRepository.findById(2).ifPresent(payment::setPaymentStatus);
         paymentRepository.save(payment);
         Product product = payment.getProduct();
         productService.updateProductStatus(product.getId(),2);
-        paymentAdapter.registerLogisticsInfo(request, payment.getMerchantUid());
     }
 
 }

@@ -188,7 +188,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findTop5Latest() { return productRepository.findTop5ByOrderByCreatedAtDesc(); }
+    public List<Product> findTop4Latest() { return productRepository.findTop4ByOrderByCreatedAtDesc(); }
 
     @Override
     public void completeSale(Product product) {
