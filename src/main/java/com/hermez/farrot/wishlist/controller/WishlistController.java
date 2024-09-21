@@ -1,8 +1,8 @@
 package com.hermez.farrot.wishlist.controller;
 
-import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepository;
 import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepositoryCustom;
 import com.hermez.farrot.member.entity.Member;
+import com.hermez.farrot.member.exception.NotFoundMemberException;
 import com.hermez.farrot.member.repository.MemberRepository;
 import com.hermez.farrot.notification.service.NotificationService;
 import com.hermez.farrot.product.entity.Product;
@@ -10,6 +10,7 @@ import com.hermez.farrot.product.service.ProductService;
 import com.hermez.farrot.wishlist.dto.WishlistDTO;
 import com.hermez.farrot.wishlist.dto.request.WishRequest;
 import com.hermez.farrot.wishlist.dto.response.WishResponse;
+import com.hermez.farrot.wishlist.exception.BadWishRequestException;
 import com.hermez.farrot.wishlist.service.WishlistService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,8 @@ public class WishlistController {
   @PostMapping("/wish")
   public WishResponse wish(@RequestBody WishRequest wishRequest,
       @AuthenticationPrincipal UserDetails userDetails) {
+    if (userDetails == null) {
+      throw new BadWishRequestException("찜기능 이용하시려면 로그인을 해주세요 \uD83D\uDC2D");}
     String userEmail = userDetails.getUsername();
     Member wishMember = memberRepository.findByEmail(userEmail)
         .orElseThrow(() -> new RuntimeException("User not found"));
@@ -71,6 +74,7 @@ public class WishlistController {
 
   @GetMapping("/wishlist")
   public String wishlist(@AuthenticationPrincipal UserDetails userDetails, Pageable pageable, Model model) {
+    if (userDetails == null) return "redirect:/member/login";
     String userEmail = userDetails.getUsername();
     Page<WishlistDTO> wishProductPage = wishlistService.findProductByMemberId(userEmail, pageable);
     model.addAttribute("wishProductPage", wishProductPage);
@@ -80,6 +84,9 @@ public class WishlistController {
   @ResponseBody
   @GetMapping("/header-wish")
   public List<WishlistDTO> wishlist(@AuthenticationPrincipal UserDetails userDetails) {
+    if (userDetails == null) {
+      throw new NotFoundMemberException("헤더 기능을 위한 사용자가 없습니다.");
+    }
     String userEmail = userDetails.getUsername();
     return wishlistService.findWishTop3ByMemberId(userEmail);
   }

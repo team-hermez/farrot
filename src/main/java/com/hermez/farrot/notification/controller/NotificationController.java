@@ -22,12 +22,10 @@ public class NotificationController {
 
   @PostMapping("/notification/register")
   public ResponseEntity<String> register(@RequestBody String token){
-    log.info("토큰입니다 {}",token);
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails principal = (UserDetails) authentication.getPrincipal();
     String userEmail = principal.getUsername();
     notificationService.register(userEmail, token);
-    log.info("userEmail: {}, token: {}",userEmail,token);
     return ResponseEntity.ok().build();
   }
 

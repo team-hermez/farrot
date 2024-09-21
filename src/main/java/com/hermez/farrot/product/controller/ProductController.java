@@ -59,13 +59,16 @@ public class ProductController {
     @GetMapping("/product-detail")
     public String getProductDetail(@RequestParam("productId") Integer productId,@AuthenticationPrincipal
         UserDetails userDetails,Model model) {
+        WishResponse wishResponse = WishResponse.builder().build();
+        if(userDetails != null) {
         String userEmail = userDetails.getUsername();
+         wishResponse = wishlistService.findOne(userEmail,productId);
+        }
         ProductDetailResponse productDetailResponse = productService.getProductDetail(productId);
         ProductSearchRequest productSearchRequest = new ProductSearchRequest();
         productSearchRequest.setSize(4);
         productSearchRequest.setPage(0);
         ProductSearchResponse response = productService.getProductsByFilters(productSearchRequest);
-        WishResponse wishResponse = wishlistService.findOne(userEmail,productId);
         model.addAttribute("wishResponse", wishResponse);
         model.addAttribute("productDetail", productDetailResponse);
         model.addAttribute("response", response);

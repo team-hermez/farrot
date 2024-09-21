@@ -229,7 +229,7 @@
                         wishDrop.innerHTML = items.join('');
                       },
                       error: data => {
-                        console.log("실패", data)
+                        console.log(JSON.parse(data.responseText).message)
                       }
                     })
                   </script>

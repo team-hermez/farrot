@@ -25,14 +25,12 @@ public class NotificationService {
 
   public void register(String userEmail, String token) {tokenMap.put(userEmail, token);}
 
-  public void createNotification(Member sender, Member receiver) {
-    log.info("========={}=====",receiver.getEmail());
-    log.info("=========={}======",getToken(receiver.getEmail()));
+  public void createNotification(Member sender, Member receiver, String message) {
     try {
       NotificationRequest request = NotificationRequest.builder()
           .title("안녕하세요 Farrot 입니다 \uD83D\uDC2D")
           .token(getToken(receiver.getEmail()))
-          .message(receiver.getNickname()+"님!!!\n"+sender.getNickname()+"님 으로부터 메시지가 도착했습니다.")
+          .message(receiver.getNickname()+"님!!!\n"+sender.getNickname()+"님 으로부터 메시지가 도착했습니다. \n"+ message)
           .build();
       sendNotification(request);
     } catch (ExecutionException | InterruptedException e) {
