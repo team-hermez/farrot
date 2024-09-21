@@ -351,7 +351,7 @@ public class AdminController {
     @GetMapping("/latest-products")
     @ResponseBody
     public List<Product> getLatestProducts() {
-        return productService.findTop5Latest();
+        return productService.findTop4Latest();
     }
 
     @PostMapping("/change-status/{id}")
