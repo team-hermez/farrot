@@ -196,15 +196,14 @@
                                                     console.log(data)
                                                     if (data.wishType==='WISH'){
                                                         wishType.value ='WISH'
-                                                    const wishIco = '<span class="badge-new"><i class="icofont-heart"></i></span>'
-                                                        wishCheck.innerHTML= wishIco;
+                                                        wishCheck.innerHTML= '<span class="badge-new"><i class="icofont-heart"></i></span>';
                                                     }else {
                                                         wishType.value ='CANCEL'
                                                         wishCheck.innerHTML='';
                                                     }
                                                 },
                                                 error:data=>{
-                                                    console.log('에러',data)
+                                                    console.log('에러',JSON.parse(data.responseText).message)
                                                 }
                                             })
                                         })

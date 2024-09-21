@@ -63,7 +63,7 @@ public class ChatRoomController {
      @PageableDefault(size = 5) Pageable pageable,
       @AuthenticationPrincipal UserDetails userDetails,
       Model model) {
-    if (userDetails == null) return "redirect:/login";
+    if (userDetails == null) return "redirect:/member/login";
     String userEmail = userDetails.getUsername();
     List<SelectOption> selectOptions = getSelectChatRoomOptions();
     Member findMember = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버없음"));
@@ -90,7 +90,7 @@ public class ChatRoomController {
 
   @GetMapping("/room")
   public String chatRoomPage(@RequestParam Integer roomId,@RequestParam Integer productId,@AuthenticationPrincipal UserDetails userDetails,Model model) {
-    if (userDetails == null) return "redirect:/login";
+    if (userDetails == null) return "redirect:/member/login";
     String userEmail = userDetails.getUsername();
     String publicImageUrl = firebaseService.getPublicImageUrl("farrotlogo.png");
     Member sender = memberRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("멤버없음"));
