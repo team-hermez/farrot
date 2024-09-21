@@ -21,6 +21,8 @@ public interface AdminRepositoryCustom {
     List<AdminProductWeeklyTotalSalesResponse> findWeeklyTotalSales();
     List<AdminProductMonthTotalSalesResponse> findMonthTotalSales();
 
+    List<AdminCategoryThisWeekTotalViewsResponse> findThisWeekTotalViewsByCategory();
+
     Page<Product> findProductsRegisterToday(LocalDate today, Pageable pageable);
     Page<Product> findProductsRegisteredThisWeek(LocalDate today, Pageable pageable);
     Page<Product> findProductsRegisteredThisMonth(LocalDate today, Pageable pageable);

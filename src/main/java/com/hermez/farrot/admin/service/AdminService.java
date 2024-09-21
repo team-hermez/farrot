@@ -33,4 +33,5 @@ public interface AdminService {
     List<AdminProductWeeklyTotalSalesResponse> findWeeklyTotalSales();
     List<AdminProductTodayTotalSalesResponse> findTodayTotalSales();
 
+    List<AdminCategoryThisWeekTotalViewsResponse> findThisWeekTotalViewsByCategory();
 }

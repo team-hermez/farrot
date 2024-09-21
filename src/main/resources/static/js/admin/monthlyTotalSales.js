@@ -20,7 +20,7 @@ $(document).ready(function () {
                 data: {
                     labels: month,
                     datasets: [{
-                        label: '월간 매출',
+                        label: '이번 달 매출',
                         data: total_sales,
                         backgroundColor: 'rgba(0, 123, 255, 0.5)',
                         borderColor: 'rgba(0, 123, 255, 1)',
