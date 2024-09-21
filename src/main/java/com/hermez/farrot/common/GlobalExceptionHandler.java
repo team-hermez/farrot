@@ -1,17 +1,15 @@
 package com.hermez.farrot.common;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import com.hermez.farrot.chat.chatmessage.exception.NoMatchUniqueReceiverException;
 import com.hermez.farrot.common.dto.ErrorResult;
 import com.hermez.farrot.member.exception.NotFoundMemberException;
 import com.hermez.farrot.product.exception.ResourceNotFoundException;
 import com.hermez.farrot.wishlist.exception.BadWishRequestException;
-import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -50,7 +48,8 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ErrorResult handleNotFoundMemberException(NotFoundMemberException ex) {
         return new ErrorResult("BAD_REQUEST", ex.getMessage());
-      
+    }
+
     @ExceptionHandler(ResponseStatusException.class)
     public String handleResponseStatusException(ResponseStatusException ex, Model model) {
         model.addAttribute("errorMessage", ex.getReason());
