@@ -5,6 +5,7 @@ import com.hermez.farrot.product.exception.ResourceNotFoundException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -25,5 +26,11 @@ public class GlobalExceptionHandler {
     public String handleNoMatchUniqueReceiverException(NoMatchUniqueReceiverException ex,Model model){
         model.addAttribute("errorMessage", "알림을 받을 유저를 찾을 수 없습니다."+ ex.getMessage());
         return "error/500";
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public String handleResponseStatusException(ResponseStatusException ex, Model model) {
+        model.addAttribute("errorMessage", ex.getReason());
+        return "error/error";
     }
 }

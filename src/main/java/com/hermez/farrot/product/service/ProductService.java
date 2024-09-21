@@ -31,7 +31,7 @@ public interface ProductService {
 
     ProductSearchResponse getProductsByFilters(ProductSearchRequest productSearchRequest);
 
-    List<Product> findTop5Latest();
+    List<Product> findTop4Latest();
 
     void completeSale(Product product);
 }

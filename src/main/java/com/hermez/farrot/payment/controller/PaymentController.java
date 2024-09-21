@@ -23,7 +23,6 @@ public class PaymentController {
 
     @PostMapping("/init-payment")
     public String initPayment(@ModelAttribute PaymentFormRequest paymentFormRequest, Model model, HttpServletRequest servletRequest) {
-        System.out.println(paymentFormRequest.toString());
         model.addAttribute("request", paymentService.initPayment(paymentFormRequest, servletRequest));
         return "payment/redirect-form";
     }
