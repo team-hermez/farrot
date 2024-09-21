@@ -113,23 +113,13 @@
                             <div class="single-product-area mb-30" th:each="wishProduct : ${wishProductPage.content}">
                                 <div class="product_image">
                                     <!-- Product Image -->
-                                    <img class="normal_img" src="/img/product-img/onsale-1.png" alt="">
-                                    <img class="hover_img" src="/img/product-img/best-1.png" alt="">
+                                    <img class="normal_img" th:src="${wishProduct.images.get(0).getPath}" alt="">
 
                                     <!-- Product Badge -->
-                                    <div class="product_badge">
-                                        <span>New</span>
+                                    <div class="wish-check product_wish_badge">
+                                        <span class="badge-new"><i class="icofont-heart"></i></span>
                                     </div>
 
-                                    <!-- Wishlist -->
-                                    <div class="product_wishlist">
-                                        <a href="/wishlist.html"><i class="icofont-heart"></i></a>
-                                    </div>
-
-                                    <!-- Compare -->
-                                    <div class="product_compare">
-                                        <a href="/compare.html"><i class="icofont-exchange"></i></a>
-                                    </div>
                                 </div>
 
                                 <div class="product_description">
