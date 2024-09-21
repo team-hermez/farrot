@@ -6,6 +6,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/admin/yearlyTotalSales.js"></script>
+    <link rel="stylesheet" th:href="@{/css/admin/chart.css}">
 
     <title>Gentelella Alela! | </title>
 
@@ -62,31 +66,8 @@
                             <div class="x_content">
                                 <div class="dashboard-widget-content">
                                     <div class="col-md-4 hidden-small">
-                                        <h2 class="line_30">여기 차트</h2>
-
                                         <table class="countries_list">
-                                            <tbody>
-                                            <tr>
-                                                <td>United States</td>
-                                                <td class="fs15 fw700 text-right">33%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>France</td>
-                                                <td class="fs15 fw700 text-right">27%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Germany</td>
-                                                <td class="fs15 fw700 text-right">16%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Spain</td>
-                                                <td class="fs15 fw700 text-right">11%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Britain</td>
-                                                <td class="fs15 fw700 text-right">10%</td>
-                                            </tr>
-                                            </tbody>
+                                            <canvas id="yearlyTotalChart"></canvas>
                                         </table>
                                     </div>
                                 </div>

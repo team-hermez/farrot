@@ -10,46 +10,53 @@ $(document).ready(function () {
 
             $.each(data, function () {
                 month.push(this["month"]);
-                total_sales.push(this["total_sales"])
+                total_sales.push(this["total_sales"]);
             });
 
-            const ctx = document.getElementById('monthTotalChart').getContext('2d');
+            const ctx = document.getElementById('monthlyTotalChart').getContext('2d');
 
             new Chart(ctx, {
-                type: 'bar',
+                type: 'bar', // 막대 차트
                 data: {
                     labels: month,
                     datasets: [{
-                        label: '총매출',
+                        label: '월간 매출',
                         data: total_sales,
                         backgroundColor: 'rgba(0, 123, 255, 0.5)',
                         borderColor: 'rgba(0, 123, 255, 1)',
                         borderWidth: 1,
-                        labels : {
-                        },
                     }]
-
                 },
                 options: {
                     plugins: {
                         legend: {
-                            display: false
+                            display: true,
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
                         },
                     },
                     responsive: true,
-                    scales: {x: {
+                    scales: {
+                        x: {
                             ticks: {
                                 autoSkip: false,
                                 maxRotation: 0,
                                 minRotation: 0,
-                                paddingLeft: 100
                             }
                         },
                         y: {
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: '매출'
+                                text: '매출(단위)',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
                             }
                         }
                     }

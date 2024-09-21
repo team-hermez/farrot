@@ -1,32 +1,32 @@
 $(document).ready(function () {
     $.ajax({
-        url: "/admin/member-register-weekly",
+        url: "/admin/product-yearly-totalSales",
         type: "POST",
-        dataType: "json",
+        dataType: "JSON",
         contentType: "application/json; charset=utf-8",
         success: function (data) {
-            var count = [];
-            var SignupDate = [];
+            var month = [];
+            var total_sales = [];
 
             $.each(data, function () {
-                count.push(this["count"]);
-                SignupDate.push(this["SignupDate"]);
+                month.push(this["month"]);
+                total_sales.push(this["total_sales"]);
             });
 
-            const ctx = document.getElementById('mainChart').getContext('2d');
+            const ctx = document.getElementById('yearlyTotalChart').getContext('2d');
 
             new Chart(ctx, {
-                type: 'line', // 선 차트
+                type: 'bar',
                 data: {
-                    labels: SignupDate,
+                    labels: month,
                     datasets: [{
-                        label: '일주일 가입자 수',
-                        data: count,
-                        backgroundColor: 'rgba(0, 123, 255, 0.3)',
+                        label: '년간 매출',
+                        data: total_sales,
+                        backgroundColor: 'rgba(0, 123, 255, 0.6)',
                         borderColor: 'rgba(0, 123, 255, 1)',
                         borderWidth: 2,
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
+                        hoverBackgroundColor: 'rgba(0, 123, 255, 0.8)',
+                        hoverBorderColor: 'rgba(0, 123, 255, 1)',
                     }]
                 },
                 options: {
@@ -51,26 +51,17 @@ $(document).ready(function () {
                     maintainAspectRatio: false,
                     scales: {
                         x: {
-                            title: {
-                                display: true,
-                                text: '날짜',
-                                font: {
-                                    size: 16,
-                                    weight: 'bold'
-                                }
-                            },
                             ticks: {
                                 autoSkip: false,
                                 maxRotation: 0,
                                 minRotation: 0,
-                                paddingLeft: 10
                             }
                         },
                         y: {
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: '가입 수(단위)',
+                                text: '매출 (단위)',
                                 font: {
                                     size: 16,
                                     weight: 'bold'

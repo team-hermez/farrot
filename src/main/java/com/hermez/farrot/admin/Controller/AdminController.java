@@ -3,10 +3,8 @@ package com.hermez.farrot.admin.Controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
-import com.hermez.farrot.admin.dto.AdminNotificationRequest;
-import com.hermez.farrot.admin.dto.AdminProductMonthTotalSalesResponse;
-import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
+import com.hermez.farrot.admin.dto.response.*;
+import com.hermez.farrot.admin.dto.request.AdminNotificationRequest;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.notification.service.NotificationService;
@@ -40,10 +38,12 @@ public class AdminController {
     @GetMapping("/form")
     public String getMainForm(Model model) {
         int totalCount = adminService.getMemberTotalCount();
-        int totalResisterCount = adminService.countByCreatedAtToday();
+        int totalRegisterCount = adminService.countByCreatedAtToday();
+        int totalSalesCount = adminService.countBySoldAtToday();
 
         model.addAttribute("totalCount", totalCount);
-        model.addAttribute("totalResisterCount", totalResisterCount);
+        model.addAttribute("totalRegisterCount", totalRegisterCount);
+        model.addAttribute("totalSalesCount", totalSalesCount);
 
         return "admin/form/admin-form";
     }
@@ -92,29 +92,29 @@ public class AdminController {
     }
 
     @GetMapping("/product-manage")
-    public String getProducts(Model model, @PageableDefault(size = 6) Pageable pageable) {
+    public String getProducts(Model model, @PageableDefault(size = 5) Pageable pageable) {
         Page<Product> productList = adminService.getProductList(pageable);
         model.addAttribute("productList", productList);
         return "admin/product/admin-product";
     }
 
     @GetMapping("/products/today")
-    public String getProductsToday(Model model, @PageableDefault(size = 6) Pageable pageable) {
-        Page<Product> productList = adminService.findProductsSoldRegisterToday(pageable);
+    public String getProductsToday(Model model, @PageableDefault(size = 5) Pageable pageable) {
+        Page<Product> productList = adminService.findProductsRegisterToday(pageable);
         model.addAttribute("productList", productList);
         return "admin/product/admin-product-today";
     }
 
     @GetMapping("/products/weekly")
-    public String getProductsWeekly(Model model, @PageableDefault(size = 6) Pageable pageable) {
-        Page<Product> productList = adminService.getProductList(pageable);
+    public String getProductsWeekly(Model model, @PageableDefault(size = 5) Pageable pageable) {
+        Page<Product> productList = adminService.findProductsRegisterThisWeek(pageable);
         model.addAttribute("productList", productList);
         return "admin/product/admin-product-weekly";
     }
 
     @GetMapping("/products/monthly")
     public String getProductsMonthly(Model model, @PageableDefault(size = 5) Pageable pageable) {
-        Page<Product> productList = adminService.getProductList(pageable);
+        Page<Product> productList = adminService.findProductsRegisterThisMonth(pageable);
         model.addAttribute("productList", productList);
         return "admin/product/admin-product-monthly";
     }
@@ -151,7 +151,7 @@ public class AdminController {
 
     @ResponseBody
     @PostMapping("/member-register-weekly")
-    public String postMemberResisterWeekly() {
+    public String postMemberRegisterWeekly() {
         List<AdminRegisterWeeklyResponse> adminRegisterWeeklyResponseList = adminService.findSignupWeeklyCounts();
         Gson gson = new Gson();
         JsonArray jArray = new JsonArray();
@@ -174,8 +174,32 @@ public class AdminController {
     }
 
     @ResponseBody
+    @PostMapping("/product-yearly-totalSales")
+    public String postProductYearlyTotalSales() {
+        List<AdminProductYearlyTotalSalesResponse> productYearlyTotalSalesResponseList = adminService.findYearlyTotalSales();
+        Gson gson = new Gson();
+        JsonArray jArray = new JsonArray();
+
+        Iterator<AdminProductYearlyTotalSalesResponse> it = productYearlyTotalSalesResponseList.iterator();
+
+        while (it.hasNext()) {
+            AdminProductYearlyTotalSalesResponse productYearlyTotalSalesResponse = it.next();
+            JsonObject jsonObject = new JsonObject();
+
+            String month = productYearlyTotalSalesResponse.getMonth();
+            int total_sales = productYearlyTotalSalesResponse.getTotal_sales();
+
+            jsonObject.addProperty("month", month);
+            jsonObject.addProperty("total_sales", total_sales);
+            jArray.add(jsonObject);
+        }
+        String jsonString = gson.toJson(jArray);
+        return jsonString;
+    }
+
+    @ResponseBody
     @PostMapping("/product-month-totalSales")
-    public String postProductMonthTotalSales() {
+    public String postProductMonthlyTotalSales() {
         List<AdminProductMonthTotalSalesResponse> productMonthTotalSalesResponsesList = adminService.findMonthTotalSales();
         Gson gson = new Gson();
         JsonArray jArray = new JsonArray();
@@ -197,13 +221,56 @@ public class AdminController {
         return jsonString;
     }
 
+    @ResponseBody
+    @PostMapping("/product-week-totalSales")
+    public String postProductWeeklyTotalSales() {
+        List<AdminProductWeeklyTotalSalesResponse> productWeeklyTotalSalesResponsesList = adminService.findWeeklyTotalSales();
+        Gson gson = new Gson();
+        JsonArray jArray = new JsonArray();
+
+        Iterator<AdminProductWeeklyTotalSalesResponse> it = productWeeklyTotalSalesResponsesList.iterator();
+
+        while (it.hasNext()) {
+            AdminProductWeeklyTotalSalesResponse productWeeklyTotalSalesResponse = it.next();
+            JsonObject jsonObject = new JsonObject();
+
+            String week = productWeeklyTotalSalesResponse.getWeek();
+            int total_sales = productWeeklyTotalSalesResponse.getTotal_sales();
+
+            jsonObject.addProperty("week", week);
+            jsonObject.addProperty("total_sales", total_sales);
+            jArray.add(jsonObject);
+        }
+        String jsonString = gson.toJson(jArray);
+        return jsonString;
+    }
+
+    @ResponseBody
+    @PostMapping("/product-hourly-totalSales")
+    public String postProductTodayTotalSales() {
+        List<AdminProductTodayTotalSalesResponse> productTodayTotalSalesResponseList = adminService.findTodayTotalSales();
+        Gson gson = new Gson();
+        JsonArray jArray = new JsonArray();
+
+        Iterator<AdminProductTodayTotalSalesResponse> it = productTodayTotalSalesResponseList.iterator();
+
+        while (it.hasNext()) {
+            AdminProductTodayTotalSalesResponse productTodayTotalSalesResponse = it.next();
+            JsonObject jsonObject = new JsonObject();
+
+            String hours = productTodayTotalSalesResponse.getHours();
+            int total_sales = productTodayTotalSalesResponse.getTotal_sales();
+
+            jsonObject.addProperty("hours", hours);
+            jsonObject.addProperty("total_sales", total_sales);
+            jArray.add(jsonObject);
+        }
+        String jsonString = gson.toJson(jArray);
+        return jsonString;
+    }
+
     @PostMapping("/process-action")
     public String postProcessAction(@ModelAttribute AdminNotificationRequest adminNotificationRequest) {
-        System.out.println("adminNotificationRequest.getSelectedIds() = " + adminNotificationRequest.getSelectedIds());
-        System.out.println("adminNotificationRequest.getContent() = " + adminNotificationRequest.getContent());
-        System.out.println("adminNotificationRequest.getDate() = " + adminNotificationRequest.getDate());
-        System.out.println("adminNotificationRequest.getPriority() = " + adminNotificationRequest.getPriority());
-        
         notificationService.creatNotification(adminNotificationRequest);
         return "redirect:/admin/member";
     }
