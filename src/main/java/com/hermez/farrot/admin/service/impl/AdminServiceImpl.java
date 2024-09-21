@@ -6,6 +6,7 @@ import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
 import com.hermez.farrot.admin.repository.AdminRepository;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
+import com.hermez.farrot.member.repository.MemberRepository;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.repository.ProductRepository;
 import com.hermez.farrot.product.repository.ProductStatusRepository;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,18 +24,20 @@ public class AdminServiceImpl implements AdminService {
     public final AdminRepository adminRepository;
     public final ProductRepository productRepository;
     public final ProductStatusRepository productStatusRepository;
+    private final MemberRepository memberRepository;
 
-    public AdminServiceImpl(AdminRepository adminRepository, ProductRepository productRepository, ProductStatusRepository productStatusRepository) {
+    public AdminServiceImpl(AdminRepository adminRepository, ProductRepository productRepository, ProductStatusRepository productStatusRepository, MemberRepository memberRepository) {
         this.adminRepository = adminRepository;
         this.productRepository = productRepository;
         this.productStatusRepository = productStatusRepository;
+        this.memberRepository = memberRepository;
     }
 
-    public Page<Member> getMemberList(Pageable pageable){
+    public Page<Member> getMemberList(Pageable pageable) {
         return adminRepository.findMemberByOrderById(pageable);
     }
 
-    public int getMemberTotalCount(){
+    public int getMemberTotalCount() {
         return (int) adminRepository.count();
     }
 
@@ -44,7 +46,7 @@ public class AdminServiceImpl implements AdminService {
         return adminRepository.findCategorySales();
     }
 
-    public List<AdminProductMonthTotalSalesResponse> findMonthTotalSales(){
+    public List<AdminProductMonthTotalSalesResponse> findMonthTotalSales() {
         return adminRepository.findMonthTotalSales();
     }
 
@@ -57,17 +59,17 @@ public class AdminServiceImpl implements AdminService {
         return adminRepository.findProductsSoldRegisterToday(today, pageable);
     }
 
-    public Member findMemberById(Integer memberId){
+    public Member findMemberById(Integer memberId) {
         Optional<Member> memberOptional = adminRepository.findById(memberId);
         return memberOptional.orElseThrow();
     }
 
-    public int countByCreatedAtToday(){
+    public int countByCreatedAtToday() {
         LocalDate today = LocalDate.now();
         return adminRepository.countByCreatedAtToday(today);
     }
 
-    public List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts(){
+    public List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts() {
         return adminRepository.findSignupWeeklyCounts();
     }
 
@@ -79,20 +81,20 @@ public class AdminServiceImpl implements AdminService {
         return adminRepository.findMemberByStatusOrderById(status, pageable);
     }
 
-    public List<Member> getMemberByStatus(int status){
+    public List<Member> getMemberByStatus(int status) {
         return adminRepository.findByStatus(status);
     }
 
 
     public void updateMemberDisableStatus(Integer memberId, String action) {
-        if (action.equals("enable")){
-            Member member= adminRepository.findById(memberId).get();
-//            member.setStatus(1);
-//            adminRepository.save(member);
-        } else if(action.equals("disable")){
-            Member member= adminRepository.findById(memberId).get();
-//            member.setStatus(2);
-//            adminRepository.save(member);
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        Member member = optionalMember.get();
+        if (action.equals("enable")) {
+            member = member.toBuilder().status(1).build();
+
+        } else if (action.equals("disable")) {
+            member = member.toBuilder().status(2).build();
         }
+        memberRepository.save(member);
     }
 }
