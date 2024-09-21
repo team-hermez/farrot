@@ -20,7 +20,7 @@ $(document).ready(function () {
                 data: {
                     labels: hours,
                     datasets: [{
-                        label: '일일 시간별 매출',
+                        label: '일일 매출',
                         data: total_sales,
                         backgroundColor: 'rgba(0, 123, 255, 0.2)',
                         borderColor: 'rgba(0, 123, 255, 1)',
