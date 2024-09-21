@@ -159,17 +159,19 @@
             <!-- Wishlist -->
             <div class="cart-area">
               <div id="read-count" class="cart--btn">
-                <span class="cart_quantity read-count">0</span>
+                <span class="read-count"></span>
                 <script th:inline="javascript">
                   $.ajax({
                     url: '/chat-room/notification',
                     type: 'get',
                     success: data => {
-
                       const notificationSpan = document.querySelector('.read-count')
-                      notificationSpan.textContent = data.readCount
-                      const spanDiv = document.getElementById('read-count')
-                      spanDiv.append(notificationSpan)
+                      if (typeof data.readCount !== 'undefined' && data.readCount !== 0) {
+                        notificationSpan.classList.add('cart_quantity')
+                        notificationSpan.textContent = data.readCount
+                        const spanDiv = document.getElementById('read-count')
+                        spanDiv.append(notificationSpan)
+                      }
                     },
                     error: data => {
                       console.log("실패", data)
@@ -184,14 +186,17 @@
             <!-- Cart -->
             <div class="cart-area">
               <div class="cart--btn"><i class="icofont-cart"></i>
-                <span class="cart_quantity wish-count">0</span>
+                <span class="wish-count"></span>
                 <script th:inline="javascript">
                   $.ajax({
                     url: '/wishlist/count',
                     type: 'get',
                     success: data => {
-                      const wishSpan = document.querySelector('.wish-count')
-                      wishSpan.textContent = data
+                      if (data !== 0) {
+                        const wishSpan = document.querySelector('.wish-count')
+                        wishSpan.classList.add('cart_quantity')
+                        wishSpan.textContent = data
+                      }
                     },
                     error: data => {
                       console.log("실패", data)
@@ -208,7 +213,6 @@
                       url: '/wishlist/header-wish',
                       type: 'get',
                       success: data => {
-                        console.log(data[0].id)
                         const items = [];
                         data.forEach(product => {
                           const li = `<li>
