@@ -8,10 +8,10 @@ import java.util.Date;
 @Getter
 @Setter
 public class AdminRegisterMonthlyResponse {
-    Date signupDate;
+    String signupDate;
     int signup_count;
 
-    public AdminRegisterMonthlyResponse(Date signupDate, int signupCount) {
+    public AdminRegisterMonthlyResponse(String signupDate, int signupCount) {
         this.signupDate = signupDate;
         this.signup_count = signupCount;
     }

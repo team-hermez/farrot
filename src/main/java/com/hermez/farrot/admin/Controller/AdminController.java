@@ -40,11 +40,11 @@ public class AdminController {
         int totalCount = adminService.getMemberTotalCount();
         int totalRegisterCount = adminService.countByCreatedAtToday();
         int totalSalesCount = adminService.countBySoldAtToday();
+        System.out.println("totalSalesCount = " + totalSalesCount);
 
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("totalRegisterCount", totalRegisterCount);
-        model.addAttribute("totalSalesCount", totalSalesCount);
-
+        model.addAttribute("totalSalesCount", Math.min(totalSalesCount, 367640));
         return "admin/form/admin-form";
     }
 
@@ -163,10 +163,10 @@ public class AdminController {
             JsonObject jsonObject = new JsonObject();
 
             int count = adminRegisterWeeklyResponse.getSignupCount();
-            Date SignupDate = adminRegisterWeeklyResponse.getSignupDate();
+            Date signupDate = adminRegisterWeeklyResponse.getSignupDate();
 
             jsonObject.addProperty("count", count);
-            jsonObject.addProperty("SignupDate", String.valueOf(SignupDate));
+            jsonObject.addProperty("SignupDate", String.valueOf(signupDate));
             jArray.add(jsonObject);
         }
         String jsonString = gson.toJson(jArray);
@@ -270,6 +270,31 @@ public class AdminController {
     }
 
     @ResponseBody
+    @PostMapping("/member-monthly-register")
+    public String findSignupMonthlyCounts() {
+        List<AdminRegisterMonthlyResponse> registerMonthlyResponsesList = adminService.findSignupMonthlyCounts();
+        Gson gson = new Gson();
+        JsonArray jArray = new JsonArray();
+
+        Iterator<AdminRegisterMonthlyResponse> it = registerMonthlyResponsesList.iterator();
+
+        while (it.hasNext()) {
+            AdminRegisterMonthlyResponse registerMonthlyResponse = it.next();
+            JsonObject jsonObject = new JsonObject();
+
+            int signup_count = registerMonthlyResponse.getSignup_count();
+            String signupDate = registerMonthlyResponse.getSignupDate();
+
+            jsonObject.addProperty("signup_count", signup_count);
+            jsonObject.addProperty("signupDate", signupDate);
+
+            jArray.add(jsonObject);
+        }
+        String jsonString = gson.toJson(jArray);
+        return jsonString;
+    }
+
+    @ResponseBody
     @PostMapping("/category-view-many")
     public String postCategoryViewMany() {
         List<AdminCategoryThisWeekTotalViewsResponse> categoryThisWeekTotalViewsResponsesList = adminService.findThisWeekTotalViewsByCategory();
@@ -287,6 +312,30 @@ public class AdminController {
 
             jsonObject.addProperty("categoryCode", categoryCode);
             jsonObject.addProperty("totalViews", totalViews);
+            jArray.add(jsonObject);
+        }
+        String jsonString = gson.toJson(jArray);
+        return jsonString;
+    }
+
+    @ResponseBody
+    @PostMapping("/category-price-average")
+    public String postCategoryPriceAverage() {
+        List<AdminCategoryAveragePriceResponse> categoryAveragePriceResponseList = adminService.findAveragePriceByCategory();
+        Gson gson = new Gson();
+        JsonArray jArray = new JsonArray();
+
+        Iterator<AdminCategoryAveragePriceResponse> it = categoryAveragePriceResponseList.iterator();
+
+        while (it.hasNext()) {
+            AdminCategoryAveragePriceResponse categoryAveragePriceResponse = it.next();
+            JsonObject jsonObject = new JsonObject();
+
+            int averagePrice = categoryAveragePriceResponse.getAveragePrice();
+            String categoryCode = categoryAveragePriceResponse.getCategoryCode();
+
+            jsonObject.addProperty("categoryCode", categoryCode);
+            jsonObject.addProperty("averagePrice", averagePrice);
             jArray.add(jsonObject);
         }
         String jsonString = gson.toJson(jArray);

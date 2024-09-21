@@ -1,33 +1,32 @@
 $(document).ready(function () {
     $.ajax({
-        url: "/admin/product-week-totalSales",
+        url: "/admin/member-monthly-register",
         type: "POST",
-        dataType: "JSON",
+        dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function (data) {
-            var week = [];
-            var total_sales = [];
+            var signup_count = [];
+            var signupDate = [];
 
             $.each(data, function () {
-                week.push(this["week"]);
-                total_sales.push(this["total_sales"]);
+                signup_count.push(this["signup_count"]);
+                signupDate.push(this["signupDate"]);
             });
 
-            const ctx = document.getElementById('weeklyTotalChart').getContext('2d');
+            const ctx = document.getElementById('registerMonthlyChart').getContext('2d');
 
             new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
-                    labels: week,
+                    labels: signupDate,
                     datasets: [{
-                        label: '주간 매출',
-                        data: total_sales,
-                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        label: '월별 가입자 수',
+                        data: signup_count,
+                        backgroundColor: 'rgba(0, 123, 255, 0.7)',
                         borderColor: 'rgba(0, 123, 255, 1)',
-                        borderWidth: 2,
-                        fill: true,
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
+                        borderWidth: 1,
+                        hoverBackgroundColor: 'rgba(0, 123, 255, 0.9)',
+                        hoverBorderColor: 'rgba(0, 123, 255, 1)',
                     }]
                 },
                 options: {
@@ -40,29 +39,41 @@ $(document).ready(function () {
                                     size: 14,
                                     weight: 'bold'
                                 }
-                            },
+                            }
                         },
                         tooltip: {
                             enabled: true,
-                            mode: 'index',
-                            intersect: false,
-                        },
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.dataset.label + ': ' + tooltipItem.raw + '명';
+                                }
+                            }
+                        }
                     },
                     responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         x: {
+                            title: {
+                                display: true,
+                                text: '가입 월',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            },
                             ticks: {
                                 autoSkip: false,
                                 maxRotation: 0,
                                 minRotation: 0,
-                                paddingLeft: 10,
+                                padding: 10
                             }
                         },
                         y: {
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: '매출 (원)',
+                                text: '가입자 수(명)',
                                 font: {
                                     size: 16,
                                     weight: 'bold'
@@ -70,15 +81,7 @@ $(document).ready(function () {
                             },
                             grid: {
                                 color: 'rgba(200, 200, 200, 0.5)',
-                            },
-                        }
-                    },
-                    animation: {
-                        tension: {
-                            duration: 1000,
-                            easing: 'easeInOutQuad',
-                            from: 0.1,
-                            to: 0.5,
+                            }
                         }
                     }
                 }

@@ -3,7 +3,6 @@ package com.hermez.farrot.admin.repository.impl;
 import com.hermez.farrot.admin.dto.response.*;
 import com.hermez.farrot.admin.repository.AdminRepositoryCustom;
 import com.hermez.farrot.product.entity.Product;
-import com.hermez.farrot.product.entity.QProduct;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -25,7 +24,6 @@ import java.util.List;
 
 import static com.hermez.farrot.member.entity.QMember.member;
 import static com.hermez.farrot.product.entity.QProduct.product;
-import static java.lang.Long.sum;
 
 @Repository
 public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
@@ -46,7 +44,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 "JOIN category c ON p.category_id = c.category_id " +
                 "JOIN product_status s ON p.product_status_id = s.product_status_id " +
                 "WHERE s.product_status_id = 3 " +
-                "and yearweek(p.created_at, 1) = yearweek(curdate(), 1) " +
+                "and yearweek(p.sold_at, 1) = yearweek(curdate(), 1) " +
                 "GROUP BY categoryCode " +
                 "ORDER BY count DESC " +
                 "LIMIT 5";
@@ -94,32 +92,29 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     @Override
     public List<AdminRegisterMonthlyResponse> findSignupMonthlyCounts() {
-        String sql = "WITH RECURSIVE DateRange AS (" +
-                "    SELECT DATE_FORMAT(curdate(), '%Y-%m-01') AS signup_date " +
+        String sql = "WITH RECURSIVE DataRange AS (" +
+                "    SELECT DATE_FORMAT(CURDATE(), '%Y-01-01') AS signup_month " +
                 "    UNION ALL " +
-                "    SELECT signup_date + INTERVAL 1 DAY " +
-                "    FROM DateRange " +
-                "    WHERE signup_date < LAST_DAY(curdate())" +
+                "    SELECT DATE_ADD(signup_month, INTERVAL 1 MONTH) " +
+                "    FROM DataRange " +
+                "    WHERE signup_month < DATE_FORMAT(CURDATE(), '%Y-12-01') " +
                 ") " +
-                "SELECT " +
-                "    d.signup_date, " +
-                "    COALESCE(COUNT(m.member_id), 0) AS signup_count " +
-                "FROM " +
-                "    DateRange d " +
-                "    LEFT JOIN member m ON DATE(m.created_at) = d.signup_date " +
-                "GROUP BY " +
-                "    d.signup_date " +
-                "ORDER BY " +
-                "    d.signup_date";
+                "SELECT DATE_FORMAT(dr.signup_month, '%m') AS signup_month, " +
+                "       COALESCE(COUNT(m.member_id), 0) AS signup_count " +
+                "FROM DataRange dr " +
+                "LEFT JOIN member m ON DATE_FORMAT(m.create_at, '%m') = DATE_FORMAT(dr.signup_month, '%m') " +
+                "GROUP BY dr.signup_month " +
+                "ORDER BY dr.signup_month;";
 
         return jdbcTemplate.query(sql, new RowMapper<AdminRegisterMonthlyResponse>() {
             @Override
             public AdminRegisterMonthlyResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Date signupDate = rs.getDate("signup_date");
+                String signupDate = rs.getString("signup_month"); // 수정
                 int signupCount = rs.getInt("signup_count");
-                return new AdminRegisterMonthlyResponse(signupDate, signupCount);
+                return new AdminRegisterMonthlyResponse(signupDate+"월", signupCount); // 생성자도 수정 필요
             }
         });
+
     }
 
     @Override
@@ -129,9 +124,12 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 "SUM(p.view) AS total_views " +
                 "FROM product p " +
                 "JOIN category c ON p.category_id = c.category_id " +
-                "WHERE p.created_at >= DATE_SUB(curdate(), INTERVAL weekday(curdate()) DAY) " +
+                "WHERE p.sold_at >= DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) " +
+                "AND p.sold_at < DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY) " +
+                "AND p.product_status_id = 3 " +
                 "GROUP BY c.code " +
-                "ORDER BY c.category_id ASC";
+                "ORDER BY c.category_id ASC;";
+
 
         return jdbcTemplate.query(sql, new RowMapper<AdminCategoryThisWeekTotalViewsResponse>() {
             @Override
@@ -142,6 +140,27 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
             }
         });
     }
+
+    @Override
+    public List<AdminCategoryAveragePriceResponse> findAveragePriceByCategory() {
+        String sql = "SELECT " +
+                "c.code AS categoryCode, " +
+                "FLOOR(AVG(p.price)) AS averagePrice " +
+                "FROM category c " +
+                "LEFT JOIN product p ON c.category_id = p.category_id " +
+                "GROUP BY c.category_id, c.code " +
+                "ORDER BY c.category_id ASC";
+
+        return jdbcTemplate.query(sql, new RowMapper<AdminCategoryAveragePriceResponse>() {
+            @Override
+            public AdminCategoryAveragePriceResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+                int averagePrice = rs.getInt("averagePrice");
+                String categoryCode = rs.getString("categoryCode");
+                return new AdminCategoryAveragePriceResponse(averagePrice, categoryCode);
+            }
+        });
+    }
+
 
 
     @Override
@@ -180,15 +199,16 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     @Override
     public int countSalesToday(LocalDate today) {
-        return queryFactory
-                .select(product.price)
-                .from(product)
-                .where(product.soldAt.between(today.atStartOfDay(), today.plusDays(1).atStartOfDay()))
-                .fetch()
-                .stream()
-                .mapToInt(Integer::intValue)
-                .sum();
+        String sql = "SELECT SUM(price) AS total_sales " +
+                "FROM product " +
+                "WHERE sold_at BETWEEN ? AND ?";
+
+        return jdbcTemplate.queryForObject(sql, new Object[]{
+                today.atStartOfDay(),
+                today.plusDays(1).atStartOfDay()
+        }, Integer.class);
     }
+
 
     @Override
     public Page<Product> findProductsRegisteredThisWeek(LocalDate today, Pageable pageable) {
@@ -254,8 +274,9 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 "FROM months m " +
                 "LEFT JOIN product p ON MONTH(p.sold_at) = m.month " +
                 "AND YEAR(p.sold_at) = YEAR(curdate()) " +
+                "WHERE p.product_status_id = 3 " +
                 "GROUP BY m.month " +
-                "ORDER BY m.month;";
+                "ORDER BY m.month";
 
         return jdbcTemplate.query(sql, new RowMapper<AdminProductYearlyTotalSalesResponse>() {
             @Override

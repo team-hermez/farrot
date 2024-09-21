@@ -16,7 +16,7 @@ $(document).ready(function () {
             const ctx = document.getElementById('mainChart').getContext('2d');
 
             new Chart(ctx, {
-                type: 'line', // 선 차트
+                type: 'line',
                 data: {
                     labels: SignupDate,
                     datasets: [{
@@ -70,11 +70,20 @@ $(document).ready(function () {
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: '가입 수(단위)',
+                                text: '가입 수(명)',
                                 font: {
                                     size: 16,
                                     weight: 'bold'
                                 }
+                            },
+                            ticks: {
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;
+                                    }
+                                    return null;
+                                },
+                                stepSize: 1
                             },
                             grid: {
                                 color: 'rgba(200, 200, 200, 0.5)',

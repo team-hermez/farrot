@@ -16,6 +16,8 @@ public interface AdminRepositoryCustom {
     List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts();
     List<AdminRegisterMonthlyResponse> findSignupMonthlyCounts();
 
+    List<AdminCategoryAveragePriceResponse> findAveragePriceByCategory();
+
     List<AdminProductYearlyTotalSalesResponse> findYearlyTotalSales();
     List<AdminProductTodayTotalSalesResponse> findTodayTotalSales();
     List<AdminProductWeeklyTotalSalesResponse> findWeeklyTotalSales();

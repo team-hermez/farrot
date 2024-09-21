@@ -52,7 +52,7 @@ $(document).ready(function () {
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: '매출(단위)',
+                                text: '매출(원)',
                                 font: {
                                     size: 16,
                                     weight: 'bold'
