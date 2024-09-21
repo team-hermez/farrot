@@ -28,13 +28,10 @@
                   const message = getMessaging(app);
                   Notification.requestPermission().then(permission => {
                     if (permission === 'granted') {
-                      console.log('허용된 곳에 들어옴')
-                      new Notification('알림 권한이 허용되었습니다!', {body: '푸시 알림이 활성화되었습니다.'})
                       return getToken(message, {
                         vapidKey: ""
                       })
                       .then(async function (token) {
-                        console.log(`푸쉬 토큰 발급 완료 : ${token}`);
                         await fetch('/notification/register', {
                           method: 'post',
                           body: token
@@ -79,7 +76,7 @@
     <div class="container">
       <div class="classy-nav-container breakpoint-off">
         <nav class="classy-navbar" id="bigshopNav">
-          <a href="/" class="nav-brand"><img src="/img/core-img/logo.png" alt="logo"></a>
+          <a href="/" class="nav-brand"><img src="/img/core-img/farrot.png" alt="logo"></a>
           <div class="classy-navbar-toggler">
             <span class="navbarToggler"><span></span><span></span><span></span></span>
           </div>
@@ -179,23 +176,6 @@
                 <a th:href="@{/chat-room/rooms}"><i class="icofont-heart"></i></a>
               </div>
 
-              <!-- Cart Dropdown Content -->
-              <div class="cart-dropdown-content">
-                <ul class="cart-list">
-                  <li>
-                    <div class="cart-item-desc">
-                      <a href="#" class="image">
-                        <img src="/img/product-img/top-1.png" class="cart-thumb" alt="">
-                      </a>
-                      <div>
-                        <a th:href="@{/notification/list}" href=>Kid's Fashion</a>
-                        <p>1 x - <span class="price">$32.99</span></p>
-                      </div>
-                    </div>
-                    <span class="dropdown-product-remove"><i class="icofont-bin"></i></span>
-                  </li>
-                </ul>
-              </div>
             </div>
 
             <!-- Cart -->

@@ -1,12 +1,10 @@
 package com.hermez.farrot.wishlist.service;
 
-import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.wishlist.dto.WishlistDTO;
 import com.hermez.farrot.wishlist.dto.request.WishRequest;
 import com.hermez.farrot.wishlist.dto.response.WishResponse;
 import com.hermez.farrot.wishlist.entity.Wishlist;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
