@@ -14,6 +14,8 @@ public class SaferrotPaymentRequest {
     Integer buyerId;
     Integer productId;
     String sellerAccount;
+    String sellerEmail;
+    Integer sellerId;
     int safeDay;
     String merchantUid;
     String paymentUrl;

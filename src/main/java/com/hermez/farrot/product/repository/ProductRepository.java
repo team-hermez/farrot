@@ -15,13 +15,11 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
 
     Page<Product> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
-    Page<Product> findByCategoryOrderByCreatedAtDesc(Category category, Pageable pageable);
-
     Page<Product> findByMemberIdOrderByCreatedAtDesc(Integer memberId, Pageable pageable);
 
     List<Product> findByMemberId(Integer memberId);
 
     Page<Product> findByProductNameContainingIgnoreCase(String productName, Pageable pageable);
 
-    List<Product> findTop5ByOrderByCreatedAtDesc();
+    List<Product> findTop4ByOrderByCreatedAtDesc();
 }
