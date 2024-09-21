@@ -1,12 +1,11 @@
 package com.hermez.farrot.notification.service;
 
-import com.hermez.farrot.admin.dto.AdminNotificationRequest;
+import com.hermez.farrot.admin.dto.request.AdminNotificationRequest;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.notification.dto.NotificationRequest;
 import com.hermez.farrot.product.entity.Product;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import lombok.RequiredArgsConstructor;

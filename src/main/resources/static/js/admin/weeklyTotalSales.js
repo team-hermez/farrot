@@ -1,30 +1,31 @@
 $(document).ready(function () {
     $.ajax({
-        url: "/admin/member-register-weekly",
+        url: "/admin/product-week-totalSales",
         type: "POST",
-        dataType: "json",
+        dataType: "JSON",
         contentType: "application/json; charset=utf-8",
         success: function (data) {
-            var count = [];
-            var SignupDate = [];
+            var week = [];
+            var total_sales = [];
 
             $.each(data, function () {
-                count.push(this["count"]);
-                SignupDate.push(this["SignupDate"]);
+                week.push(this["week"]);
+                total_sales.push(this["total_sales"]);
             });
 
-            const ctx = document.getElementById('mainChart').getContext('2d');
+            const ctx = document.getElementById('weeklyTotalChart').getContext('2d');
 
             new Chart(ctx, {
-                type: 'line', // 선 차트
+                type: 'line',
                 data: {
-                    labels: SignupDate,
+                    labels: week,
                     datasets: [{
-                        label: '일주일 가입자 수',
-                        data: count,
-                        backgroundColor: 'rgba(0, 123, 255, 0.3)',
+                        label: '총매출',
+                        data: total_sales,
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
                         borderColor: 'rgba(0, 123, 255, 1)',
                         borderWidth: 2,
+                        fill: true,
                         pointRadius: 5,
                         pointHoverRadius: 7,
                     }]
@@ -39,38 +40,29 @@ $(document).ready(function () {
                                     size: 14,
                                     weight: 'bold'
                                 }
-                            }
+                            },
                         },
                         tooltip: {
                             enabled: true,
                             mode: 'index',
                             intersect: false,
-                        }
+                        },
                     },
                     responsive: true,
-                    maintainAspectRatio: false,
                     scales: {
                         x: {
-                            title: {
-                                display: true,
-                                text: '날짜',
-                                font: {
-                                    size: 16,
-                                    weight: 'bold'
-                                }
-                            },
                             ticks: {
                                 autoSkip: false,
                                 maxRotation: 0,
                                 minRotation: 0,
-                                paddingLeft: 10
+                                paddingLeft: 10,
                             }
                         },
                         y: {
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: '가입 수(단위)',
+                                text: '매출 (단위)',
                                 font: {
                                     size: 16,
                                     weight: 'bold'
@@ -78,7 +70,15 @@ $(document).ready(function () {
                             },
                             grid: {
                                 color: 'rgba(200, 200, 200, 0.5)',
-                            }
+                            },
+                        }
+                    },
+                    animation: {
+                        tension: {
+                            duration: 1000,
+                            easing: 'easeInOutQuad',
+                            from: 0.1,
+                            to: 0.5,
                         }
                     }
                 }

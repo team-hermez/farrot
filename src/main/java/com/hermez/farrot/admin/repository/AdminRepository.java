@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface AdminRepository extends JpaRepository<Member, Integer>, AdminRepositoryCustom {
     Page<Member> findMemberByOrderById(Pageable pageable);
+
     Page<Member> findMemberByStatusOrderById(int status, Pageable pageable);
 
     List<Member> findByStatus(int status);
-
 }

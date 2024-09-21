@@ -1,8 +1,6 @@
 package com.hermez.farrot.admin.service.impl;
 
-import com.hermez.farrot.admin.dto.AdminCategorySalesTop5Response;
-import com.hermez.farrot.admin.dto.AdminProductMonthTotalSalesResponse;
-import com.hermez.farrot.admin.dto.AdminRegisterWeeklyResponse;
+import com.hermez.farrot.admin.dto.response.*;
 import com.hermez.farrot.admin.repository.AdminRepository;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
@@ -33,10 +31,12 @@ public class AdminServiceImpl implements AdminService {
         this.memberRepository = memberRepository;
     }
 
+    @Override
     public Page<Member> getMemberList(Pageable pageable) {
         return adminRepository.findMemberByOrderById(pageable);
     }
 
+    @Override
     public int getMemberTotalCount() {
         return (int) adminRepository.count();
     }
@@ -46,46 +46,88 @@ public class AdminServiceImpl implements AdminService {
         return adminRepository.findCategorySales();
     }
 
+    @Override
     public List<AdminProductMonthTotalSalesResponse> findMonthTotalSales() {
         return adminRepository.findMonthTotalSales();
     }
 
+    @Override
+    public List<AdminProductYearlyTotalSalesResponse> findYearlyTotalSales() {
+        return adminRepository.findYearlyTotalSales();
+    }
+
+    @Override
     public Page<Product> getProductList(Pageable pageable) {
         return productRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
-    public Page<Product> findProductsSoldRegisterToday(Pageable pageable) {
+    @Override
+    public Page<Product> findProductsRegisterToday(Pageable pageable) {
         LocalDate today = LocalDate.now();
-        return adminRepository.findProductsSoldRegisterToday(today, pageable);
+        return adminRepository.findProductsRegisterToday(today, pageable);
     }
 
+    @Override
+    public Page<Product> findProductsRegisterThisWeek(Pageable pageable) {
+        LocalDate today = LocalDate.now();
+        return adminRepository.findProductsRegisteredThisWeek(today, pageable);
+    }
+
+    @Override
+    public Page<Product> findProductsRegisterThisMonth(Pageable pageable) {
+        LocalDate today = LocalDate.now();
+        return adminRepository.findProductsRegisteredThisMonth(today, pageable);
+    }
+
+    @Override
     public Member findMemberById(Integer memberId) {
         Optional<Member> memberOptional = adminRepository.findById(memberId);
         return memberOptional.orElseThrow();
     }
 
+    @Override
     public int countByCreatedAtToday() {
         LocalDate today = LocalDate.now();
         return adminRepository.countByCreatedAtToday(today);
     }
 
+    @Override
+    public int countBySoldAtToday() {
+        LocalDate today = LocalDate.now();
+        return adminRepository.countSalesToday(today);
+    }
+
+    @Override
+    public List<AdminProductWeeklyTotalSalesResponse> findWeeklyTotalSales() {
+        return adminRepository.findWeeklyTotalSales();
+    }
+
+    @Override
+    public List<AdminProductTodayTotalSalesResponse> findTodayTotalSales() {
+        return adminRepository.findTodayTotalSales();
+    }
+
+    @Override
     public List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts() {
         return adminRepository.findSignupWeeklyCounts();
     }
 
+    @Override
     public Page<Product> getProductByMemberIdOrderByCreatedAtDesc(Pageable pageable, Integer memberId) {
         return productRepository.findByMemberIdOrderByCreatedAtDesc(memberId, pageable);
     }
 
+    @Override
     public Page<Member> getMemberByStatusOrderById(int status, Pageable pageable) {
         return adminRepository.findMemberByStatusOrderById(status, pageable);
     }
 
+    @Override
     public List<Member> getMemberByStatus(int status) {
         return adminRepository.findByStatus(status);
     }
 
-
+    @Override
     public void updateMemberDisableStatus(Integer memberId, String action) {
         Optional<Member> optionalMember = memberRepository.findById(memberId);
         Member member = optionalMember.get();

@@ -1,4 +1,4 @@
-package com.hermez.farrot.admin.dto;
+package com.hermez.farrot.admin.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.hermez.farrot.admin.dto;
+package com.hermez.farrot.admin.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,11 +7,11 @@ import java.util.Date;
 @Getter
 @Setter
 public class AdminRegisterWeeklyResponse {
-    private Date signupDate;
     private int signupCount;
+    private Date signupDate;
 
-    public AdminRegisterWeeklyResponse(Date signupDate, int signupCount) {
-        this.signupDate = signupDate;
+    public AdminRegisterWeeklyResponse(int signupCount, Date signupDate) {
         this.signupCount = signupCount;
+        this.signupDate = signupDate;
     }
 }
