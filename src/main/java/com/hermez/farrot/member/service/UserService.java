@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +47,7 @@ public class UserService implements MemberService{
 
     @Transactional(readOnly = true)
     @Override
-    public void logIn(MemberLoginRequest memberLoginRequest, HttpServletResponse response) {
+    public void logIn(MemberLoginRequest memberLoginRequest, HttpServletResponse response, HttpServletRequest request) {
 
         Optional<Member> optionalMember = memberRepository.findByEmail(memberLoginRequest.getEmail());
 
@@ -63,7 +64,7 @@ public class UserService implements MemberService{
         Cookie cookie = new Cookie(JwtTokenProvider.AUTHORIZATION_HEADER, jwtTokenProvider.generateToken(member.getEmail(),member.getId(),member.getRole()));
         cookie.setMaxAge(7*24*60*60);
         cookie.setPath("/");
-        cookie.setDomain("localhost");
+        cookie.setDomain(request.getServerName());
         cookie.setSecure(false);
 
         System.out.println(cookie);
@@ -74,19 +75,33 @@ public class UserService implements MemberService{
         Optional<Member> member =  memberRepository.findByEmail(jwtTokenProvider.parseClaims(jwtToken).getSubject());
         return memberRepository.findByEmail(jwtTokenProvider.parseClaims(jwtToken).getSubject()).orElse(null);
     }
-    public void updateUserDetail(MemberUpdateRequest memberUpdateRequest) {
-        memberRepository.saveAndFlush(Member.builder()
+
+    @Transactional
+    @Override
+    public boolean updateUserDetail(MemberUpdateRequest memberUpdateRequest) {
+        System.out.println("test: "+memberUpdateRequest.getEmail());
+        Member member = memberRepository.findByEmail(memberUpdateRequest.getEmail()).orElseThrow(()-> new RuntimeException("회원이 존재하지 않습니다"));
+
+        boolean checkPassword = passwordEncoder.matches(
+                memberUpdateRequest.getExPassword(), member.getPassword());
+        if (!checkPassword){
+            System.out.println("현재 비밀번호가 다릅니다");
+            return false;
+        }
+
+        String encodePassword = (memberUpdateRequest.getNewPassword() != null && !memberUpdateRequest.getNewPassword().isEmpty())
+                ? passwordEncoder.encode(memberUpdateRequest.getNewPassword())
+                : member.getPassword(); // 새로운 비밀번호 없으면 기존 비밀번호 사용
+
+        Member updateMember = member.toBuilder()
                 .account(memberUpdateRequest.getAccount())
                 .nickname(memberUpdateRequest.getNickname())
-                .password(passwordEncoder.encode(memberUpdateRequest.getPassword()))
-                .build()).getId();
+                .password(encodePassword)
+                .build();
+        memberRepository.save(updateMember);
+        return true;
     }
 
-    public void activeStatus(Member member){
-        memberRepository.saveAndFlush(Member.builder()
-                .status(1)
-                .build()).getId();
-    }
     @Override
     public Member getMember(HttpServletRequest request){
         return userDetail(jwtTokenProvider.resolveToken(request));

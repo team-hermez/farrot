@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "MEMBER")
 @Getter
+@Builder(toBuilder = true)
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,8 +54,9 @@ public class Member {
 
     // 기본 유저용 생성자
     @Builder
-    public Member(String memberName, String email, String password, String phone, String nickname, String account,
-                  LocalDateTime createAt, Role role, int status) {
+    public Member(Integer id, String memberName, String email, String password, String phone, String nickname, String account,
+                  LocalDateTime createAt, Role role, int status, String attributeCode, String provider) {
+        this.id = id;
         this.memberName = memberName;
         this.email = email;
         this.password = password;
@@ -64,6 +66,8 @@ public class Member {
         this.createAt = createAt;
         this.role = role;
         this.status = status;
+        this.attributeCode = attributeCode;
+        this.provider = provider;
     }
 
     //소셜 로그인용

@@ -1,12 +1,10 @@
 package com.hermez.farrot.member.controller;
 
+import com.hermez.farrot.image.service.ImageService;
 import com.hermez.farrot.member.dto.request.MemberLoginRequest;
 import com.hermez.farrot.member.dto.request.MemberRegisterRequest;
 import com.hermez.farrot.member.dto.request.MemberUpdateRequest;
-import com.hermez.farrot.member.dto.response.MemberDetailResponse;
-import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
-import com.hermez.farrot.member.security.JwtTokenProvider;
 import com.hermez.farrot.member.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,10 +23,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
     private final UserService userService;
     private final MemberRepository memberRepository;
+    private final ImageService imageService;
 
-    public MemberController(MemberRepository memberRepository, UserService userService) {
+    public MemberController(MemberRepository memberRepository, UserService userService, ImageService imageService) {
         this.userService = userService;
         this.memberRepository = memberRepository;
+        this.imageService = imageService;
     }
 
     @GetMapping("/register")
@@ -53,8 +53,8 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String logIn(MemberLoginRequest memberLoginRequest, HttpServletResponse response) {
-        userService.logIn(memberLoginRequest, response);
+    public String logIn(MemberLoginRequest memberLoginRequest, HttpServletResponse response, HttpServletRequest httpServletRequest) {
+        userService.logIn(memberLoginRequest, response, httpServletRequest);
 
         return "redirect:/";
     }
@@ -77,16 +77,12 @@ public class MemberController {
     }
 
     @PostMapping("/detail")
-    String updateMemberDetail(MemberUpdateRequest memberUpdateRequest,
-                              MultipartFile multipartFile, Model model) {
-        System.out.println("ex pass : "+memberUpdateRequest.getPassword());
-        System.out.println("new password : "+memberUpdateRequest.getNewPassword());
-        if (memberUpdateRequest.getNewPassword() != null && !memberUpdateRequest.getNewPassword().isEmpty()) {
-            MemberUpdateRequest.builder()
-                    .password(memberUpdateRequest.getNewPassword())
-                    .build();
-        }
-        userService.updateUserDetail(memberUpdateRequest);
+    String updateMemberDetail(@ModelAttribute MemberUpdateRequest memberUpdateRequest,
+                              Model model) {
+        System.out.println("테스트: "+memberUpdateRequest.getEmail());
+        boolean complete = userService.updateUserDetail(memberUpdateRequest);
+
+        if(complete) System.out.println("완료");
 
         return "redirect:/member/detail";
     }
