@@ -108,6 +108,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public List<AdminCategoryThisWeekTotalViewsResponse> findThisWeekTotalViewsByCategory() {
+        return adminRepository.findThisWeekTotalViewsByCategory();
+    }
+
+    @Override
     public List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts() {
         return adminRepository.findSignupWeeklyCounts();
     }
@@ -139,4 +144,6 @@ public class AdminServiceImpl implements AdminService {
         }
         memberRepository.save(member);
     }
+
+
 }

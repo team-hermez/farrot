@@ -64,11 +64,11 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     @Override
     public List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts() {
         String sql = "WITH RECURSIVE DateRange AS (" +
-                "    SELECT CURDATE() - INTERVAL 6 DAY AS signup_date " +
+                "    SELECT curdate() - INTERVAL 6 DAY AS signup_date " +
                 "    UNION ALL " +
                 "    SELECT signup_date + INTERVAL 1 DAY " +
                 "    FROM DateRange " +
-                "    WHERE signup_date < CURDATE()" +
+                "    WHERE signup_date < curdate()" +
                 ") " +
                 "SELECT " +
                 "    d.signup_date, " +
@@ -95,11 +95,11 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     @Override
     public List<AdminRegisterMonthlyResponse> findSignupMonthlyCounts() {
         String sql = "WITH RECURSIVE DateRange AS (" +
-                "    SELECT DATE_FORMAT(CURDATE(), '%Y-%m-01') AS signup_date " +
+                "    SELECT DATE_FORMAT(curdate(), '%Y-%m-01') AS signup_date " +
                 "    UNION ALL " +
                 "    SELECT signup_date + INTERVAL 1 DAY " +
                 "    FROM DateRange " +
-                "    WHERE signup_date < LAST_DAY(CURDATE())" +
+                "    WHERE signup_date < LAST_DAY(curdate())" +
                 ") " +
                 "SELECT " +
                 "    d.signup_date, " +
@@ -118,6 +118,27 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 Date signupDate = rs.getDate("signup_date");
                 int signupCount = rs.getInt("signup_count");
                 return new AdminRegisterMonthlyResponse(signupDate, signupCount);
+            }
+        });
+    }
+
+    @Override
+    public List<AdminCategoryThisWeekTotalViewsResponse> findThisWeekTotalViewsByCategory() {
+        String sql = "SELECT " +
+                "c.code AS categoryCode, " +
+                "SUM(p.view) AS total_views " +
+                "FROM product p " +
+                "JOIN category c ON p.category_id = c.category_id " +
+                "WHERE p.created_at >= DATE_SUB(curdate(), INTERVAL weekday(curdate()) DAY) " +
+                "GROUP BY c.code " +
+                "ORDER BY c.category_id ASC";
+
+        return jdbcTemplate.query(sql, new RowMapper<AdminCategoryThisWeekTotalViewsResponse>() {
+            @Override
+            public AdminCategoryThisWeekTotalViewsResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+                String categoryCode = rs.getString("categoryCode");
+                int totalViews = rs.getInt("total_views");
+                return new AdminCategoryThisWeekTotalViewsResponse(categoryCode, totalViews);
             }
         });
     }
@@ -232,7 +253,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 "SELECT m.month, IFNULL(SUM(p.price), 0) AS total_sales " +
                 "FROM months m " +
                 "LEFT JOIN product p ON MONTH(p.sold_at) = m.month " +
-                "AND YEAR(p.sold_at) = YEAR(CURDATE()) " +
+                "AND YEAR(p.sold_at) = YEAR(curdate()) " +
                 "GROUP BY m.month " +
                 "ORDER BY m.month;";
 
@@ -253,7 +274,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 "HOUR(sold_at) AS hour, " +
                 "SUM(price) AS total_sales " +
                 "FROM product " +
-                "WHERE sold_at >= CURDATE() " +
+                "WHERE sold_at >= curdate() " +
                 "GROUP BY HOUR(sold_at) " +
                 "ORDER BY HOUR(sold_at)";
 
@@ -271,11 +292,11 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     @Override
     public List<AdminProductWeeklyTotalSalesResponse> findWeeklyTotalSales() {
         String sql = "WITH RECURSIVE DateRange AS ( " +
-                "    SELECT CURDATE() - INTERVAL WEEKDAY(CURRENT_DATE()) DAY AS sale_date " +
+                "    SELECT curdate() - INTERVAL weekday(CURRENT_DATE()) DAY AS sale_date " +
                 "    UNION ALL " +
                 "    SELECT sale_date + INTERVAL 1 DAY " +
                 "    FROM DateRange " +
-                "    WHERE sale_date < CURDATE() " +
+                "    WHERE sale_date < curdate() " +
                 ") " +
                 "SELECT " +
                 "    DATE_FORMAT(dr.sale_date, '%Y-%m-%d') AS week, " +

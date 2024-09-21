@@ -269,6 +269,30 @@ public class AdminController {
         return jsonString;
     }
 
+    @ResponseBody
+    @PostMapping("/category-view-many")
+    public String postCategoryViewMany() {
+        List<AdminCategoryThisWeekTotalViewsResponse> categoryThisWeekTotalViewsResponsesList = adminService.findThisWeekTotalViewsByCategory();
+        Gson gson = new Gson();
+        JsonArray jArray = new JsonArray();
+
+        Iterator<AdminCategoryThisWeekTotalViewsResponse> it = categoryThisWeekTotalViewsResponsesList.iterator();
+
+        while (it.hasNext()) {
+            AdminCategoryThisWeekTotalViewsResponse categoryThisWeekTotalViewsResponse = it.next();
+            JsonObject jsonObject = new JsonObject();
+
+            int totalViews = categoryThisWeekTotalViewsResponse.getTotal_views();
+            String categoryCode = categoryThisWeekTotalViewsResponse.getCategoryCode();
+
+            jsonObject.addProperty("categoryCode", categoryCode);
+            jsonObject.addProperty("totalViews", totalViews);
+            jArray.add(jsonObject);
+        }
+        String jsonString = gson.toJson(jArray);
+        return jsonString;
+    }
+
     @PostMapping("/process-action")
     public String postProcessAction(@ModelAttribute AdminNotificationRequest adminNotificationRequest) {
         notificationService.creatNotification(adminNotificationRequest);
