@@ -118,6 +118,16 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public List<AdminRegisterMonthlyResponse> findSignupMonthlyCounts() {
+        return adminRepository.findSignupMonthlyCounts();
+    }
+
+    @Override
+    public List<AdminCategoryAveragePriceResponse> findAveragePriceByCategory() {
+        return adminRepository.findAveragePriceByCategory();
+    }
+
+    @Override
     public Page<Product> getProductByMemberIdOrderByCreatedAtDesc(Pageable pageable, Integer memberId) {
         return productRepository.findByMemberIdOrderByCreatedAtDesc(memberId, pageable);
     }
@@ -131,6 +141,8 @@ public class AdminServiceImpl implements AdminService {
     public List<Member> getMemberByStatus(int status) {
         return adminRepository.findByStatus(status);
     }
+
+
 
     @Override
     public void updateMemberDisableStatus(Integer memberId, String action) {

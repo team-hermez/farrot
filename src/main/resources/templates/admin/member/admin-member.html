@@ -91,6 +91,10 @@
     <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/admin/registerMonthly.js"></script>
+    <link rel="stylesheet" th:href="@{/css/admin/chart.css}">
     <!-- NProgress -->
     <link href="/vendors/nprogress/nprogress.css" rel="stylesheet">
     <!-- iCheck -->
@@ -140,30 +144,8 @@
                             <div class="x_content">
                                 <div class="dashboard-widget-content">
                                     <div class="col-md-4 hidden-small">
-                                        <h2 class="line_30">여기 차트</h2>
                                         <table class="countries_list">
-                                            <tbody>
-                                            <tr>
-                                                <td>United States</td>
-                                                <td class="fs15 fw700 text-right">33%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>France</td>
-                                                <td class="fs15 fw700 text-right">27%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Germany</td>
-                                                <td class="fs15 fw700 text-right">16%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Spain</td>
-                                                <td class="fs15 fw700 text-right">11%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Britain</td>
-                                                <td class="fs15 fw700 text-right">10%</td>
-                                            </tr>
-                                            </tbody>
+                                            <canvas id="registerMonthlyChart"></canvas>
                                         </table>
                                     </div>
                                 </div>
@@ -221,7 +203,7 @@
 
                                 <div class="row justify-content-end">
                                     <div class="btn-group form-check">
-                                        <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#userModal">수정</button>
+                                        <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#userModal">공지사항</button>
                                     </div>
                                 </div>
 

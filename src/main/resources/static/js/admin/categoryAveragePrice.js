@@ -1,31 +1,50 @@
 $(document).ready(function () {
     $.ajax({
-        url: "/admin/product-yearly-totalSales",
+        url: "/admin/category-price-average",
         type: "POST",
-        dataType: "JSON",
+        dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function (data) {
-            var month = [];
-            var total_sales = [];
+            var averagePrice = [];
+            var categoryCode = [];
+            var backgroundColors = [
+                'rgba(255, 99, 132, 0.5)',
+                'rgba(54, 162, 235, 0.5)',
+                'rgba(255, 206, 86, 0.5)',
+                'rgba(75, 192, 192, 0.5)',
+                'rgba(153, 102, 255, 0.5)',
+                'rgba(255, 159, 64, 0.5)',
+                'rgba(255, 0, 0, 0.5)',
+                'rgba(0, 255, 0, 0.5)',
+                'rgba(0, 0, 255, 0.5)',
+                'rgba(255, 255, 0, 0.5)',
+                'rgba(0, 255, 255, 0.5)',
+                'rgba(255, 0, 255, 0.5)',
+                'rgba(128, 0, 128, 0.5)',
+                'rgba(128, 128, 0, 0.5)',
+                'rgba(0, 128, 128, 0.5)',
+                'rgba(192, 192, 192, 0.5)',
+                'rgba(128, 128, 128, 0.5)',
+                'rgba(0, 0, 0, 0.5)'
+            ];
 
             $.each(data, function () {
-                month.push(this["month"]);
-                total_sales.push(Math.min(this["total_sales"], 1500000));
+                averagePrice.push(this["averagePrice"]);
+                categoryCode.push(this["categoryCode"]);
             });
 
-            const ctx = document.getElementById('yearlyTotalChart').getContext('2d');
+            const ctx = document.getElementById('categoryAverageChart').getContext('2d');
 
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: month,
+                    labels: categoryCode,
                     datasets: [{
-                        label: '월별 매출',
-                        data: total_sales,
-                        backgroundColor: 'rgba(0, 123, 255, 0.6)',
+                        label: '카테고리별 평균 가격',
+                        data: averagePrice,
+                        backgroundColor: backgroundColors.slice(0, categoryCode.length),
                         borderColor: 'rgba(0, 123, 255, 1)',
-                        borderWidth: 2,
-                        hoverBackgroundColor: 'rgba(0, 123, 255, 0.8)',
+                        borderWidth: 1,
                         hoverBorderColor: 'rgba(0, 123, 255, 1)',
                     }]
                 },
@@ -43,8 +62,11 @@ $(document).ready(function () {
                         },
                         tooltip: {
                             enabled: true,
-                            mode: 'index',
-                            intersect: false,
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.dataset.label + ': ' + tooltipItem.raw + ' 원';
+                                }
+                            }
                         }
                     },
                     responsive: true,
@@ -53,16 +75,17 @@ $(document).ready(function () {
                         x: {
                             ticks: {
                                 autoSkip: false,
-                                maxRotation: 0,
-                                minRotation: 0,
+                                maxTicksLimit: 10,
+                                maxRotation: 45,
+                                minRotation: 45,
+                                padding: 10
                             }
                         },
                         y: {
                             beginAtZero: true,
-                            max: 1500000,
                             title: {
                                 display: true,
-                                text: '매출 (원)',
+                                text: '평균 가격 (원)',
                                 font: {
                                     size: 16,
                                     weight: 'bold'

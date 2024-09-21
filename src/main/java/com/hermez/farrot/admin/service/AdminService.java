@@ -21,6 +21,10 @@ public interface AdminService {
     int countBySoldAtToday();
 
     List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts();
+    List<AdminRegisterMonthlyResponse> findSignupMonthlyCounts();
+
+    List<AdminCategoryAveragePriceResponse> findAveragePriceByCategory();
+
     Page<Product> getProductByMemberIdOrderByCreatedAtDesc(Pageable pageable, Integer memberId);
     List<Member> getMemberByStatus(int status);
 
