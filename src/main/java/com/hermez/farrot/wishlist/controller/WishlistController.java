@@ -39,7 +39,7 @@ public class WishlistController {
   private final NotificationService notificationService;
 
   @ResponseBody
-  @PostMapping("wish")
+  @PostMapping("/wish")
   public WishResponse wish(@RequestBody WishRequest wishRequest,
       @AuthenticationPrincipal UserDetails userDetails) {
     String userEmail = userDetails.getUsername();
