@@ -68,10 +68,9 @@ public class ProductController {
         ProductSearchRequest productSearchRequest = new ProductSearchRequest();
         productSearchRequest.setSize(4);
         productSearchRequest.setPage(0);
-        ProductSearchResponse response = productService.getProductsByFilters(productSearchRequest);
         model.addAttribute("wishResponse", wishResponse);
         model.addAttribute("productDetail", productDetailResponse);
-        model.addAttribute("response", response);
+        model.addAttribute("response", productService.getProductsByFilters(productSearchRequest));
         return "product/product-detail";
     }
 

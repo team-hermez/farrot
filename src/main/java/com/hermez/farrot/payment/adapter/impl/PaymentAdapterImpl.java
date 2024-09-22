@@ -52,7 +52,7 @@ public class PaymentAdapterImpl implements PaymentAdapter {
     }
 
     @Override
-    public void confirmPurchase(PurchaseConfirmRequest request) {
+    public boolean confirmPurchase(PurchaseConfirmRequest request) {
         try {
             HttpEntity<PurchaseConfirmRequest> httpEntity = new HttpEntity<>(request);
 
@@ -62,11 +62,12 @@ public class PaymentAdapterImpl implements PaymentAdapter {
                     httpEntity,
                     String.class
             );
-
             if (response.getStatusCode() == HttpStatus.OK) {
                 System.out.println("결제 확정 요청이 성공적으로 처리되었습니다.");
+                return true;
             } else {
                 System.out.println("결제 확정 요청 실패: " + response.getStatusCode());
+                return false;
             }
         } catch (HttpClientErrorException e) {
             throw new ResponseStatusException(e.getStatusCode(), "결제 확정 요청 중 오류가 발생했습니다.");
