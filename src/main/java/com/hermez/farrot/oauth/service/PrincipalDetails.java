@@ -1,4 +1,4 @@
-package com.hermez.farrot.member.oauth;
+package com.hermez.farrot.oauth.service;
 
 import com.hermez.farrot.member.entity.Member;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,10 +10,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-public record PrincipalDetails(
-        Member member,
-        Map<String, Object> attributes,
-        String attributesKey) implements OAuth2User, UserDetails {
+public record PrincipalDetails(Member member, Map<String, Object> attributes, String attributesKey)
+        implements OAuth2User, UserDetails {
+
     @Override
     public String getName() {
         return attributes.get(attributesKey).toString();
@@ -26,8 +25,7 @@ public record PrincipalDetails(
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(
-                new SimpleGrantedAuthority(member.getRole().toString()));
+        return Collections.singletonList(new SimpleGrantedAuthority(member.getRole().toString()));
     }
 
     @Override
@@ -37,10 +35,11 @@ public record PrincipalDetails(
 
     @Override
     public String getUsername() {
-        return "";
+        return member.getEmail(); // 이메일을 사용자 이름으로 사용
     }
 
-    public Member getMember() { return member;}
+    @Override
+    public String attributesKey() {
+        return attributesKey;
+    }
 }
-
-
