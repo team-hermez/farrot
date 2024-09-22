@@ -19,27 +19,26 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Table(name = "REPORT")
 
 public class Report {
-
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "REPORT_ID")
     private Integer id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(nullable = false)
+    @Column
     private String title;
 
-    @Column(nullable = false)
+    @Column
     private String content;
 
-    @Column(nullable = false)
+    @Column(name="created_at")
     private LocalDateTime createdAt;
 
     @Enumerated(STRING)

@@ -44,7 +44,7 @@ public class Member {
     private int status;
 
     @Column(nullable = true)
-    private int report;
+    private Integer report;
 
     //소셜 로그인용 column
     @Column(name = "attribute_code", nullable = true, length = 100)
@@ -58,7 +58,7 @@ public class Member {
     // 기본 유저용 생성자
     @Builder
     public Member(Integer id, String memberName, String email, String password, String phone, String nickname, String account,
-                  LocalDateTime createAt, Role role, int status, int report,String attributeCode, String provider) {
+                  LocalDateTime createAt, Role role, int status, Integer report,String attributeCode, String provider) {
         this.id = id;
         this.memberName = memberName;
         this.email = email;
