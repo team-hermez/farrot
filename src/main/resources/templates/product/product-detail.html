@@ -163,10 +163,17 @@
                             <div class="carousel-item active single-product-area">
                                 <div class="product_image">
                                 <a class="gallery_img" th:href="@{${productDetail.images.get(0).getPath()}}"
-                                   title="First Slide">
+                                   title="First Slide" style="position: relative;">
                                     <img class="d-block w-100" th:src="@{${productDetail.images.get(0).getPath()}}"
                                          alt="First slide">
-
+                                    <div class="overlay" th:if="${productDetail.productStatus.equals('예약중')}"
+                                         style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.3); color: white; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold;">
+                                        예약중
+                                    </div>
+                                    <div class="overlay" th:if="${productDetail.productStatus.equals('판매완료')}"
+                                         style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.3); color: green; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold;">
+                                        판매완료
+                                    </div>
                                     <div class="wish-check product_wish_badge">
                                         <span th:if="${wishResponse.wishType}=='WISH'" class="badge-new"><i class="icofont-heart"></i></span>
                                     </div>
@@ -282,17 +289,14 @@
                             <button type="submit" value="5" class="btn btn-secondary btn-sm mx-1">채팅하기</button>
                         </form>
 
-                        <form th:action="@{/payment/init-payment}" method="post">
+                        <form th:action="@{/payment/init-payment}" method="post" onsubmit="return validateStatus()">
                             <input type="hidden" name="productId" th:value="${productDetail.productId}"/>
                             <input type="hidden" name="amount" th:value="${productDetail.price}"/>
                             <button type="submit" class="btn btn-success btn-sm mx-1">안전거래</button>
                         </form>
 
-                        <a th:href="@{/product/update-sell(id=${productDetail.productId})}"
-                           class="btn btn-warning btn-sm mx-1">수정하기</a>
-
                         <form th:action="@{/product/delete(id=${productDetail.productId})}" method="post">
-                            <button type="submit" class="btn btn-danger btn-sm mx-1">삭제하기</button>
+                            <button type="submit" class="btn btn-warning btn-sm mx-1">신고하기</button>
                         </form>
                     </div>
                 </div>
@@ -344,7 +348,19 @@
         </div>
     </div>
 </section>
-
+<script>
+    function validateStatus() {
+        const productStatus = '[[${productDetail.productStatus}]]'
+        if (productStatus === '예약중') {
+            alert('예약중인 상품입니다.');
+            return false;
+        } else if (productStatus === '판매완료') {
+            alert('판매완료된 상품입니다.');
+            return false;
+        }
+        return true;
+    }
+</script>
 <div th:replace="/layout/footer :: footer"></div>
 </body>
 

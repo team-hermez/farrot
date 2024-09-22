@@ -16,7 +16,7 @@ public interface PaymentService {
 
     void completePayment(PaymentResultResponse paymentResultResponse);
 
-    void confirmPurchase(PurchaseConfirmRequest request);
+    void confirmPurchase(PurchaseConfirmRequest request, HttpServletRequest servletRequest);
 
     List<Payment> getPaymentsByMemberId(HttpServletRequest servletRequest);
 

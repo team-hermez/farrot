@@ -34,16 +34,15 @@ public class PaymentController {
     }
 
     @PostMapping("/confirm-purchase")
-    public String confirmPurchase(@ModelAttribute PurchaseConfirmRequest request) {
-        request.setBuyerId("1");
-        paymentService.confirmPurchase(request);
+    public String confirmPurchase(@ModelAttribute PurchaseConfirmRequest request, HttpServletRequest servletRequest) {
+        paymentService.confirmPurchase(request, servletRequest);
         return "index/index";
     }
 
     @GetMapping("/member-payments")
     public String getPaymentsPage(Model model,HttpServletRequest servletRequest) {
         model.addAttribute("payments", paymentService.getPaymentsByMemberId(servletRequest));
-        return "/payment/member-payments";
+        return "/payment/member-payments-buy";
     }
 
     @GetMapping("/member-payments-sell")

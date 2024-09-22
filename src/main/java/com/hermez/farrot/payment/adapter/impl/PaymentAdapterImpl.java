@@ -5,6 +5,7 @@ import com.hermez.farrot.payment.dto.request.PurchaseConfirmRequest;
 import com.hermez.farrot.payment.dto.request.TrackingEscrowRequest;
 import com.hermez.farrot.payment.dto.request.TrackingRequest;
 import com.hermez.farrot.payment.dto.response.PaymentResponse;
+import com.hermez.farrot.payment.dto.response.TrackingInfoResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -77,7 +78,7 @@ public class PaymentAdapterImpl implements PaymentAdapter {
     }
 
     @Override
-    public void registerLogisticsInfo(TrackingRequest request,String merchantId) {
+    public TrackingInfoResponse registerLogisticsInfo(TrackingRequest request, String merchantId) {
         try {
             HttpEntity<TrackingEscrowRequest> httpEntity = new HttpEntity<>(TrackingEscrowRequest.builder()
                     .courierCode(request.getCourierCode())
@@ -88,16 +89,19 @@ public class PaymentAdapterImpl implements PaymentAdapter {
                     .apiKey(apiKey)
                     .build());
 
-            ResponseEntity<String> response = restTemplate.exchange(
+            ResponseEntity<TrackingInfoResponse> response = restTemplate.exchange(
                     url + "/api/shipping/register-logistics",
                     HttpMethod.POST,
                     httpEntity,
-                    String.class
+                    TrackingInfoResponse.class
             );
+
             if (response.getStatusCode() == HttpStatus.OK) {
+                TrackingInfoResponse trackingInfoResponse = response.getBody();
                 System.out.println("운송장 등록 요청이 성공적으로 처리되었습니다.");
+                return trackingInfoResponse;
             } else {
-                System.out.println("운송장 등록 요청 실패: " + response.getStatusCode());
+                return null;
             }
         } catch (HttpClientErrorException e) {
             throw new ResponseStatusException(e.getStatusCode(), "등록되지 않은 운송장 번호 입니다.");
