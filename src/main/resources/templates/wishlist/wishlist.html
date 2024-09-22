@@ -123,11 +123,9 @@
                                 </div>
 
                                 <div class="product_description">
-                                    <p class="brand_name">Top</p>
-                                    <a th:href="@{/product/product-detail(productId=${wishProduct.Id})}" th:text="${wishProduct.id}">대화 상대 닉네임</a>
-                                    <h6 class="product-price" th:text="${wishProduct.productName}">날짜??</h6>
-                                    <p class="product-short-desc" th:text="${wishProduct.price}" >최근 보낸 메세지</p>
-                                    <p class="product-short-desc" th:text="${wishProduct.description}">최근 보낸 메세지</p>
+                                    <h6 class="product-price"><a th:href="@{/product/product-detail(productId=${wishProduct.Id})}" th:text="${wishProduct.productName}"></a></h6>
+                                    <p class="product-short-desc" th:text="|가격: ${wishProduct.price}|" >최근 보낸 메세지</p>
+                                    <p class="product-short-desc" th:text="|상품 설명: ${wishProduct.description}|">최근 보낸 메세지</p>
                                     <p class="product-short-desc" th:text="${wishProduct.productStatus.status}">최근 보낸 메세지</p>
                                 </div>
                             </div>
