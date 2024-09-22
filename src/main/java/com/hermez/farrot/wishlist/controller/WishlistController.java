@@ -52,14 +52,14 @@ public class WishlistController {
     Product wishProduct = productService.getProductById(wishRequest.productId());
     if (wishRequest.wishType().equals("NONE")) {
       wishlistService.save(wishRequest, userEmail);
-      notificationService.createWishNotification(seller, wishMember, wishProduct);
+      notificationService.createWishNotification(wishMember, seller, wishProduct);
       return new WishResponse("WISH");
     } else if (wishRequest.wishType().equals("WISH")) {
       wishlistService.changeCancel(wishRequest.productId(), userEmail);
       return new WishResponse("CANCEL");
     }
     wishlistService.changeWish(wishRequest.productId(), userEmail);
-    notificationService.createWishNotification(seller, wishMember, wishProduct);
+    notificationService.createWishNotification(wishMember, seller, wishProduct);
     return new WishResponse("WISH");
   }
 
