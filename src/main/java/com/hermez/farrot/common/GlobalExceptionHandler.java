@@ -29,13 +29,6 @@ public class GlobalExceptionHandler {
         return "error/500";
     }
 
-    @ExceptionHandler
-    public String handleNoMatchUniqueReceiverException(NoMatchUniqueReceiverException ex,Model model){
-        model.addAttribute("errorMessage", "알림을 받을 유저를 찾을 수 없습니다."+ ex.getMessage());
-        return "error/500";
-    }
-
-
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler
     @ResponseBody
