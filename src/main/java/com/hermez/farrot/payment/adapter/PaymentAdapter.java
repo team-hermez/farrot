@@ -3,6 +3,7 @@ package com.hermez.farrot.payment.adapter;
 import com.hermez.farrot.payment.dto.request.PurchaseConfirmRequest;
 import com.hermez.farrot.payment.dto.request.TrackingRequest;
 import com.hermez.farrot.payment.dto.response.PaymentResponse;
+import com.hermez.farrot.payment.dto.response.TrackingInfoResponse;
 
 
 public interface PaymentAdapter {
@@ -11,6 +12,6 @@ public interface PaymentAdapter {
 
     void confirmPurchase(PurchaseConfirmRequest request);
 
-    void registerLogisticsInfo(TrackingRequest request,String merchantId);
+    TrackingInfoResponse registerLogisticsInfo(TrackingRequest request, String merchantId);
 
 }

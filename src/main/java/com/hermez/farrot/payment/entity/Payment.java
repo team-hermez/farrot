@@ -45,10 +45,8 @@ public class Payment {
     @Column(name = "ESCROW_CODE")
     private String escrowCode;
 
-    @Column(name = "COURIER_CODE")
-    private String courierCode;
-
-    @Column(name = "TRACKING_NUMBER")
-    private String trackingNumber;
+    @OneToOne
+    @JoinColumn(name = "SHIPPING_PAYMENT_ID", referencedColumnName = "SHIPPING_PAYMENT_ID")
+    private ShippingPayment shippingPayment;
 
 }

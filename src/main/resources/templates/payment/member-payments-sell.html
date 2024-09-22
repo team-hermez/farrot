@@ -64,14 +64,20 @@
                                                 운송장등록
                                             </button>
                                         </span>
-                                         <span th:case="2">
+                                        <span th:case="2">
                                             <form action="http://localhost:9090/shipping/track-shipment" method="post">
                                                 <input type="hidden" name="merchantUid" th:value="${payment.merchantUid}" />
                                                 <button type="submit" class="btn btn-secondary">배송중</button>
                                             </form>
                                         </span>
-                                        <span th:case="3">정산완료</span>
-                                        <span th:case="4">환불완료</span>
+                                        <span th:case="3">
+                                            <form action="http://localhost:9090/shipping/track-shipment" method="post">
+                                                <input type="hidden" name="merchantUid" th:value="${payment.merchantUid}" />
+                                                <button type="submit" class="btn btn-secondary">배송완료</button>
+                                            </form>
+                                        </span>
+                                        <span th:case="4">정산완료</span>
+                                        <span th:case="5">환불완료</span>
                                     </span>
                                 </td>
                             </tr>

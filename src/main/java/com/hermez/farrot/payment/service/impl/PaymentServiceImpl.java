@@ -10,10 +10,13 @@ import com.hermez.farrot.payment.dto.request.PaymentFormRequest;
 import com.hermez.farrot.payment.dto.request.PurchaseConfirmRequest;
 import com.hermez.farrot.payment.dto.request.SaferrotPaymentRequest;
 import com.hermez.farrot.payment.dto.response.PaymentResultResponse;
+import com.hermez.farrot.payment.dto.response.TrackingInfoResponse;
 import com.hermez.farrot.payment.entity.Payment;
 import com.hermez.farrot.payment.entity.PaymentStatus;
+import com.hermez.farrot.payment.entity.ShippingPayment;
 import com.hermez.farrot.payment.repository.PaymentRepository;
 import com.hermez.farrot.payment.repository.PaymentStatusRepository;
+import com.hermez.farrot.payment.repository.ShippingPaymentRepository;
 import com.hermez.farrot.payment.service.PaymentService;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.service.ProductService;
@@ -36,14 +39,16 @@ public class PaymentServiceImpl implements PaymentService {
     private final ProductService productService;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
+    private final ShippingPaymentRepository shippingPaymentRepository;
 
-    public PaymentServiceImpl(PaymentAdapter paymentAdapter, PaymentRepository paymentRepository, PaymentStatusRepository paymentStatusRepository, ProductService productService, MemberRepository memberRepository, MemberService memberService) {
+    public PaymentServiceImpl(PaymentAdapter paymentAdapter, PaymentRepository paymentRepository, PaymentStatusRepository paymentStatusRepository, ProductService productService, MemberRepository memberRepository, MemberService memberService, ShippingPaymentRepository shippingPaymentRepository) {
         this.paymentAdapter = paymentAdapter;
         this.paymentRepository = paymentRepository;
         this.paymentStatusRepository = paymentStatusRepository;
         this.productService = productService;
         this.memberRepository = memberRepository;
         this.memberService = memberService;
+        this.shippingPaymentRepository = shippingPaymentRepository;
     }
 
     @Value("${safe-payment.api.key}")
@@ -92,12 +97,13 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
 
         paymentRepository.save(payment);
-        productService.updateProductStatus(payment.getProduct().getId(),2);
+        productService.updateProductStatus(payment.getProduct().getId(), 2);
     }
 
     @Override
-    public void confirmPurchase(PurchaseConfirmRequest request) {
-       paymentAdapter.confirmPurchase(request);
+    public void confirmPurchase(PurchaseConfirmRequest request, HttpServletRequest servletRequest) {
+        request.setBuyerId(memberService.getMember(servletRequest).getId().toString());
+        paymentAdapter.confirmPurchase(request);
     }
 
     @Override
@@ -118,13 +124,26 @@ public class PaymentServiceImpl implements PaymentService {
     public void registerLogisticsInfo(TrackingRequest request) {
         Payment payment = paymentRepository.findById(request.getPaymentId())
                 .orElseThrow(() -> new IllegalArgumentException("없는 id입니다"));
-        paymentAdapter.registerLogisticsInfo(request, payment.getMerchantUid());
-        payment.setCourierCode(request.getCourierCode());
-        payment.setTrackingNumber(request.getTrackingNumber());
-        paymentStatusRepository.findById(2).ifPresent(payment::setPaymentStatus);
-        paymentRepository.save(payment);
-        Product product = payment.getProduct();
-        productService.updateProductStatus(product.getId(),2);
-    }
 
+        TrackingInfoResponse trackingInfoResponse = paymentAdapter.registerLogisticsInfo(request, payment.getMerchantUid());
+
+        ShippingPayment shippingPayment = new ShippingPayment();
+        shippingPayment.setCourierCode(request.getCourierCode());
+        shippingPayment.setTrackingNumber(request.getTrackingNumber());
+
+        shippingPaymentRepository.save(shippingPayment);
+
+        payment.setShippingPayment(shippingPayment);
+
+        if (trackingInfoResponse.getCompleteYN().equals("N")) {
+            paymentStatusRepository.findById(2).ifPresent(payment::setPaymentStatus);
+        }
+        if (trackingInfoResponse.getCompleteYN().equals("Y")) {
+            paymentStatusRepository.findById(3).ifPresent(payment::setPaymentStatus);
+        }
+        paymentRepository.save(payment);
+
+        Product product = payment.getProduct();
+        productService.updateProductStatus(product.getId(), 2);
+    }
 }
