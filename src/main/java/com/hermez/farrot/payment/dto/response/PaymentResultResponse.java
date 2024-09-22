@@ -11,4 +11,7 @@ public class PaymentResultResponse {
     private String merchantUid;
     private String escrowCode;
     private String buyerId;
+    private String loadAddress;
+    private String detailAddress;
+    private String buyerPostcode;
 }

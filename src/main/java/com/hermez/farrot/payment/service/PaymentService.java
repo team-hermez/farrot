@@ -8,9 +8,6 @@ import com.hermez.farrot.payment.dto.response.PaymentResultResponse;
 import com.hermez.farrot.payment.entity.Payment;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface PaymentService {
 

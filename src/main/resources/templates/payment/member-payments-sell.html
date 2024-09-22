@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="">
@@ -34,6 +34,11 @@
     <div class="container">
         <div class="row justify-content-between">
             <div class="col-12">
+                <div class="row">
+                    <div class="col-12">
+                        <h3 class="mb-4">안전결제 판매 내역</h3>
+                    </div>
+                </div>
                 <div class="cart-table">
                     <div class="table-responsive">
                         <table class="table table-bordered mb-30">
@@ -54,13 +59,14 @@
                                 <td th:text="${payment.product.productName}">상품명</td>
                                 <td th:text="${payment.product.member.email}">구매자 이메일</td>
                                 <td th:text="${payment.product.price} + '원'">상품금액</td>
-                                <td th:text="${payment.product.price} + '원'">정산예정금액</td>
+                                <td th:text="${#numbers.formatDecimal(payment.product.price * 0.9, 1, 'POINT', 0, 'POINT')} + '원'">정산예정금액</td>
                                 <td th:text="${#dates.format(payment.createdAt, 'yyyy-MM-dd HH:mm')}">거래일</td>
                                 <td>
                                     <span th:switch="${payment.paymentStatus.paymentStatusId}">
                                         <span th:case="1">
                                             <button class="btn btn-primary" data-toggle="modal" data-target="#logisModal"
-                                                    th:attr="data-id=${payment.paymentId}">
+                                                    th:attr="data-id=${payment.paymentId}, data-shipping-detail=${payment.shippingPayment.shippingDetail}
+                                                        ,data-post-detail=${payment.shippingPayment.postCode} ,data-load-detail=${payment.shippingPayment.shippingAddress}">
                                                 운송장등록
                                             </button>
                                         </span>
@@ -73,7 +79,7 @@
                                         <span th:case="3">
                                             <form action="http://localhost:9090/shipping/track-shipment" method="post">
                                                 <input type="hidden" name="merchantUid" th:value="${payment.merchantUid}" />
-                                                <button type="submit" class="btn btn-secondary">배송완료</button>
+                                                <button type="submit" class="btn btn-primary">배송완료</button>
                                             </form>
                                         </span>
                                         <span th:case="4">정산완료</span>
@@ -81,7 +87,6 @@
                                     </span>
                                 </td>
                             </tr>
-
                             </tbody>
                         </table>
                     </div>
@@ -102,13 +107,29 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div class="form-group border p-3 rounded bg-light">
+                    <label class="font-weight-bold mb-3">배송 정보</label>
+                    <div class="mb-1">
+                        <span class="font-weight-bold">우편 주소:</span>
+                        <span id="postDetail" class="ml-2">배송 정보 없음</span>
+                    </div>
+                    <div class="mb-1">
+                        <span class="font-weight-bold">도로명 주소:</span>
+                        <span id="loadDetail" class="ml-2">배송 정보 없음</span>
+                    </div>
+                    <div class="mb-1">
+                        <span class="font-weight-bold">상세 주소:</span>
+                        <span id="shippingDetail" class="ml-2">배송 정보 없음</span>
+                    </div>
+                </div>
+
                 <form id="logisForm" th:action="@{/payment/register-logis}" method="post">
                     <div class="form-group">
                         <label for="trackingNumber">운송장 번호</label>
                         <input type="text" class="form-control" id="trackingNumber" name="trackingNumber" required>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group mb-1">
                         <label for="courierCode">택배사 선택</label>
                         <select class="form-control" id="courierCode" name="courierCode" required>
                             <option value="01">우체국택배</option>
@@ -148,8 +169,16 @@
     $('#logisModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var paymentId = button.data('id');
+        var shippingDetail = button.data('shipping-detail');
+        var postDetail = button.data('post-detail');
+        var loadDetail = button.data('load-detail');
+
         var modal = $(this);
         modal.find('#paymentId').val(paymentId);
+        modal.find('#shippingDetail').text(shippingDetail);
+        modal.find('#postDetail').text(postDetail);
+        modal.find('#loadDetail').text(loadDetail);
+
     });
 </script>
 <div th:replace="/layout/footer :: footer"></div>
