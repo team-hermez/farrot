@@ -1,7 +1,6 @@
 package com.hermez.farrot.index;
 
 import com.hermez.farrot.product.dto.request.ProductSearchRequest;
-import com.hermez.farrot.product.dto.response.ProductSearchResponse;
 import com.hermez.farrot.product.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

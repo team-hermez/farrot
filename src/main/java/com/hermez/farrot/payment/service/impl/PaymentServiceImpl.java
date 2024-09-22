@@ -1,6 +1,5 @@
 package com.hermez.farrot.payment.service.impl;
 
-import com.google.api.Http;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.repository.MemberRepository;
 import com.hermez.farrot.member.service.MemberService;
@@ -19,7 +18,6 @@ import com.hermez.farrot.payment.repository.PaymentStatusRepository;
 import com.hermez.farrot.payment.repository.ShippingPaymentRepository;
 import com.hermez.farrot.payment.service.PaymentService;
 import com.hermez.farrot.product.entity.Product;
-import com.hermez.farrot.product.repository.ProductRepository;
 import com.hermez.farrot.product.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,9 +43,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final ShippingPaymentRepository shippingPaymentRepository;
-    private final ProductRepository productRepository;
 
-    public PaymentServiceImpl(PaymentAdapter paymentAdapter, PaymentRepository paymentRepository, PaymentStatusRepository paymentStatusRepository, ProductService productService, MemberRepository memberRepository, MemberService memberService, ShippingPaymentRepository shippingPaymentRepository, ProductRepository productRepository) {
+    public PaymentServiceImpl(PaymentAdapter paymentAdapter, PaymentRepository paymentRepository, PaymentStatusRepository paymentStatusRepository, ProductService productService, MemberRepository memberRepository, MemberService memberService, ShippingPaymentRepository shippingPaymentRepository) {
         this.paymentAdapter = paymentAdapter;
         this.paymentRepository = paymentRepository;
         this.paymentStatusRepository = paymentStatusRepository;
@@ -55,7 +52,6 @@ public class PaymentServiceImpl implements PaymentService {
         this.memberRepository = memberRepository;
         this.memberService = memberService;
         this.shippingPaymentRepository = shippingPaymentRepository;
-        this.productRepository = productRepository;
     }
 
     @Value("${safe-payment.api.key}")
@@ -103,6 +99,12 @@ public class PaymentServiceImpl implements PaymentService {
                 .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();
 
+        ShippingPayment shippingPayment = new ShippingPayment();
+        shippingPayment.setShippingAddress(paymentResultResponse.getLoadAddress());
+        shippingPayment.setShippingDetail(paymentResultResponse.getDetailAddress());
+        shippingPayment.setPostCode(paymentResultResponse.getBuyerPostcode());
+        shippingPaymentRepository.save(shippingPayment);
+        payment.setShippingPayment(shippingPayment);
         paymentRepository.save(payment);
         productService.updateProductStatus(payment.getProduct().getId(), 2);
     }
@@ -148,7 +150,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         TrackingInfoResponse trackingInfoResponse = paymentAdapter.registerLogisticsInfo(request, payment.getMerchantUid());
 
-        ShippingPayment shippingPayment = new ShippingPayment();
+        ShippingPayment shippingPayment = shippingPaymentRepository.getReferenceById(payment.getShippingPayment().getShippingPaymentId());
         shippingPayment.setCourierCode(request.getCourierCode());
         shippingPayment.setTrackingNumber(request.getTrackingNumber());
 

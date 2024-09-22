@@ -5,7 +5,7 @@
     <title></title>
 </head>
 <body>
-결제 페이지 인증 중 ...
+결제 정보 확인 중 ...
 <form id="payment-form" th:action="@{${request.paymentUrl}}" method="POST">
     <input type="hidden" th:name="serverName" th:value="${request.serverName}">
     <input type="hidden" th:name="apiKey" th:value="${request.apiKey}">
