@@ -48,6 +48,7 @@ public class NotificationService {
           .message(seller.getNickname()+"님!!! \n[ "+wishProduct.getProductName()+" ] 상품을 \n"+wishMember.getNickname()+" 님께서 찜하셨습니다")
           .build();
       sendNotification(request);
+      tokenMap.clear();
     } catch (ExecutionException | InterruptedException e) {
       log.info("알림 에러 발생", e);
     }
