@@ -34,6 +34,7 @@ public class NotificationService {
           .message(receiver.getNickname()+"님!!!\n"+sender.getNickname()+"님 으로부터 메시지가 도착했습니다. \n"+ message)
           .build();
       sendNotification(request);
+      tokenMap.clear();
     } catch (ExecutionException | InterruptedException e) {
       log.info("알림 에러 발생", e);
     }
@@ -72,6 +73,7 @@ public class NotificationService {
                 ))
                 .build();
         sendNotification(request);
+        tokenMap.clear();
       }
 
     } catch (ExecutionException | InterruptedException e) {
