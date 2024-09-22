@@ -25,6 +25,9 @@ public class ReportController {
     public String submitReport(@ModelAttribute ReportRequest reportRequest,
                                @AuthenticationPrincipal UserDetailsImpl userDetails,
                                RedirectAttributes redirectAttributes) {
+        if(userDetails == null) {
+            return "redirect:/member/login";
+        }
         Integer id = userDetails.getId();
         reportRequest.setMemberId(id);
 
