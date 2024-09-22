@@ -68,17 +68,17 @@
                       <div class="clearfix"></div>
 
 
-                      <div th:each="list : ${memberList}" class="col-md-4 col-sm-4  profile_details">
+                      <div th:each="list : ${reportList}" class="col-md-4 col-sm-4  profile_details">
                         <div class="well profile_view">
                           <div class="col-sm-12">
-                            <h4 class="brief"><i>${report.title}</i></h4>
+                            <h4 th:text="${list.title}" class="brief"><i></i></h4>
                             <div class="left col-md-7 col-sm-7">
-                              <h2 th:text="${list.memberName}"></h2>
-                              <p><strong>신고사유: </strong> ${report.context} </p>
+                              <h2 th:text="${list.member.memberName}"></h2>
                               <ul class="list-unstyled">
-                                <li><i class="fa fa-phone"></i> 전화번호 #: <span th:text="${list.phone}">번호</span></li>
-                                <li><i class="fa fa-briefcase user-profile-icon"></i> 이메일 #: <span th:text="${list.email}">이메일</span></li>
-
+                                <li><i class="fa fa-hand-paper-o"></i> 신고사유 : <span th:text="${list.content}">신고사유</span></li>
+                                <li><i class="fa fa-phone"></i> 전화번호  <span th:text="${list.member.phone}">번호</span></li>
+                                <li><i class="fa fa-briefcase user-profile-icon"></i> 이메일 : <span th:text="${list.member.email}">이메일</span></li>
+                                <li><i class="fa fa-hourglass-2"></i> 신고 시간 : <span th:text="${list.createdAt}"></span></li>
                               </ul>
                             </div>
                             <div class="right col-md-5 col-sm-5 text-center">
@@ -105,34 +105,34 @@
             </div>
             <nav aria-label="Page navigation">
               <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${memberList.first} ? 'disabled' : ''">
-                  <a class="page-link" th:href="@{/admin/report(page=0, size=${memberList.size})}" aria-label="First">
+                <li class="page-item" th:classappend="${reportList.first} ? 'disabled' : ''">
+                  <a class="page-link" th:href="@{/admin/report(page=0, size=${reportList.size})}" aria-label="First">
                     <span aria-hidden="true">맨 처음</span>
                   </a>
                 </li>
 
-                <li class="page-item" th:classappend="${memberList.hasPrevious()} ? '' : 'disabled'">
-                  <a class="page-link" th:href="@{/admin/report(page=${memberList.number - 1}, size=${memberList.size})}" aria-label="Previous">
+                <li class="page-item" th:classappend="${reportList.hasPrevious()} ? '' : 'disabled'">
+                  <a class="page-link" th:href="@{/admin/report(page=${reportList.number - 1}, size=${reportList.size})}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                   </a>
                 </li>
 
                 <li class="page-item"
-                    th:each="i : ${#numbers.sequence((memberList.number - 2 > 0 ? memberList.number - 2 : 0),
-                                             (memberList.number + 2 < memberList.totalPages - 1 ? memberList.number + 2 : memberList.totalPages - 1))}"
-                    th:classappend="${i == memberList.number} ? 'active'">
+                    th:each="i : ${#numbers.sequence((reportList.number - 2 > 0 ? reportList.number - 2 : 0),
+                                             (reportList.number + 2 < reportList.totalPages - 1 ? reportList.number + 2 : reportList.totalPages - 1))}"
+                    th:classappend="${i == reportList.number} ? 'active'">
                   <a class="page-link" th:text="${i + 1}"
-                     th:href="@{/admin/report(page=${i}, size=${memberList.size})}" th:if="${i + 1} == 0? false : true"></a>
+                     th:href="@{/admin/report(page=${i}, size=${reportList.size})}" th:if="${i + 1} == 0? false : true"></a>
                 </li>
 
-                <li class="page-item" th:classappend="${memberList.hasNext()} ? '' : 'disabled'">
-                  <a class="page-link" th:href="@{/admin/report(page=${memberList.number + 1}, size=${memberList.size})}" aria-label="Next">
+                <li class="page-item" th:classappend="${reportList.hasNext()} ? '' : 'disabled'">
+                  <a class="page-link" th:href="@{/admin/report(page=${reportList.number + 1}, size=${reportList.size})}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                   </a>
                 </li>
 
-                <li class="page-item" th:classappend="${memberList.last} ? 'disabled' : ''">
-                  <a class="page-link" th:href="@{/admin/report(page=${memberList.totalPages - 1}, size=${memberList.size})}" aria-label="Last">
+                <li class="page-item" th:classappend="${reportList.last} ? 'disabled' : ''">
+                  <a class="page-link" th:href="@{/admin/report(page=${reportList.totalPages - 1}, size=${reportList.size})}" aria-label="Last">
                     <span aria-hidden="true">끝으로</span>
                   </a>
                 </li>

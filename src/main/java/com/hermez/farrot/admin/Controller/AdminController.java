@@ -7,12 +7,15 @@ import com.hermez.farrot.admin.dto.response.*;
 import com.hermez.farrot.admin.dto.request.AdminNotificationRequest;
 import com.hermez.farrot.admin.service.AdminService;
 import com.hermez.farrot.member.entity.Member;
+import com.hermez.farrot.member.service.UserDetailsImpl;
 import com.hermez.farrot.notification.service.NotificationService;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.service.ProductService;
+import com.hermez.farrot.report.entity.Report;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,48 +39,53 @@ public class AdminController {
     }
 
     @GetMapping("/form")
-    public String getMainForm(Model model) {
+    public String getMainForm(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         int totalCount = adminService.getMemberTotalCount();
         int totalRegisterCount = adminService.countByCreatedAtToday();
         int totalSalesCount = adminService.countBySoldAtToday();
-        System.out.println("totalSalesCount = " + totalSalesCount);
+        int totalReportCount = adminService.countByReport();
 
+        model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("totalRegisterCount", totalRegisterCount);
         model.addAttribute("totalSalesCount", Math.min(totalSalesCount, 367640));
+        model.addAttribute("totalReportCount", totalReportCount);
         return "admin/form/admin-form";
     }
 
     @GetMapping("/member")
-    public String getMembers(Model model, @PageableDefault(size = 6) Pageable pageable) {
+    public String getMembers(Model model, @PageableDefault(size = 6) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        model.addAttribute("userName", userDetails.getUsername());
         Page<Member> memberList = adminService.getMemberList(pageable);
         model.addAttribute("memberList", memberList);
         return "admin/member/admin-member";
     }
 
     @GetMapping("/member-detail/{id}")
-    public String getMemberDetail(@PageableDefault(size = 5) Pageable pageable, @PathVariable("id") Integer id, Model model) {
+    public String getMemberDetail(@PageableDefault(size = 5) Pageable pageable, @PathVariable("id") Integer id, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Member member = adminService.findMemberById(id);
         Page<Product> myProductList = adminService.getProductByMemberIdOrderByCreatedAtDesc(pageable, id);
+        model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("member", member);
         model.addAttribute("myProductList", myProductList);
         return "admin/member/admin-member-detail";
     }
 
-    //TODO 페이징 다시
     @GetMapping("/member-detail/transactions/{id}")
-    public String getMemberTransDetail(@PageableDefault(size = 5) Pageable pageable, @PathVariable("id") Integer id, Model model) {
+    public String getMemberTransDetail(@PageableDefault(size = 5) Pageable pageable, @PathVariable("id") Integer id, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Member member = adminService.findMemberById(id);
         Page<Product> myProductList = adminService.getProductByMemberIdOrderByCreatedAtDesc(pageable, id);
+        model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("member", member);
         model.addAttribute("myProductList", myProductList);
         return "admin/member/admin-member-trans-detail";
     }
 
     @GetMapping("/member-disable")
-    public String getMemberDisable(Model model, @PageableDefault(size = 10) Pageable pageable) {
+    public String getMemberDisable(Model model, @PageableDefault(size = 10) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Page<Member> memberList = adminService.getMemberByStatusOrderById(1, pageable);
         List<Member> disabledMemberList = adminService.getMemberByStatus(2);
+        model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("memberList", memberList);
         model.addAttribute("disabledMemberList", disabledMemberList);
         return "admin/member/admin-member-disable";
@@ -85,36 +93,41 @@ public class AdminController {
 
 
     @GetMapping("/report")
-    public String getReports(Model model, @PageableDefault(size = 6) Pageable pageable) {
-        Page<Member> memberList = adminService.getMemberList(pageable);
-        model.addAttribute("memberList", memberList);
+    public String getReports(Model model, @PageableDefault(size = 6) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Page<Report> reportList = adminService.getReportList(pageable);
+        model.addAttribute("userName", userDetails.getUsername());
+        model.addAttribute("reportList", reportList);
         return "admin/member/admin-report";
     }
 
     @GetMapping("/product-manage")
-    public String getProducts(Model model, @PageableDefault(size = 5) Pageable pageable) {
+    public String getProducts(Model model, @PageableDefault(size = 5) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Page<Product> productList = adminService.getProductList(pageable);
+        model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("productList", productList);
         return "admin/product/admin-product";
     }
 
     @GetMapping("/products/today")
-    public String getProductsToday(Model model, @PageableDefault(size = 5) Pageable pageable) {
+    public String getProductsToday(Model model, @PageableDefault(size = 5) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Page<Product> productList = adminService.findProductsRegisterToday(pageable);
+        model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("productList", productList);
         return "admin/product/admin-product-today";
     }
 
     @GetMapping("/products/weekly")
-    public String getProductsWeekly(Model model, @PageableDefault(size = 5) Pageable pageable) {
+    public String getProductsWeekly(Model model, @PageableDefault(size = 5) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Page<Product> productList = adminService.findProductsRegisterThisWeek(pageable);
+        model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("productList", productList);
         return "admin/product/admin-product-weekly";
     }
 
     @GetMapping("/products/monthly")
-    public String getProductsMonthly(Model model, @PageableDefault(size = 5) Pageable pageable) {
+    public String getProductsMonthly(Model model, @PageableDefault(size = 5) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Page<Product> productList = adminService.findProductsRegisterThisMonth(pageable);
+        model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("productList", productList);
         return "admin/product/admin-product-monthly";
     }

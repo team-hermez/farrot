@@ -3,6 +3,7 @@ package com.hermez.farrot.admin.service;
 import com.hermez.farrot.admin.dto.response.*;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.product.entity.Product;
+import com.hermez.farrot.report.entity.Report;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 public interface AdminService {
     Page<Member> getMemberList(Pageable pageable);
+    Page<Report> getReportList(Pageable pageable);
     int getMemberTotalCount();
     Page<Product> getProductList(Pageable pageable);
     List<AdminCategorySalesTop5Response> getCategorySalesTop5();
@@ -19,6 +21,7 @@ public interface AdminService {
 
     int countByCreatedAtToday();
     int countBySoldAtToday();
+    int countByReport();
 
     List<AdminRegisterWeeklyResponse> findSignupWeeklyCounts();
     List<AdminRegisterMonthlyResponse> findSignupMonthlyCounts();
