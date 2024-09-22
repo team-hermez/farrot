@@ -1,8 +1,7 @@
 package com.hermez.farrot.config;
 
-import com.hermez.farrot.member.entity.Role;
-import com.hermez.farrot.member.oauth.CustomOAuth2UserService;
-import com.hermez.farrot.member.oauth.OAuth2SuccessHandler;
+import com.hermez.farrot.oauth.service.CustomOAuth2UserService;
+import com.hermez.farrot.oauth.OAuth2SuccessHandler;
 import com.hermez.farrot.member.security.JwtAuthenticationFilter;
 import com.hermez.farrot.member.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +36,7 @@ public class SecurityConfig {
                         .toStaticResources()
                         .atCommonLocations()
                 )
-                .requestMatchers("/error","/favicon.ico");
+                .requestMatchers("/error","/favicon.ico","https://firebasestorage.googleapis.com/**");
     }
 
     @Bean
