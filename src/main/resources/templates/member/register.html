@@ -9,10 +9,11 @@
     <title>Bigshop | Responsive E-commerce Template</title>
     <link rel="icon" href="/img/core-img/favicon.ico">
     <link rel="stylesheet" href="/style.css">
+    <script src="/js/member/regist-check-email-nickname.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 
 <body>
-
 <div th:replace="/layout/header :: header"></div>
 
 <div class="breadcumb_area">
@@ -20,6 +21,9 @@
         <div class="row h-100 align-items-center">
             <div class="col-12">
                 <h5>회원가입</h5>
+                <div id="error-message" style="color: red;">
+                    <span th:text="${errorMessage}"></span>
+                </div>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html">Home</a></li>
                     <li class="breadcrumb-item active">Login &amp; Register</li>
@@ -28,6 +32,7 @@
         </div>
     </div>
 </div>
+
 <div class="bigshop_reg_log_area section_padding_100_50">
     <div class="container">
         <div class="row">
@@ -38,23 +43,31 @@
                         <div class="form-group">
                             <input type="text" class="form-control" name="memberName" id="memberName" placeholder="이름" required>
                         </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="nickname" name="nickname" placeholder="닉네임"
-                                   th:value="${param.nickname}" required>
+
+                        <div class="form-group d-flex align-items-center">
+                            <input type="text" class="form-control" id="nickname" name="nickname" placeholder="닉네임" required>
+                            <button type="button" id="checkNicknameButton" class="btn btn-outline-primary ml-2" style="font-size: 0.85rem;" onclick="checkNickname()">닉네임 중복 확인</button>
+                            <span id="nicknameResult" class="ml-2"></span>
                         </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control" id="email" name="email" placeholder="이메일"
-                                   th:readonly="${email != null}" th:value="${param.email}" required>
+
+                        <div class="form-group d-flex align-items-center">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="이메일" required>
+                            <button type="button" id="checkEmailButton" class="btn btn-outline-primary ml-2" style="font-size: 0.85rem;" onclick="checkEmail()">이메일 중복 확인</button>
+                            <span id="emailResult" class="ml-2"></span>
                         </div>
+
                         <div class="form-group">
                             <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호" required>
                         </div>
+
                         <div class="form-group">
-                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="전화번호"
-                                   th:readonly="${phone != null}" th:value="${param.phone}" required>
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="전화번호" required>
                         </div>
+
                         <input type="hidden" name="provider" th:value="${param.provider}">
-                        <button type="submit" class="btn btn-primary btn-sm">Register</button>
+
+                        <!-- 제출 버튼은 처음에 숨겨져 있음 -->
+                        <button type="submit" class="btn btn-primary btn-sm" id="submitBtn" style="display: none;">Register</button>
                     </form>
                 </div>
             </div>

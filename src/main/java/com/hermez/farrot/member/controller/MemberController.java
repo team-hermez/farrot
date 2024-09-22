@@ -1,17 +1,19 @@
 package com.hermez.farrot.member.controller;
 
 import com.hermez.farrot.image.entity.Image;
-import com.hermez.farrot.image.service.ImageService;
+import com.hermez.farrot.member.dto.request.MemberCheckRequest;
 import com.hermez.farrot.member.dto.request.MemberLoginRequest;
 import com.hermez.farrot.member.dto.request.MemberRegisterRequest;
 import com.hermez.farrot.member.dto.request.MemberUpdateRequest;
 import com.hermez.farrot.member.entity.Member;
+import com.hermez.farrot.member.exception.NotFoundMemberException;
 import com.hermez.farrot.member.repository.MemberRepository;
 import com.hermez.farrot.member.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -19,7 +21,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequestMapping("/member")
@@ -39,10 +43,14 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public String postMemberRegister(MemberRegisterRequest memberRegisterRequest) {
-        userService.save(memberRegisterRequest);
-
-        return "redirect:/member/login";
+    public String postMemberRegister(MemberRegisterRequest memberRegisterRequest, Model model) {
+        try {
+            userService.save(memberRegisterRequest);
+            return "redirect:/member/login";
+        }catch (NotFoundMemberException ex){
+            model.addAttribute("errorMessage", ex.getMessage());
+            return "member/register";
+        }
     }
 
     @GetMapping("/login")
@@ -55,10 +63,15 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String logIn(MemberLoginRequest memberLoginRequest, HttpServletResponse response, HttpServletRequest httpServletRequest) {
-        userService.logIn(memberLoginRequest, response, httpServletRequest);
-
-        return "redirect:/";
+    public String logIn(MemberLoginRequest memberLoginRequest, HttpServletResponse response,
+                        HttpServletRequest httpServletRequest, Model model) {
+        try {
+            userService.logIn(memberLoginRequest, response, httpServletRequest);
+            return "redirect:/";
+        }catch (NotFoundMemberException ex){
+            model.addAttribute("errorMessage", ex.getMessage());
+            return "member/login";
+        }
     }
 
     @GetMapping("/logout")
@@ -77,8 +90,6 @@ public class MemberController {
         Member member= userService.getMember(request);
         List<Image> image = userService.userImage(member).getImages();
         int lastIndex = image.size() - 1;
-        System.out.println("lastIndex: " + lastIndex);
-        System.out.println("imagePath: "+image.get(lastIndex).getPath());
 
         model.addAttribute("member", member);
         model.addAttribute("image", image.get(lastIndex));
@@ -88,12 +99,49 @@ public class MemberController {
 
     @PostMapping("/detail")
     String updateMemberDetail(@ModelAttribute MemberUpdateRequest memberUpdateRequest,
-                              @RequestPart(name = "profileImage") MultipartFile file) {
-        boolean complete = userService.updateUserDetail(memberUpdateRequest, file);
+                              @RequestPart(name = "profileImage") MultipartFile file,
+                              HttpServletRequest request,Model model) {
+        try {
+            userService.updateUserDetail(memberUpdateRequest, file);
+            return "redirect:/member/detail";
+        }catch (NotFoundMemberException ex){
+            Member member= userService.getMember(request);
+            List<Image> image = userService.userImage(member).getImages();
+            int lastIndex = image.size() - 1;
 
-        if(complete==true) System.out.println("완료");
-        else System.out.println("실패");
+            model.addAttribute("member", member);
+            model.addAttribute("image", image.get(lastIndex));
+            model.addAttribute("errorMessage", ex.getMessage());
+            return "member/detail";
+        }
+    }
+    // 중복체크
+    @PostMapping("/check/email")
+    @ResponseBody
+    public ResponseEntity<Boolean> checkEmail(@RequestBody MemberCheckRequest memberCheckRequest) {
+        boolean isAvailable = userService.isEmailAvailable(memberCheckRequest.getEmail());
+        return ResponseEntity.ok(isAvailable);
+    }
 
-        return "redirect:/member/detail";
+    @PostMapping("/check/nickname")
+    @ResponseBody
+    public ResponseEntity<Boolean> checkNickname(@RequestBody MemberCheckRequest memberCheckRequest) {
+        boolean isAvailable = userService.isNicknameAvailable(memberCheckRequest.getNickname());
+        return ResponseEntity.ok(isAvailable);
+    }
+    @PostMapping("/check/expassword")
+    @ResponseBody
+    public ResponseEntity<Map<String, Boolean>> checkExPassword(@RequestBody Map<String, String> payload,
+                                                                HttpServletRequest request) {
+        String exPassword = payload.get("exPassword");
+        System.out.println("controller request"+request);
+        System.out.println("exps: "+ exPassword);
+
+        boolean isValid = userService.validateCurrentPassword(exPassword,request);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isValid", isValid);
+
+        return ResponseEntity.ok(response);
     }
 }

@@ -40,6 +40,8 @@ public class UserService implements MemberService{
     @Transactional
     @Override
     public int save(MemberRegisterRequest memberRegisterRequest) {
+        if(memberRepository.findByEmail(memberRegisterRequest.getEmail()).isPresent()){throw new NotFoundMemberException("이미 존재하는 이메일입니다");}
+
         LocalDateTime now = LocalDateTime.now();
         return memberRepository.save(Member.builder()
                 .memberName(memberRegisterRequest.getMemberName())
@@ -59,21 +61,21 @@ public class UserService implements MemberService{
     public void logIn(MemberLoginRequest memberLoginRequest, HttpServletResponse response, HttpServletRequest request) {
         Optional<Member> optionalMember = memberRepository.findByEmail(memberLoginRequest.getEmail());
 
-        Member member = optionalMember.orElse(null);
-        if (member != null) {
-            if (!passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())) {
-                throw new NotFoundMemberException("비밀번호가 틀립니다");
-            } else {
-                response.addCookie(getCookie(member.getEmail(), member.getId(), member.getRole(), request));
-            }
+        Member member = optionalMember.orElseThrow(()-> new NotFoundMemberException("가입되지 않은 이메일입니다"));
+
+        if (!passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())) {
+            throw new NotFoundMemberException("비밀번호가 틀립니다");
+        }else {
+            response.addCookie(getCookie(member.getEmail(), member.getId(), member.getRole(), request));
         }
     }
+
 
     @Transactional
     @Override
     public Member userDetail(String jwtToken) {
         Member member =  memberRepository.findByEmail(jwtTokenProvider.parseClaims(jwtToken).getSubject()).get();
-        return memberRepository.findByEmail(jwtTokenProvider.parseClaims(jwtToken).getSubject()).orElse(null);
+        return memberRepository.findByEmail(jwtTokenProvider.parseClaims(jwtToken).getSubject()).orElseThrow(()-> new NotFoundMemberException("회원 정보를 찾을 수 없습니다."));
     }
 
     @Transactional
@@ -95,11 +97,11 @@ public class UserService implements MemberService{
     @Transactional
     @Override
     public boolean updateUserDetail(MemberUpdateRequest memberUpdateRequest, MultipartFile file) {
-        Member member = memberRepository.findByEmail(memberUpdateRequest.getEmail()).orElseThrow(()-> new RuntimeException("회원이 존재하지 않습니다"));
+        Member member = memberRepository.findByEmail(memberUpdateRequest.getEmail()).orElseThrow(()-> new NotFoundMemberException("회원이 존재하지 않습니다"));
         boolean checkPassword = passwordEncoder.matches(
                 memberUpdateRequest.getExPassword(), member.getPassword());
         if (!checkPassword){
-            throw new NotFoundMemberException("현재 비밀번호를 다르게 입력하셨습니다.");
+            throw new NotFoundMemberException("현재 비밀번호가 일치하지 않습니다.");
         }
 
         String encodePassword = (memberUpdateRequest.getNewPassword() != null && !memberUpdateRequest.getNewPassword().isEmpty())
@@ -131,6 +133,23 @@ public class UserService implements MemberService{
         cookie.setSecure(false);
 
         return cookie;
+    }
+
+    public boolean isEmailAvailable(String email){
+        return !memberRepository.findByEmail(email).isPresent();
+    }
+
+    public boolean isNicknameAvailable(String nickname){
+        return !memberRepository.findByNickname(nickname).isPresent();
+    }
+
+    public boolean validateCurrentPassword(String exPassword, HttpServletRequest request){
+        System.out.println("request: "+request);
+        String email = jwtTokenProvider.parseClaims(jwtTokenProvider.resolveToken(request)).getSubject();
+        System.out.println("test: "+ email);
+
+        return passwordEncoder.matches(exPassword,
+                memberRepository.findByEmail(email).get().getPassword());
     }
 
 }
