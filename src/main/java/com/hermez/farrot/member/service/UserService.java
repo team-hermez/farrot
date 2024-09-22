@@ -48,6 +48,7 @@ public class UserService implements MemberService{
                 .nickname(memberRegisterRequest.getNickname())
                 .createAt(now)
                 .role(Role.ROLE_USER)
+                .provider(memberRegisterRequest.getProvider())
                 .status(1) // 가입시 활성화
                 .build()).getId();
     }
@@ -57,26 +58,13 @@ public class UserService implements MemberService{
     public void logIn(MemberLoginRequest memberLoginRequest, HttpServletResponse response, HttpServletRequest request) {
         Optional<Member> optionalMember = memberRepository.findByEmail(memberLoginRequest.getEmail());
 
-        System.out.println(memberLoginRequest.getPassword());
-
-        if (optionalMember.isEmpty()){
-            log.warn("회원이 존재하지 않음");
-        }
-
-        Member member = optionalMember.get();
-
-        if(!passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())){
-            log.warn("비밀번호가 일치하지 않습니다.");
-        }
-        else {
-            Cookie cookie = new Cookie(JwtTokenProvider.AUTHORIZATION_HEADER, jwtTokenProvider.generateToken(member.getEmail(), member.getId(), member.getRole()));
-            cookie.setMaxAge(7 * 24 * 60 * 60);
-            cookie.setPath("/");
-            cookie.setDomain(request.getServerName());
-            cookie.setSecure(false);
-
-            System.out.println(cookie);
-            response.addCookie(cookie);
+        Member member = optionalMember.orElse(null);
+        if (member != null) {
+            if (!passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())) {
+                log.warn("비밀번호가 일치하지 않습니다.");
+            } else {
+                response.addCookie(getCookie(member.getEmail(), member.getId(), member.getRole(), request));
+            }
         }
     }
 
@@ -138,4 +126,15 @@ public class UserService implements MemberService{
     public Member getMember(HttpServletRequest request){
         return userDetail(jwtTokenProvider.resolveToken(request));
     }
+
+    private Cookie getCookie(String email, Integer id, Role role, HttpServletRequest request){
+        Cookie cookie = new Cookie(JwtTokenProvider.AUTHORIZATION_HEADER, jwtTokenProvider.generateToken(email, id, role));
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+        cookie.setPath("/");
+        cookie.setDomain(request.getServerName());
+        cookie.setSecure(false);
+
+        return cookie;
+    }
+
 }
