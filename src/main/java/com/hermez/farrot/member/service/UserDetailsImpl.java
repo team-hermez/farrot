@@ -43,4 +43,6 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public Integer getId() { return id; }
+
+    public String getProvider() {return member.getProvider();}
 }

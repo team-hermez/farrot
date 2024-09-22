@@ -9,13 +9,7 @@
     <title>Bigshop | Responsive E-commerce Template</title>
     <link rel="icon" href="/img/core-img/favicon.ico">
     <link rel="stylesheet" href="/style.css">
-    <script>
-        function openNaverLogin() {
-            const url = '/oauth2/authorization/naver'; // Naver 로그인 URL
-            const options = 'width=600,height=600,resizable=yes,scrollbars=yes,status=yes';
-            window.open(url, 'Naver Login', options);
-        }
-    </script>
+    <script src="/js/member/login.js" defer></script> <!-- 외부 JS 파일 링크 -->
 </head>
 
 <body>
@@ -36,7 +30,9 @@
                             <input type="password" class="form-control" id="password" placeholder="Password" name="password">
                         </div>
                         <button type="submit" class="btn btn-primary btn-sm">Login</button>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="openNaverLogin()">Naver 로그인</button>
+                        <button type="button" style="border: none; background: none; padding: 0;" th:height="38" onclick="openNaverLogin()">
+                            <img src="/img/login-img/btn_naverlogin.png" alt="Naver Login" style="width: auto; height: 38px;">
+                        </button>
                     </form>
                     <div class="forget_pass mt-15">
                         <a href="#">Forget Password?</a>
