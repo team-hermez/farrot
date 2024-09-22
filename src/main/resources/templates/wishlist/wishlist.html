@@ -124,7 +124,7 @@
 
                                 <div class="product_description">
                                     <h6 class="product-price"><a th:href="@{/product/product-detail(productId=${wishProduct.Id})}" th:text="${wishProduct.productName}"></a></h6>
-                                    <p class="product-short-desc" th:text="|가격: ${wishProduct.price}|" >최근 보낸 메세지</p>
+                                    <p class="product-short-desc" th:text="|가격: ${wishProduct.price} 원|" >최근 보낸 메세지</p>
                                     <p class="product-short-desc" th:text="|상품 설명: ${wishProduct.description}|">최근 보낸 메세지</p>
                                     <p class="product-short-desc" th:text="${wishProduct.productStatus.status}">최근 보낸 메세지</p>
                                 </div>
