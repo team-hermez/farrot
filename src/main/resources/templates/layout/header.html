@@ -1,4 +1,4 @@
-<header class="header_area">
+<header class="header_area" xmlns:sec="http://www.w3.org/1999/xhtml">
   <script type="module">
     import {initializeApp} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
     import {
@@ -8,67 +8,67 @@
     } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-messaging.js";
 
     const firebaseFcm = (
-        () => {
-          async function init() {
-            if ('serviceWorker' in navigator) {
-              window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/firebase-messaging-sw.js')
-                .then(() => {
-                  const firebaseConfig = {
-                    apiKey: "",
-                    authDomain: "",
-                    projectId: "",
-                    storageBucket: "",
-                    messagingSenderId: "",
-                    appId: "",
-                    measurementId: ""
-                  };
+            () => {
+              async function init() {
+                if ('serviceWorker' in navigator) {
+                  window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                            .then(() => {
+                              const firebaseConfig = {
+                                apiKey: "",
+                                authDomain: "",
+                                projectId: "",
+                                storageBucket: "",
+                                messagingSenderId: "",
+                                appId: "",
+                                measurementId: ""
+                              };
 
-                  const app = initializeApp(firebaseConfig);
-                  const message = getMessaging(app);
-                  Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                      return getToken(message, {
-                        vapidKey: ""
-                      })
-                      .then(async function (token) {
-                        await fetch('/notification/register', {
-                          method: 'post',
-                          body: token
-                        })
-                        onMessage(message, payload => {
-                          console.log('message received!!!!', payload);
-                          const notificationTitle = payload.notification.title;
-                          const notificationOptions = {
-                            body: payload.notification.body,
-                            icon: '/default-icon.png'
-                          }
-                          if (Notification.permission === 'granted') {
-                            new Notification(notificationTitle, notificationOptions);
-                          }
-                        })
-                      })
-                      .catch((error) => {
-                        console.log('푸시 토큰 가져오는 중에 에러 발생', error)
-                      })
-                    } else {
-                      console.log('푸시 알림 거부됨');
-                    }
+                              const app = initializeApp(firebaseConfig);
+                              const message = getMessaging(app);
+                              Notification.requestPermission().then(permission => {
+                                if (permission === 'granted') {
+                                  return getToken(message, {
+                                    vapidKey: ""
+                                  })
+                                          .then(async function (token) {
+                                            await fetch('/notification/register', {
+                                              method: 'post',
+                                              body: token
+                                            })
+                                            onMessage(message, payload => {
+                                              console.log('message received!!!!', payload);
+                                              const notificationTitle = payload.notification.title;
+                                              const notificationOptions = {
+                                                body: payload.notification.body,
+                                                icon: '/default-icon.png'
+                                              }
+                                              if (Notification.permission === 'granted') {
+                                                new Notification(notificationTitle, notificationOptions);
+                                              }
+                                            })
+                                          })
+                                          .catch((error) => {
+                                            console.log('푸시 토큰 가져오는 중에 에러 발생', error)
+                                          })
+                                } else {
+                                  console.log('푸시 알림 거부됨');
+                                }
+                              })
+                                      .catch((error) => {
+                                        console.error('Firebase 토큰 가져오기 실패:', error);
+                                      });
+                            });
                   })
-                  .catch((error) => {
-                    console.error('Firebase 토큰 가져오기 실패:', error);
-                  });
-                });
-              })
-            }
-          }
+                }
+              }
 
-          return {
-            init: function () {
-              init()
-            }
-          }
-        })()
+              return {
+                init: function () {
+                  init()
+                }
+              }
+            })()
     firebaseFcm.init()
   </script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -76,7 +76,8 @@
     <div class="container">
       <div class="classy-nav-container breakpoint-off">
         <nav class="classy-navbar" id="bigshopNav">
-          <a href="/" class="nav-brand"><img src="/img/core-img/farrot.png" alt="logo"></a>
+          <a href="/" class="nav-brand"><img style="width: 184px; height: 75px; margin-bottom: 10px;"
+                                             src="/img/core-img/farrot.png" alt="logo"></a>
           <div class="classy-navbar-toggler">
             <span class="navbarToggler"><span></span><span></span><span></span></span>
           </div>
@@ -88,10 +89,8 @@
               <ul>
                 <li><a href="/">홈</a>
                 </li>
-                <li><a href="#">내정보</a>
+                <li><a href="#">내 정보</a>
                   <ul class="dropdown">
-                    <li><a href="/member/register">회원가입</a></li>
-                    <li><a href="/member/login">로그인</a>
                     <li><a href="/chat-room/rooms">채팅방</a></li>
                     <li><a href="/wishlist/wishlist">찜목록</a></li>
                     <li><a href="/member/detail">마이페이지</a></li>
@@ -139,7 +138,6 @@
                   </div>
                 </li>
                 <li><a href="/product/register-sell">판매하기</a></li>
-                <li><a href="contact.html">Contact</a></li>
               </ul>
             </div>
           </div>
@@ -178,7 +176,7 @@
                     }
                   })
                 </script>
-                <a th:href="@{/chat-room/rooms}"><i class="icofont-heart"></i></a>
+                <a th:href="@{/chat-room/rooms}"><i class="fa fa-envelope-o"></i></a>
               </div>
 
             </div>
@@ -246,15 +244,22 @@
 
             <!-- Account -->
             <div class="account-area">
-              <div class="user-thumbnail">
-                <img src="/img/bg-img/user.jpg" alt="">
+
+              <div class="user-thumbnail"><i class="fa fa-user-o"></i>
               </div>
+
               <ul class="user-meta-dropdown">
-                <li class="user-title"><span>Hello,</span> Lim Sarah</li>
-                <li><a href="my-account.html">My Account</a></li>
-                <li><a href="order-list.html">Orders List</a></li>
-                <li><a href="wishlist.html">Wishlist</a></li>
-                <li><a href="/member/logout"><i class="icofont-logout"></i> Logout</a></li>
+                <li sec:authorize="!isAuthenticated()">
+                  <a href="/member/register">회원가입</a>
+                </li>
+                <li sec:authorize="!isAuthenticated()">
+                  <a href="/member/login">로그인</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                  <a href="/member/logout">로그아웃</a>
+                </li>
+
+
               </ul>
             </div>
           </div>
