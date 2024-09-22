@@ -1,4 +1,4 @@
-package com.hermez.farrot.report.Controller;
+package com.hermez.farrot.report.controller;
 
 import com.hermez.farrot.member.service.UserDetailsImpl;
 import com.hermez.farrot.report.dto.request.ReportRequest;

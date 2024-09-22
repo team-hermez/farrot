@@ -1,4 +1,4 @@
-package com.hermez.farrot.admin.Controller;
+package com.hermez.farrot.admin.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -6,9 +6,14 @@ import com.google.gson.JsonObject;
 import com.hermez.farrot.admin.dto.response.*;
 import com.hermez.farrot.admin.dto.request.AdminNotificationRequest;
 import com.hermez.farrot.admin.service.AdminService;
+import com.hermez.farrot.chat.chatroom.dto.SelectOption;
+import com.hermez.farrot.chat.chatroom.entity.ChatRoom;
+import com.hermez.farrot.chat.chatroom.repository.ChatRoomRepository;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.service.UserDetailsImpl;
 import com.hermez.farrot.notification.service.NotificationService;
+import com.hermez.farrot.payment.entity.Payment;
+import com.hermez.farrot.payment.service.PaymentService;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.service.ProductService;
 import com.hermez.farrot.report.entity.Report;
@@ -31,15 +36,22 @@ public class AdminController {
     private AdminService adminService;
     private ProductService productService;
     private NotificationService notificationService;
+    private PaymentService paymentService;
+    private ChatRoomRepository chatRoomRepository;
 
-    public AdminController(AdminService adminService, ProductService productService, NotificationService notificationService) {
+    public AdminController(AdminService adminService, ProductService productService, NotificationService notificationService, PaymentService paymentService, ChatRoomRepository chatRoomRepository) {
         this.adminService = adminService;
         this.productService = productService;
         this.notificationService = notificationService;
+        this.paymentService = paymentService;
+        this.chatRoomRepository = chatRoomRepository;
     }
 
     @GetMapping("/form")
     public String getMainForm(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails == null) {
+            return "redirect:/member/login";
+        }
         int totalCount = adminService.getMemberTotalCount();
         int totalRegisterCount = adminService.countByCreatedAtToday();
         int totalSalesCount = adminService.countBySoldAtToday();
@@ -55,6 +67,9 @@ public class AdminController {
 
     @GetMapping("/member")
     public String getMembers(Model model, @PageableDefault(size = 6) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails == null) {
+            return "redirect:/member/login";
+        }
         model.addAttribute("userName", userDetails.getUsername());
         Page<Member> memberList = adminService.getMemberList(pageable);
         model.addAttribute("memberList", memberList);
@@ -63,6 +78,9 @@ public class AdminController {
 
     @GetMapping("/member-detail/{id}")
     public String getMemberDetail(@PageableDefault(size = 5) Pageable pageable, @PathVariable("id") Integer id, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails == null) {
+            return "redirect:/member/login";
+        }
         Member member = adminService.findMemberById(id);
         Page<Product> myProductList = adminService.getProductByMemberIdOrderByCreatedAtDesc(pageable, id);
         model.addAttribute("userName", userDetails.getUsername());
@@ -73,16 +91,22 @@ public class AdminController {
 
     @GetMapping("/member-detail/transactions/{id}")
     public String getMemberTransDetail(@PageableDefault(size = 5) Pageable pageable, @PathVariable("id") Integer id, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails == null) {
+            return "redirect:/member/login";
+        }
         Member member = adminService.findMemberById(id);
-        Page<Product> myProductList = adminService.getProductByMemberIdOrderByCreatedAtDesc(pageable, id);
+        Page<Payment> myPaymentList = paymentService.getPaymentsByMemberId(id, 0, 5);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("member", member);
-        model.addAttribute("myProductList", myProductList);
+        model.addAttribute("myPaymentList", myPaymentList);
         return "admin/member/admin-member-trans-detail";
     }
 
     @GetMapping("/member-disable")
     public String getMemberDisable(Model model, @PageableDefault(size = 10) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails == null) {
+            return "redirect:/member/login";
+        }
         Page<Member> memberList = adminService.getMemberByStatusOrderById(1, pageable);
         List<Member> disabledMemberList = adminService.getMemberByStatus(2);
         model.addAttribute("userName", userDetails.getUsername());
@@ -94,6 +118,9 @@ public class AdminController {
 
     @GetMapping("/report")
     public String getReports(Model model, @PageableDefault(size = 6) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails == null) {
+            return "redirect:/member/login";
+        }
         Page<Report> reportList = adminService.getReportList(pageable);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("reportList", reportList);
@@ -102,6 +129,9 @@ public class AdminController {
 
     @GetMapping("/product-manage")
     public String getProducts(Model model, @PageableDefault(size = 5) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails == null) {
+            return "redirect:/member/login";
+        }
         Page<Product> productList = adminService.getProductList(pageable);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("productList", productList);
@@ -110,6 +140,9 @@ public class AdminController {
 
     @GetMapping("/products/today")
     public String getProductsToday(Model model, @PageableDefault(size = 5) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails == null) {
+            return "redirect:/member/login";
+        }
         Page<Product> productList = adminService.findProductsRegisterToday(pageable);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("productList", productList);
@@ -118,6 +151,9 @@ public class AdminController {
 
     @GetMapping("/products/weekly")
     public String getProductsWeekly(Model model, @PageableDefault(size = 5) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails == null) {
+            return "redirect:/member/login";
+        }
         Page<Product> productList = adminService.findProductsRegisterThisWeek(pageable);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("productList", productList);
@@ -126,6 +162,9 @@ public class AdminController {
 
     @GetMapping("/products/monthly")
     public String getProductsMonthly(Model model, @PageableDefault(size = 5) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails == null) {
+            return "redirect:/member/login";
+        }
         Page<Product> productList = adminService.findProductsRegisterThisMonth(pageable);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("productList", productList);
@@ -133,10 +172,16 @@ public class AdminController {
     }
 
     @GetMapping("/chat-manage")
-    public String getChat(Model model) {
+    public String getChat(@ModelAttribute("selectOption") SelectOption selectOption, @PageableDefault(size = 5) Pageable pageable
+                          , Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails == null) {
+            return "redirect:/member/login";
+        }
+        Page<ChatRoom> chatRooms = chatRoomRepository.findAll(pageable);
+        model.addAttribute("userName", userDetails.getUsername());
+        model.addAttribute("chatRoomList", chatRooms);
         return "admin/chat/admin-chat";
     }
-
 
     @ResponseBody
     @PostMapping("/category-sales")

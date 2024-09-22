@@ -66,15 +66,18 @@
                                     <div class="profile_img">
                                         <div id="crop-avatar">
                                             <!-- Current avatar -->
-                                            <img src="/img/image.jpg" alt="" class="img-circle img-fluid">                                        </div>
+                                            <img src="/default-member-image.png" alt="" class="img-circle img-fluid">
+                                        </div>
                                     </div>
 
                                     <h3 th:text="${member.memberName}"></h3>
 
                                     <ul class="list-unstyled user_data">
-                                        <li><i class="fa fa-phone"></i> 전화번호 #: <span th:text="${member.phone}">번호</span></li>
+                                        <li><i class="fa fa-phone"></i> 전화번호 #: <span
+                                                th:text="${member.phone}">번호</span></li>
                                         <li>
-                                            <i class="fa fa-briefcase user-profile-icon"></i> 이메일 #: <span th:text="${member.email}">이메일</span>
+                                            <i class="fa fa-briefcase user-profile-icon"></i> 이메일 #: <span
+                                                th:text="${member.email}">이메일</span>
                                         </li>
 
                                     </ul>
@@ -83,124 +86,107 @@
                                 <div class="col-md-9 col-sm-9 ">
                                     <div class="" role="tabpanel" data-example-id="togglable-tabs">
                                         <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                                            <li role="presentation" class="active"><a th:href="@{/admin/member-detail/{id}(id=${member.id})}">내가 올린 상품</a>
+                                            <li role="presentation" class="active"><a
+                                                    th:href="@{/admin/member-detail/{id}(id=${member.id})}">내가 올린 상품</a>
                                             </li>
-                                            <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">내가 한 안전결제</a>
+                                            <li role="presentation" class=""><a href="#tab_content2" role="tab"
+                                                                                id="profile-tab" data-toggle="tab"
+                                                                                aria-expanded="false">내가 한 안전결제</a>
                                             </li>
                                         </ul>
-                                                <!-- start user projects -->
-                                                <table class="data table table-striped no-margin">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>상품내용</th>
-                                                        <th>판매자</th>
-                                                        <th class="hidden-phone">거래시작일</th>
-                                                        <th>거래종료일</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td>1</td>
-                                                        <td>New Company Takeover Review</td>
-                                                        <td>Deveint Inc</td>
-                                                        <td class="hidden-phone">18</td>
-                                                        <td class="vertical-align-mid">
-                                                            <div class="progress">
-                                                                <div class="progress-bar progress-bar-success" data-transitiongoal="35"></div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>2</td>
-                                                        <td>New Partner Contracts Consultanci</td>
-                                                        <td>Deveint Inc</td>
-                                                        <td class="hidden-phone">13</td>
-                                                        <td class="vertical-align-mid">
-                                                            <div class="progress">
-                                                                <div class="progress-bar progress-bar-danger" data-transitiongoal="15"></div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>3</td>
-                                                        <td>Partners and Inverstors report</td>
-                                                        <td>Deveint Inc</td>
-                                                        <td class="hidden-phone">30</td>
-                                                        <td class="vertical-align-mid">
-                                                            <div class="progress">
-                                                                <div class="progress-bar progress-bar-success" data-transitiongoal="45"></div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>4</td>
-                                                        <td>New Company Takeover Review</td>
-                                                        <td>Deveint Inc</td>
-                                                        <td class="hidden-phone">28</td>
-                                                        <td class="vertical-align-mid">
-                                                            <div class="progress">
-                                                                <div class="progress-bar progress-bar-success" data-transitiongoal="75"></div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                                <!-- end user projects -->
+                                        <!-- start user projects -->
+                                        <table class="data table table-striped no-margin">
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>상품내용</th>
+                                                <th>판매자</th>
+                                                <th class="hidden-phone">거래시작일</th>
+                                                <th>거래종료일</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="list : ${myPaymentList}">
+                                                <td th:text="${list.product.id}"></td>
+                                                <td th:text="${list.product.description}">New Company Takeover Review
+                                                </td>
+                                                <td th:text="${list.product.productName}">Deveint Inc</td>
+                                                <td th:text="${list.createdAt}">18</td>
+                                                <td th:text="${list.finishAt}" class="vertical-align-mid">
 
-                                            </div>
-                                            <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
-                                                <p>xxFood truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui
-                                                    photo booth letterpress, commodo enim craft beer mlkshk </p>
-                                            </div>
-                                            <nav aria-label="Page navigation">
-                                                <nav aria-label="Page navigation">
-                                                    <ul class="pagination justify-content-center">
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <!-- end user projects -->
 
-                                                        <!-- 첫 페이지 버튼 -->
-                                                        <li class="page-item" th:classappend="${myProductList.first} ? 'disabled' : ''">
-                                                            <a class="page-link" th:href="@{/admin/member-detail/transactions/{id}(id=${member.id}, page=0, size=${myProductList.size})}" aria-label="First">
-                                                                <span aria-hidden="true">맨 처음</span>
-                                                            </a>
-                                                        </li>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane fade" id="tab_content3"
+                                         aria-labelledby="profile-tab">
+                                        <p>xxFood truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin
+                                            coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next
+                                            level wes anderson artisan four loko farm-to-table craft beer twee. Qui
+                                            photo booth letterpress, commodo enim craft beer mlkshk </p>
+                                    </div>
+                                    <nav aria-label="Page navigation">
+                                        <nav aria-label="Page navigation">
+                                            <ul class="pagination justify-content-center">
 
-                                                        <!-- 이전 페이지 버튼 -->
-                                                        <li class="page-item" th:classappend="${myProductList.hasPrevious()} ? '' : 'disabled'">
-                                                            <a class="page-link" th:href="@{/admin/member-detail/transactions/(id=${member.id}, page=${myProductList.number - 1}, size=${myProductList.size})}" aria-label="Previous">
-                                                                <span aria-hidden="true">&laquo;</span>
-                                                            </a>
-                                                        </li>
+                                                <!-- 첫 페이지 버튼 -->
+                                                <li class="page-item"
+                                                    th:classappend="${myPaymentList.first} ? 'disabled' : ''">
+                                                    <a class="page-link"
+                                                       th:href="@{/admin/member-detail/transactions/{id}(id=${member.id}, page=0, size=${myPaymentList.size})}"
+                                                       aria-label="First">
+                                                        <span aria-hidden="true">맨 처음</span>
+                                                    </a>
+                                                </li>
 
-                                                        <!-- 페이지 번호 버튼들 -->
-                                                        <li class="page-item"
-                                                            th:each="i : ${#numbers.sequence((myProductList.number - 2 > 0 ? myProductList.number - 2 : 0),
-                                             (myProductList.number + 2 < myProductList.totalPages - 1 ? myProductList.number + 2 : myProductList.totalPages - 1))}"
-                                                            th:classappend="${i == myProductList.number} ? 'active'">
-                                                            <a class="page-link" th:text="${i + 1}"
-                                                               th:href="@{/admin/member-detail/transactions/{id}(id=${member.id}, page=${i}, size=${myProductList.size})}" th:if="${i + 1} == 0? false : true"></a>
-                                                        </li>
+                                                <!-- 이전 페이지 버튼 -->
+                                                <li class="page-item"
+                                                    th:classappend="${myPaymentList.hasPrevious()} ? '' : 'disabled'">
+                                                    <a class="page-link"
+                                                       th:href="@{/admin/member-detail/transactions/(id=${member.id}, page=${myPaymentList.number - 1}, size=${myPaymentList.size})}"
+                                                       aria-label="Previous">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                    </a>
+                                                </li>
 
-                                                        <!-- 다음 페이지 버튼 -->
-                                                        <li class="page-item" th:classappend="${myProductList.hasNext()} ? '' : 'disabled'">
-                                                            <a class="page-link" th:href="@{/admin/member-detail/transactions/{id}(id=${member.id}, page=${myProductList.number + 1}, size=${myProductList.size})}" aria-label="Next">
-                                                                <span aria-hidden="true">&raquo;</span>
-                                                            </a>
-                                                        </li>
+                                                <!-- 페이지 번호 버튼들 -->
+                                                <li class="page-item"
+                                                    th:each="i : ${#numbers.sequence((myPaymentList.number - 2 > 0 ? myPaymentList.number - 2 : 0),
+                                             (myPaymentList.number + 2 < myPaymentList.totalPages - 1 ? myPaymentList.number + 2 : myPaymentList.totalPages - 1))}"
+                                                    th:classappend="${i == myPaymentList.number} ? 'active'">
+                                                    <a class="page-link" th:text="${i + 1}"
+                                                       th:href="@{/admin/member-detail/transactions/{id}(id=${member.id}, page=${i}, size=${myPaymentList.size})}"
+                                                       th:if="${i + 1} == 0? false : true"></a>
+                                                </li>
 
-                                                        <!-- 마지막 페이지 버튼 -->
-                                                        <li class="page-item" th:classappend="${myProductList.last} ? 'disabled' : ''">
-                                                            <a class="page-link" th:href="@{/admin/member-detail/transactions/{id}(id=${member.id}, page=${myProductList.totalPages - 1}, size=${myProductList.size})}" aria-label="Last">
-                                                                <span aria-hidden="true">끝으로</span>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </nav>
+                                                <!-- 다음 페이지 버튼 -->
+                                                <li class="page-item"
+                                                    th:classappend="${myPaymentList.hasNext()} ? '' : 'disabled'">
+                                                    <a class="page-link"
+                                                       th:href="@{/admin/member-detail/transactions/{id}(id=${member.id}, page=${myPaymentList.number + 1}, size=${myPaymentList.size})}"
+                                                       aria-label="Next">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                    </a>
+                                                </li>
 
-                                            </nav>
+                                                <!-- 마지막 페이지 버튼 -->
+                                                <li class="page-item"
+                                                    th:classappend="${myPaymentList.last} ? 'disabled' : ''">
+                                                    <a class="page-link"
+                                                       th:href="@{/admin/member-detail/transactions/{id}(id=${member.id}, page=${myPaymentList.totalPages - 1}, size=${myPaymentList.size})}"
+                                                       aria-label="Last">
+                                                        <span aria-hidden="true">끝으로</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+
+                                    </nav>
 
 
-
-                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -208,17 +194,18 @@
                 </div>
             </div>
         </div>
-        <!-- /page content -->
+    </div>
+    <!-- /page content -->
 
-        <!-- footer content -->
+    <!-- footer content -->
     <footer>
         <div class="pull-right">
             © 2024 Team-Hermez All Rights Reserved. <a href="/">Farrot</a>
         </div>
         <div class="clearfix"></div>
     </footer>
-        <!-- /footer content -->
-    </div>
+    <!-- /footer content -->
+</div>
 </div>
 
 <!-- jQuery -->
