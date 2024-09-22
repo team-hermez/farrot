@@ -10,10 +10,17 @@ import lombok.Setter;
 public class MemberLoginRequest {
     private String email;
     private String password;
+    private String provider;
 
-    MemberLoginRequest() {}
+    public MemberLoginRequest() {}
 
-    MemberLoginRequest(String email, String password) {
+    public MemberLoginRequest(String email, String password, String provider) {
+        this.email = email;
+        this.password = password;
+        this.provider = provider;
+    }
+
+    public MemberLoginRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }
