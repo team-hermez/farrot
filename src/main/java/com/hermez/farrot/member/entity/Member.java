@@ -44,7 +44,7 @@ public class Member {
     private int status;
 
     //소셜 로그인용 column
-    @Column(nullable = true, length = 100)
+    @Column(name = "attribute_code", nullable = true, length = 100)
     private String attributeCode;
 
     @Column(nullable = true, length = 100)
