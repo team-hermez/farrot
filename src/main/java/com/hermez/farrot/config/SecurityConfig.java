@@ -1,5 +1,6 @@
 package com.hermez.farrot.config;
 
+import com.hermez.farrot.oauth.OAuth2FailureHandler;
 import com.hermez.farrot.oauth.service.CustomOAuth2UserService;
 import com.hermez.farrot.oauth.OAuth2SuccessHandler;
 import com.hermez.farrot.member.security.JwtAuthenticationFilter;
@@ -27,6 +28,8 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final OAuth2FailureHandler oAuth2FailureHandler;
+
     private final static int ONE_DAY = 24 * 60 * 60;
 
     @Bean
@@ -59,6 +62,7 @@ public class SecurityConfig {
                 .formLogin(login -> login
                         .loginPage("/member/login")
                         .loginProcessingUrl("/login")
+                        .failureForwardUrl("/login?error")
                         .usernameParameter("email")
                         .permitAll()
                         .successForwardUrl("/")
@@ -68,6 +72,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo->userInfo
                                 .userService(oAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
+                        .failureHandler(oAuth2FailureHandler)
                 )
                 .logout(Customizer.withDefaults())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
