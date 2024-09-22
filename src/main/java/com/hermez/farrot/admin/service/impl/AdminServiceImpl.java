@@ -8,6 +8,8 @@ import com.hermez.farrot.member.repository.MemberRepository;
 import com.hermez.farrot.product.entity.Product;
 import com.hermez.farrot.product.repository.ProductRepository;
 import com.hermez.farrot.product.repository.ProductStatusRepository;
+import com.hermez.farrot.report.entity.Report;
+import com.hermez.farrot.report.repository.ReportRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,12 +25,14 @@ public class AdminServiceImpl implements AdminService {
     public final ProductRepository productRepository;
     public final ProductStatusRepository productStatusRepository;
     private final MemberRepository memberRepository;
+    private final ReportRepository reportRepository;
 
-    public AdminServiceImpl(AdminRepository adminRepository, ProductRepository productRepository, ProductStatusRepository productStatusRepository, MemberRepository memberRepository) {
+    public AdminServiceImpl(AdminRepository adminRepository, ProductRepository productRepository, ProductStatusRepository productStatusRepository, MemberRepository memberRepository, ReportRepository reportRepository) {
         this.adminRepository = adminRepository;
         this.productRepository = productRepository;
         this.productStatusRepository = productStatusRepository;
         this.memberRepository = memberRepository;
+        this.reportRepository = reportRepository;
     }
 
     @Override
@@ -110,6 +114,16 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<AdminCategoryThisWeekTotalViewsResponse> findThisWeekTotalViewsByCategory() {
         return adminRepository.findThisWeekTotalViewsByCategory();
+    }
+
+    @Override
+    public Page<Report> getReportList(Pageable pageable){
+            return reportRepository.findMemberByOrderById(pageable);
+    }
+
+    @Override
+    public int countByReport(){
+        return (int) reportRepository.count();
     }
 
     @Override

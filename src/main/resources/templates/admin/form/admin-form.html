@@ -198,56 +198,53 @@
         <!-- page content -->
         <div class="right_col" role="main">
             <!-- top tiles -->
-            <div class="row" style="display: inline-block;">
-                <div class="tile_count">
-                    <div class="col-md-3 col-sm-6  tile_stats_count">
-                        <span class="count_top"><i class="fa fa-user"></i> 전체 회원</span>
-                        <div class="count" th:text="${totalCount}"></div>
-                        <span class="count_bottom"><i class="green">4% </i> From last Week</span>
-                    </div>
-                    <div class="col-md-3 col-sm-6  tile_stats_count">
-                        <span class="count_top"><i class="fa fa-user"></i> 일일 매출</span>
-                        <div class="count green" th:text="${totalSalesCount}"></div>
-                        <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
-                    </div>
-                    <div class="col-md-3 col-sm-6  tile_stats_count">
-                        <span class="count_top"><i class="fa fa-user"></i> 오늘 회원 가입 수</span>
-                        <div class="count" th:text="${totalRegisterCount}"></div>
-                        <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12% </i> From last Week</span>
-                    </div>
-                    <div class="col-md-3 col-sm-6  tile_stats_count">
-                        <span class="count_top"><i class="fa fa-user"></i> 신고 건</span>
-                        <div class="count" th:text="${totalReportCount}"></div>
-                        <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
-                    </div>
+            <div class="row" style="display: flex; flex-wrap: nowrap; overflow-x: auto; margin: -3px;">
+                <div class="col-md-2 col-sm-6 tile_stats_count" style="background-color: #f9f9f9; border-radius: 5px; padding: 10px; margin: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 150px;">
+                    <span class="count_top" style="font-weight: bold; font-size: 20px; color: #333;"><i class="fa fa-user"></i> 전체 회원</span>
+                    <div class="count" th:text="${totalCount}" style="font-size: 36px; color: #007bff; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                    <span class="count_bottom" style="font-size: 16px; color: #777;">총 회원 수</span>
+                </div>
+                <div class="col-md-2 col-sm-6 tile_stats_count" style="background-color: #f9f9f9; border-radius: 5px; padding: 10px; margin: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 150px;">
+                    <span class="count_top" style="font-weight: bold; font-size: 20px; color: #333;"><i class="fa fa-dollar-sign"></i> 일일 매출</span>
+                    <div class="count green" th:text="${totalSalesCount}" style="font-size: 36px; color: #28a745; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                    <span class="count_bottom" style="font-size: 16px; color: #777;">오늘 발생한 매출</span>
+                </div>
+                <div class="col-md-2 col-sm-6 tile_stats_count" style="background-color: #f9f9f9; border-radius: 5px; padding: 10px; margin: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 150px;">
+                    <span class="count_top" style="font-weight: bold; font-size: 20px; color: #333;"><i class="fa fa-user-plus"></i> 오늘 회원 가입 수</span>
+                    <div class="count" th:text="${totalRegisterCount}" style="font-size: 36px; color: #dc3545; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                    <span class="count_bottom" style="font-size: 16px; color: #777;">오늘 신규 가입 회원 수</span>
+                </div>
+                <div class="col-md-2 col-sm-6 tile_stats_count" style="background-color: #f9f9f9; border-radius: 5px; padding: 10px; margin: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 150px;">
+                    <span class="count_top" style="font-weight: bold; font-size: 20px; color: #333;"><i class="fa fa-exclamation-triangle"></i> 신고 건</span>
+                    <div class="count" th:text="${totalReportCount}" style="font-size: 36px; color: #ffc107; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                    <span class="count_bottom" style="font-size: 16px; color: #777;">총 신고 건수</span>
                 </div>
             </div>
-            <!-- /top tiles -->
 
+
+            <!-- /top tiles -->
             <div class="row">
-                <div class="col-md-12 col-sm-12 ">
-                    <div class="dashboard_graph">
+                <div class="col-md-12 col-sm-12">
+                    <div class="dashboard_graph" style="background-color: #fff; border-radius: 5px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
 
                         <div class="row x_title">
                             <div class="col-md-6">
-                                <h3>일주일 간 가입 통계</h3>
+                                <h3 style="font-weight: bold; color: #333;">일주일 간 가입 통계</h3>
                             </div>
-
                         </div>
 
-                        <div style="height: 390px;
-    width: 800px;" class="col-md-9 col-sm-9 ">
-                            <canvas id="mainChart"></canvas>
+                        <div style="height: 390px; width: 800px;" class="col-md-9 col-sm-9">
+                            <canvas id="mainChart" style="border: 1px solid #ddd;"></canvas>
                         </div>
                         <div class="container">
                             <div class="row">
                                 <!-- 카테고리 Top 5 -->
-                                <div class="col-md-7 col-sm-8 bg-white">
+                                <div class="col-md-7 col-sm-8 bg-white" style="padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                                     <div class="x_title">
-                                        <h3><i class="fa fa-gift"></i> 이번 주 카테고리 판매 Top 5</h3>
+                                        <h3 style="font-weight: bold; color: #333;"><i class="fa fa-gift"></i> 이번 주 카테고리 판매 Top 5</h3>
                                     </div>
                                     <div id="topCategories">
-                                        <ul>
+                                        <ul style="list-style-type: none; padding: 0;">
                                             <!-- 카테고리 항목들 -->
                                         </ul>
                                     </div>
@@ -262,68 +259,54 @@
 
                     </div>
                 </div>
-
             </div>
             <br/>
 
             <div class="row">
 
-
-                <div class="col-md-4 col-sm-4 ">
-                    <div class = "x_panel tile fixed_height_500 overflow_hidden">
+                <div class="col-md-4 col-sm-4">
+                    <div class="x_panel tile fixed_height_500 overflow_hidden" style="background-color: #fff; border-radius: 5px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                         <div class="x_title">
-                            <h3>카테고리 평균 거래금액</h3>
+                            <h3 style="font-weight: bold; color: #333;">카테고리 평균 거래금액</h3>
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_content">
-                            <canvas id="categoryAverageChart"></canvas>
+                            <canvas id="categoryAverageChart" style="border: 1px solid #ddd;"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-4 col-sm-4 ">
-                    <div class="x_panel tile fixed_height_100 overflow_hidden">
+                <div class="col-md-4 col-sm-4">
+                    <div class="x_panel tile fixed_height_100 overflow_hidden" style="background-color: #fff; border-radius: 5px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                         <div class="x_title">
-                            <h3>일주일 카테고리 조회수 통계</h3>
-
+                            <h3 style="font-weight: bold; color: #333;">일주일 카테고리 조회수 통계</h3>
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_content">
-                            <table class="" style=" margin:0px;width:100%">
-                                <th>
-                                <td>
-                                    <canvas id="categoryViewChart"></canvas>
-                                </td>
-                                </th>
-                                </tr>
+                            <table style="margin: 0; width: 100%;">
                                 <tr>
-
+                                    <td>
+                                        <canvas id="categoryViewChart" style="border: 1px solid #ddd;"></canvas>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
                     </div>
-                </div>  <tr>
+                </div>
 
-
-
-                <div class="col-md-4 col-sm-4 ">
-                    <div class="x_panel tile fixed_height_400">
+                <div class="col-md-4 col-sm-4">
+                    <div class="x_panel tile fixed_height_400" style="background-color: #fff; border-radius: 5px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                         <div class="x_content">
                             <div class="x_panel">
                                 <div class="x_title">
-                                    <h3>상품 등록 차트 <small>실시간</small></h3>
-
+                                    <h3 style="font-weight: bold; color: #333;">상품 등록 차트 <small style="color: #777;">실시간</small></h3>
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
                                     <div class="dashboard-widget-content">
                                         <ul class="list-unstyled timeline widget">
-                                            <h2 class="title1">
-
-                                            </h2>
-                                            <div class="byline">
-
-                                            </div>
+                                            <h2 class="title1" style="color: #333;"></h2>
+                                            <div class="byline"></div>
                                         </ul>
                                     </div>
                                 </div>
@@ -333,6 +316,7 @@
                 </div>
 
             </div>
+
 
 
             <div class="row">
@@ -352,7 +336,7 @@
         <!-- footer content -->
         <footer>
             <div class="pull-right">
-                Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+                © 2024 Team-Hermez All Rights Reserved. <a href="/">Farrot</a>
             </div>
             <div class="clearfix"></div>
         </footer>
