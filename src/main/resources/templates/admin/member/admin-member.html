@@ -184,7 +184,8 @@
                                     <tbody th:each="list : ${memberList}">
                                     <tr>
                                         <td class="a-center">
-                                            <input type="checkbox" name="selectedIds" th:value="${list.id}" class="flat"/>
+                                            <input type="checkbox" name="selectedIds" th:value="${list.id}"
+                                                   class="flat"/>
                                         </td>
                                         <td th:text="${list.id}"></td>
                                         <td>
@@ -196,29 +197,34 @@
                                         <td th:text="${list.email}"></td>
                                         <td th:text="${list.phone}"></td>
                                         <td th:text="${list.createAt}"></td>
-                                        <td th:text="${list.role}"></td>
+                                        <td th:text="${list.role.description}"></td>
                                     </tr>
                                     </tbody>
                                 </table>
 
                                 <div class="row justify-content-end">
                                     <div class="btn-group form-check">
-                                        <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#userModal">공지사항</button>
+                                        <button class="btn btn-secondary" type="button" data-bs-toggle="modal"
+                                                data-bs-target="#userModal">공지사항
+                                        </button>
                                     </div>
                                 </div>
 
-                                <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                     aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h1 class="modal-title fs-5" id="exampleModalLabel">공지사항</h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <form>
                                                     <div class="mb-3">
                                                         <label for="content" class="form-label">공지사항 내용</label>
-                                                        <textarea class="form-control" name="content" id="content" rows="4" required></textarea>
+                                                        <textarea class="form-control" name="content" id="content"
+                                                                  rows="4" required></textarea>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="priority" class="form-label">우선순위</label>
@@ -236,8 +242,12 @@
                                                 </form>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                                                <button type="submit" name="action" value="alert" class="btn btn-primary">알림</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    닫기
+                                                </button>
+                                                <button type="submit" name="action" value="alert"
+                                                        class="btn btn-primary">알림
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

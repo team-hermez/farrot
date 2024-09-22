@@ -66,15 +66,18 @@
                                     <div class="profile_img">
                                         <div id="crop-avatar">
                                             <!-- Current avatar -->
-                                            <img src="/img/image.jpg" alt="" class="img-circle img-fluid">                                        </div>
+                                            <img src="/default-member-image.png" alt="" class="img-circle img-fluid">
+                                        </div>
                                     </div>
 
                                     <h3 th:text="${member.memberName}"></h3>
 
                                     <ul class="list-unstyled user_data">
-                                        <li><i class="fa fa-phone"></i> 전화번호 #: <span th:text="${member.phone}">번호</span></li>
+                                        <li><i class="fa fa-phone"></i> 전화번호 #: <span
+                                                th:text="${member.phone}">번호</span></li>
                                         <li>
-                                            <i class="fa fa-briefcase user-profile-icon"></i> 이메일 #: <span th:text="${member.email}">이메일</span>
+                                            <i class="fa fa-briefcase user-profile-icon"></i> 이메일 #: <span
+                                                th:text="${member.email}">이메일</span>
                                         </li>
 
                                     </ul>
@@ -83,29 +86,35 @@
                                 <div class="col-md-9 col-sm-9 ">
                                     <div class="" role="tabpanel" data-example-id="togglable-tabs">
                                         <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                                            <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">내가 올린 상품</a>
+                                            <li role="presentation" class="active"><a href="#tab_content1" id="home-tab"
+                                                                                      role="tab" data-toggle="tab"
+                                                                                      aria-expanded="true">내가 올린 상품</a>
                                             </li>
-                                            <li role="presentation" class=""><a th:href="@{/admin/member-detail/transactions/{id}(id=${member.id})}">내가 한 안전결제</a>
+                                            <li role="presentation" class=""><a
+                                                    th:href="@{/admin/member-detail/transactions/{id}(id=${member.id})}">내가
+                                                한 안전결제</a>
                                             </li>
                                         </ul>
                                         <div id="myTabContent" class="tab-content">
-                                            <div th:each="list : ${myProductList}" role="tabpanel" class="tab-pane active " id="tab_content1" aria-labelledby="home-tab">
+                                            <div th:each="list : ${myProductList}" role="tabpanel"
+                                                 class="tab-pane active " id="tab_content1" aria-labelledby="home-tab">
                                                 <!-- start recent activity -->
-                                                <ul  class="messages">
+                                                <ul class="messages">
                                                     <li>
                                                         <div class="message_wrapper">
                                                             <h4 th:text="${list.productName}" class="heading"></h4>
-                                                            <blockquote th:text="${list.description}" class="message"></blockquote>
-                                                            <br />
+                                                            <blockquote th:text="${list.description}"
+                                                                        class="message"></blockquote>
+                                                            <br/>
                                                             <p class="url">
-                                                                <span class="fs1 text-info" aria-hidden="true" data-icon=""></span></p>
+                                                                <span class="fs1 text-info" aria-hidden="true"
+                                                                      data-icon=""></span></p>
                                                         </div>
                                                     </li>
-
                                                 </ul>
-                                                <!-- end recent activity -->
                                             </div>
-                                            <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+                                            <div role="tabpanel" class="tab-pane fade" id="tab_content2"
+                                                 aria-labelledby="profile-tab">
 
                                                 <!-- start user projects -->
                                                 <table class="data table table-striped no-margin">
@@ -126,7 +135,8 @@
                                                         <td class="hidden-phone">18</td>
                                                         <td class="vertical-align-mid">
                                                             <div class="progress">
-                                                                <div class="progress-bar progress-bar-success" data-transitiongoal="35"></div>
+                                                                <div class="progress-bar progress-bar-success"
+                                                                     data-transitiongoal="35"></div>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -137,7 +147,8 @@
                                                         <td class="hidden-phone">13</td>
                                                         <td class="vertical-align-mid">
                                                             <div class="progress">
-                                                                <div class="progress-bar progress-bar-danger" data-transitiongoal="15"></div>
+                                                                <div class="progress-bar progress-bar-danger"
+                                                                     data-transitiongoal="15"></div>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -148,7 +159,8 @@
                                                         <td class="hidden-phone">30</td>
                                                         <td class="vertical-align-mid">
                                                             <div class="progress">
-                                                                <div class="progress-bar progress-bar-success" data-transitiongoal="45"></div>
+                                                                <div class="progress-bar progress-bar-success"
+                                                                     data-transitiongoal="45"></div>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -159,7 +171,8 @@
                                                         <td class="hidden-phone">28</td>
                                                         <td class="vertical-align-mid">
                                                             <div class="progress">
-                                                                <div class="progress-bar progress-bar-success" data-transitiongoal="75"></div>
+                                                                <div class="progress-bar progress-bar-success"
+                                                                     data-transitiongoal="75"></div>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -168,23 +181,33 @@
                                                 <!-- end user projects -->
 
                                             </div>
-                                            <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
-                                                <p>xxFood truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui
+                                            <div role="tabpanel" class="tab-pane fade" id="tab_content3"
+                                                 aria-labelledby="profile-tab">
+                                                <p>xxFood truck fixie locavore, accusamus mcsweeney's marfa nulla
+                                                    single-origin coffee squid. Exercitation +1 labore velit, blog
+                                                    sartorial PBR leggings next level wes anderson artisan four loko
+                                                    farm-to-table craft beer twee. Qui
                                                     photo booth letterpress, commodo enim craft beer mlkshk </p>
                                             </div>
                                             <nav aria-label="Page navigation">
                                                 <nav aria-label="Page navigation">
                                                     <ul class="pagination justify-content-center">
                                                         <!-- 첫 페이지 버튼 -->
-                                                        <li class="page-item" th:classappend="${myProductList.first} ? 'disabled' : ''">
-                                                            <a class="page-link" th:href="@{/admin/member-detail/{id}(id=${member.id}, page=0, size=${myProductList.size})}" aria-label="First">
+                                                        <li class="page-item"
+                                                            th:classappend="${myProductList.first} ? 'disabled' : ''">
+                                                            <a class="page-link"
+                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=0, size=${myProductList.size})}"
+                                                               aria-label="First">
                                                                 <span aria-hidden="true">맨 처음</span>
                                                             </a>
                                                         </li>
 
                                                         <!-- 이전 페이지 버튼 -->
-                                                        <li class="page-item" th:classappend="${myProductList.hasPrevious()} ? '' : 'disabled'">
-                                                            <a class="page-link" th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${myProductList.number - 1}, size=${myProductList.size})}" aria-label="Previous">
+                                                        <li class="page-item"
+                                                            th:classappend="${myProductList.hasPrevious()} ? '' : 'disabled'">
+                                                            <a class="page-link"
+                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${myProductList.number - 1}, size=${myProductList.size})}"
+                                                               aria-label="Previous">
                                                                 <span aria-hidden="true">&laquo;</span>
                                                             </a>
                                                         </li>
@@ -195,19 +218,26 @@
                                              (myProductList.number + 2 < myProductList.totalPages - 1 ? myProductList.number + 2 : myProductList.totalPages - 1))}"
                                                             th:classappend="${i == myProductList.number} ? 'active'">
                                                             <a class="page-link" th:text="${i + 1}"
-                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${i}, size=${myProductList.size})}" th:if="${i + 1} == 0? false : true"></a>
+                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${i}, size=${myProductList.size})}"
+                                                               th:if="${i + 1} == 0? false : true"></a>
                                                         </li>
 
                                                         <!-- 다음 페이지 버튼 -->
-                                                        <li class="page-item" th:classappend="${myProductList.hasNext()} ? '' : 'disabled'">
-                                                            <a class="page-link" th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${myProductList.number + 1}, size=${myProductList.size})}" aria-label="Next">
+                                                        <li class="page-item"
+                                                            th:classappend="${myProductList.hasNext()} ? '' : 'disabled'">
+                                                            <a class="page-link"
+                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${myProductList.number + 1}, size=${myProductList.size})}"
+                                                               aria-label="Next">
                                                                 <span aria-hidden="true">&raquo;</span>
                                                             </a>
                                                         </li>
 
                                                         <!-- 마지막 페이지 버튼 -->
-                                                        <li class="page-item" th:classappend="${myProductList.last} ? 'disabled' : ''">
-                                                            <a class="page-link" th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${myProductList.totalPages - 1}, size=${myProductList.size})}" aria-label="Last">
+                                                        <li class="page-item"
+                                                            th:classappend="${myProductList.last} ? 'disabled' : ''">
+                                                            <a class="page-link"
+                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${myProductList.totalPages - 1}, size=${myProductList.size})}"
+                                                               aria-label="Last">
                                                                 <span aria-hidden="true">끝으로</span>
                                                             </a>
                                                         </li>
@@ -217,11 +247,10 @@
                                             </nav>
 
 
-
                                         </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                             <footer>
                                 <div class="pull-right">
                                     © 2024 Team-Hermez All Rights Reserved. <a href="/">Farrot</a>
@@ -229,36 +258,36 @@
                                 <div class="clearfix"></div>
                             </footer>
                             <!-- /footer content -->
+                        </div>
                     </div>
                 </div>
             </div>
+            <!-- /page content -->
+
+            <!-- footer content -->
+
         </div>
-        <!-- /page content -->
-
-        <!-- footer content -->
-
     </div>
-</div>
 
-<!-- jQuery -->
-<script src="/vendors/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap -->
-<script src="/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<!-- FastClick -->
-<script src="/vendors/fastclick/lib/fastclick.js"></script>
-<!-- NProgress -->
-<script src="/vendors/nprogress/nprogress.js"></script>
-<!-- morris.js -->
-<script src="/vendors/raphael/raphael.min.js"></script>
-<script src="/vendors/morris.js/morris.min.js"></script>
-<!-- bootstrap-progressbar -->
-<script src="/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-<!-- bootstrap-daterangepicker -->
-<script src="/vendors/moment/min/moment.min.js"></script>
-<script src="/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- jQuery -->
+    <script src="/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FastClick -->
+    <script src="/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="/vendors/nprogress/nprogress.js"></script>
+    <!-- morris.js -->
+    <script src="/vendors/raphael/raphael.min.js"></script>
+    <script src="/vendors/morris.js/morris.min.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="/vendors/moment/min/moment.min.js"></script>
+    <script src="/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 
-<!-- Custom Theme Scripts -->
-<script src="/build/js/custom.min.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="/build/js/custom.min.js"></script>
 
 </body>
 </html>
