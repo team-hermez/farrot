@@ -4,6 +4,7 @@ import com.hermez.farrot.category.entity.Category;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.payment.entity.Payment;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "PRODUCT")
 public class Product {
 

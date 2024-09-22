@@ -4,8 +4,8 @@ import com.hermez.farrot.image.dto.request.ImageRequest;
 import com.hermez.farrot.image.entity.Image;
 import com.hermez.farrot.image.exception.ImageProcessionException;
 import com.hermez.farrot.image.repository.ImageRepository;
+import com.hermez.farrot.image.repository.ImageRepositoryCustom;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +19,7 @@ public class ImageService {
 
   private final ImageRepository imageRepository;
   private final FirebaseService firebaseService;
+  private final ImageRepositoryCustom imageRepositoryCustom;
 
   public <T> void save(ImageRequest<T> request) {
     saveImage result = getSaveImage(request);
@@ -71,7 +72,7 @@ public class ImageService {
     try {
       Integer entityId = (Integer) entity.getClass().getMethod("getId").invoke(entity);
       String entityType = entity.getClass().getSimpleName();
-      images = imageRepository.findByEntityIdAndEntityType(entityId, entityType);
+      images = imageRepositoryCustom.findByEntityIdAndEntityType(entityId, entityType);
     } catch (Exception e) {
       throw new RuntimeException("이미지 가져오는 중 오류 발생", e);
     }

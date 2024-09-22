@@ -4,7 +4,6 @@ import com.hermez.farrot.category.entity.Category;
 import com.hermez.farrot.category.service.CategoryService;
 import com.hermez.farrot.image.dto.request.ImageRequest;
 import com.hermez.farrot.image.entity.Image;
-import com.hermez.farrot.image.repository.ImageRepository;
 import com.hermez.farrot.image.service.ImageService;
 import com.hermez.farrot.product.dto.request.ProductSearchRequest;
 import com.hermez.farrot.product.dto.response.ProductDetailResponse;
@@ -16,8 +15,12 @@ import com.hermez.farrot.product.repository.ProductRepository;
 import com.hermez.farrot.product.repository.ProductStatusRepository;
 import com.hermez.farrot.product.service.ProductService;
 import com.hermez.farrot.util.DateUtils;
-import com.hermez.farrot.util.PriceFormatUtil;
 import jakarta.persistence.criteria.Predicate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,10 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
-import java.util.*;
-
 @Service
+@Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -128,10 +129,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDetailResponse getProductDetail(Integer productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("상품을 찾을 수 없습니다."));
+        Product product = getProductById(productId);
         incrementViewCount(product);
-        List<Image> images =  imageService.getImagesByEntity(product);
+        Product productForImage = Product.builder().id(product.getId()).build();
+        List<Image> images =  imageService.getImagesByEntity(productForImage);
         if(images.isEmpty()){
             Image defaultImage = new Image("/default-product-image.png");
             images.add(defaultImage);
@@ -157,6 +158,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Product getProductById(Integer productId) {
         Optional<Product> productOptional = productRepository.findById(productId);
         return productOptional.orElseThrow(() -> new ResourceNotFoundException("상품이 존재하지 않습니다."));
