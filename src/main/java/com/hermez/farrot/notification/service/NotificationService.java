@@ -26,6 +26,7 @@ public class NotificationService {
   public void register(String userEmail, String token) {tokenMap.put(userEmail, token);}
 
   public void createNotification(Member sender, Member receiver, String message) {
+
     try {
       NotificationRequest request = NotificationRequest.builder()
           .title("안녕하세요 Farrot 입니다 \uD83D\uDC2D")
@@ -39,12 +40,12 @@ public class NotificationService {
   }
 
 
-  public void createWishNotification(Member receiver, Member wishMember,Product wishProduct) {
+  public void createWishNotification(Member wishMember, Member seller,Product wishProduct) {
     try {
       NotificationRequest request = NotificationRequest.builder()
           .title("안녕하세요 Farrot 입니다 \uD83D\uDC2D")
-          .token(getToken(receiver.getEmail()))
-          .message(receiver.getNickname()+"님!!! \n[ "+wishProduct.getProductName()+" ] 상품을 \n"+wishMember.getNickname()+" 님께서 찜하셨습니다")
+          .token(getToken(seller.getEmail()))
+          .message(seller.getNickname()+"님!!! \n[ "+wishProduct.getProductName()+" ] 상품을 \n"+wishMember.getNickname()+" 님께서 찜하셨습니다")
           .build();
       sendNotification(request);
     } catch (ExecutionException | InterruptedException e) {
@@ -54,7 +55,6 @@ public class NotificationService {
 
 
   public void creatNotification(AdminNotificationRequest adminNotificationRequest) {
-
     try {
       for(Integer selectId : adminNotificationRequest.getSelectedIds()) {
         Member receiver = adminService.findMemberById(selectId);
