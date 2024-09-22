@@ -9,6 +9,7 @@ import com.hermez.farrot.member.dto.request.MemberUpdateRequest;
 import com.hermez.farrot.member.dto.response.MemberImageResponse;
 import com.hermez.farrot.member.entity.Member;
 import com.hermez.farrot.member.entity.Role;
+import com.hermez.farrot.member.exception.NotFoundMemberException;
 import com.hermez.farrot.member.security.JwtTokenProvider;
 import com.hermez.farrot.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
@@ -61,7 +62,7 @@ public class UserService implements MemberService{
         Member member = optionalMember.orElse(null);
         if (member != null) {
             if (!passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())) {
-                log.warn("비밀번호가 일치하지 않습니다.");
+                throw new NotFoundMemberException("비밀번호가 틀립니다");
             } else {
                 response.addCookie(getCookie(member.getEmail(), member.getId(), member.getRole(), request));
             }
@@ -95,15 +96,10 @@ public class UserService implements MemberService{
     @Override
     public boolean updateUserDetail(MemberUpdateRequest memberUpdateRequest, MultipartFile file) {
         Member member = memberRepository.findByEmail(memberUpdateRequest.getEmail()).orElseThrow(()-> new RuntimeException("회원이 존재하지 않습니다"));
-        System.out.println(member.getId().intValue());
-        System.out.println(memberUpdateRequest.getExPassword());
-        System.out.println(memberUpdateRequest.getNewPassword());
-
         boolean checkPassword = passwordEncoder.matches(
                 memberUpdateRequest.getExPassword(), member.getPassword());
         if (!checkPassword){
-            System.out.println("현재 비밀번호가 다릅니다");
-            return false;
+            throw new NotFoundMemberException("현재 비밀번호를 다르게 입력하셨습니다.");
         }
 
         String encodePassword = (memberUpdateRequest.getNewPassword() != null && !memberUpdateRequest.getNewPassword().isEmpty())
