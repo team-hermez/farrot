@@ -165,6 +165,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProductById(Integer productId) {
         productRepository.deleteById(productId);
     }
