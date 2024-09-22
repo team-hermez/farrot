@@ -19,10 +19,15 @@ import com.hermez.farrot.payment.repository.PaymentStatusRepository;
 import com.hermez.farrot.payment.repository.ShippingPaymentRepository;
 import com.hermez.farrot.payment.service.PaymentService;
 import com.hermez.farrot.product.entity.Product;
+import com.hermez.farrot.product.repository.ProductRepository;
 import com.hermez.farrot.product.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,8 +45,9 @@ public class PaymentServiceImpl implements PaymentService {
     private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final ShippingPaymentRepository shippingPaymentRepository;
+    private final ProductRepository productRepository;
 
-    public PaymentServiceImpl(PaymentAdapter paymentAdapter, PaymentRepository paymentRepository, PaymentStatusRepository paymentStatusRepository, ProductService productService, MemberRepository memberRepository, MemberService memberService, ShippingPaymentRepository shippingPaymentRepository) {
+    public PaymentServiceImpl(PaymentAdapter paymentAdapter, PaymentRepository paymentRepository, PaymentStatusRepository paymentStatusRepository, ProductService productService, MemberRepository memberRepository, MemberService memberService, ShippingPaymentRepository shippingPaymentRepository, ProductRepository productRepository) {
         this.paymentAdapter = paymentAdapter;
         this.paymentRepository = paymentRepository;
         this.paymentStatusRepository = paymentStatusRepository;
@@ -49,6 +55,7 @@ public class PaymentServiceImpl implements PaymentService {
         this.memberRepository = memberRepository;
         this.memberService = memberService;
         this.shippingPaymentRepository = shippingPaymentRepository;
+        this.productRepository = productRepository;
     }
 
     @Value("${safe-payment.api.key}")
@@ -103,21 +110,35 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void confirmPurchase(PurchaseConfirmRequest request, HttpServletRequest servletRequest) {
         request.setBuyerId(memberService.getMember(servletRequest).getId().toString());
-        paymentAdapter.confirmPurchase(request);
+        boolean isConfirmPurchase = paymentAdapter.confirmPurchase(request);
+        if(isConfirmPurchase){
+            Payment payment = paymentRepository.findByMerchantUid(request.getMerchantUid()).orElseThrow(() ->
+                    new IllegalArgumentException("결제를 찾을 수 없습니다."));
+            paymentStatusRepository.findById(4).ifPresent(payment::setPaymentStatus);
+            productService.updateProductStatus(payment.getProduct().getId(),3);
+            paymentRepository.save(payment);
+        }
     }
 
     @Override
-    public List<Payment> getPaymentsByMemberId(HttpServletRequest servletRequest) {
-        return paymentRepository.findByMemberId(memberService.getMember(servletRequest).getId());
+    public Page<Payment> getPaymentsByMemberId(Integer memberId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "paymentId"));
+        return paymentRepository.findByMemberId(memberId, pageable);
     }
 
     @Override
-    public List<Payment> getPaymentsBySellerId(HttpServletRequest servletRequest) {
+    public Page<Payment> getPaymentsByLoginMemberId(HttpServletRequest servletRequest, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "paymentId"));
+        return paymentRepository.findByMemberId(memberService.getMember(servletRequest).getId(), pageable);
+    }
+
+    @Override
+    public Page<Payment> getPaymentsBySellerId(HttpServletRequest servletRequest, int page, int size) {
         List<Product> products = productService.getProductsByMember(memberService.getMember(servletRequest).getId());
-        List<Payment> payments = products.stream()
-                .flatMap(product -> paymentRepository.findByProduct(product).stream())
-                .toList();
-        return payments;
+        List<Integer> productIds = products.stream().map(Product::getId).toList();
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "paymentId"));
+        return paymentRepository.findByProductIdIn(productIds, pageable);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.hermez.farrot.payment.dto.request.PurchaseConfirmRequest;
 import com.hermez.farrot.payment.dto.response.PaymentResultResponse;
 import com.hermez.farrot.payment.service.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,18 +37,18 @@ public class PaymentController {
     @PostMapping("/confirm-purchase")
     public String confirmPurchase(@ModelAttribute PurchaseConfirmRequest request, HttpServletRequest servletRequest) {
         paymentService.confirmPurchase(request, servletRequest);
-        return "index/index";
+        return "redirect:/payment/member-payments";
     }
 
     @GetMapping("/member-payments")
-    public String getPaymentsPage(Model model,HttpServletRequest servletRequest) {
-        model.addAttribute("payments", paymentService.getPaymentsByMemberId(servletRequest));
+    public String getPaymentsPage(Model model, HttpServletRequest servletRequest, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        model.addAttribute("payments", paymentService.getPaymentsByLoginMemberId(servletRequest, page, size));
         return "/payment/member-payments-buy";
     }
 
     @GetMapping("/member-payments-sell")
-    public String getPaymentsSellPage(Model model, HttpServletRequest servletRequest) {
-        model.addAttribute("payments", paymentService.getPaymentsBySellerId(servletRequest));
+    public String getPaymentsSellPage(Model model, HttpServletRequest servletRequest, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        model.addAttribute("payments", paymentService.getPaymentsBySellerId(servletRequest, page, size));
         return "/payment/member-payments-sell";
     }
 

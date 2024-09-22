@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -172,8 +173,10 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("상품이 없습니다."));
         ProductStatus status = productStatusRepository.findById(statusId)
                 .orElseThrow(() -> new ResourceNotFoundException("상태가 없습니다."));
-
         product.setProductStatus(status);
+        if(statusId==3){
+            product.setSoldAt(LocalDateTime.now());
+        }
         productRepository.save(product);
     }
 

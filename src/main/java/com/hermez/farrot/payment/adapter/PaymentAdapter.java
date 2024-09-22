@@ -10,7 +10,7 @@ public interface PaymentAdapter {
 
     PaymentResponse initPayment();
 
-    void confirmPurchase(PurchaseConfirmRequest request);
+    boolean confirmPurchase(PurchaseConfirmRequest request);
 
     TrackingInfoResponse registerLogisticsInfo(TrackingRequest request, String merchantId);
 
