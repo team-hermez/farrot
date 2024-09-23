@@ -1,7 +1,7 @@
 # 🛍️ Farrot 선생님 중고거래 플랫폼
 ![farrot](https://github.com/user-attachments/assets/dcb62b7f-041a-4bad-be19-4c0d697762f6)
 
-- 발표URL : [https://ohmycode-readme.netlify.app](https://www.miricanvas.com/v/13opefh)
+- 발표URL : [Farrot 최종발표/영상 및 자료⭕](https://www.miricanvas.com/v/13opefh)
 
 <br>
 
