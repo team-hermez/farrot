@@ -127,11 +127,28 @@
                                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                                 </a>
                             </li>
-                            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, response.productPage.totalPages - 1)}"
+                            <li class="page-item" th:if="${response.currentPage > 2}">
+                                <a class="page-link"
+                                   th:href="@{/product/products(page=${0}, size=${response.size}, categoryId=${param.categoryId}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, productName=${param.productName})}">1</a>
+                            </li>
+                            <li class="page-item" th:if="${response.currentPage > 3}">
+                                <span class="page-link">...</span>
+                            </li>
+
+                            <li class="page-item" th:each="pageNum, stat : ${#numbers.sequence(response.currentPage - 2 > 0 ? response.currentPage - 2 : 0, response.currentPage + 2 < response.productPage.totalPages - 1 ? response.currentPage + 2 : response.productPage.totalPages - 1)}"
                                 th:classappend="${pageNum == response.currentPage} ? 'active'">
                                 <a class="page-link"
                                    th:href="@{/product/products(page=${pageNum}, size=${response.size}, categoryId=${param.categoryId}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, productName=${param.productName})}"
                                    th:text="${pageNum + 1}">1</a>
+                            </li>
+
+                            <li class="page-item" th:if="${response.currentPage + 3 < response.productPage.totalPages - 1}">
+                                <span class="page-link">...</span>
+                            </li>
+                            <li class="page-item" th:if="${response.currentPage + 2 < response.productPage.totalPages - 1}">
+                                <a class="page-link"
+                                   th:href="@{/product/products(page=${response.productPage.totalPages - 1}, size=${response.size}, categoryId=${param.categoryId}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, productName=${param.productName})}"
+                                   th:text="${response.productPage.totalPages}">1</a>
                             </li>
                             <li class="page-item" th:classappend="${response.currentPage == response.productPage.totalPages - 1} ? 'disabled'">
                                 <a class="page-link"

@@ -149,11 +149,11 @@
                                         <a th:href="@{/product/update-sell(id=${product.id})}"
                                            class="btn btn-warning btn-sm mx-1">수정하기</a>
 
-                                        <form th:action="@{/product/delete(id=${product.id})}" method="post">
+                                        <form th:action="@{/product/delete(id=${product.id})}" method="post" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
                                             <button type="submit" class="btn btn-danger btn-sm mx-1" style="
-                                                                font-size: 15px;
-                                                                margin-bottom: 8px;
-                                                            ">삭제하기
+                                                    font-size: 15px;
+                                                    margin-bottom: 8px;
+                                                ">삭제하기
                                             </button>
                                         </form>
                                     </div>

@@ -67,7 +67,7 @@ public class ProductController {
         ProductDetailResponse productDetailResponse = productService.getProductDetail(productId);
         ProductSearchRequest productSearchRequest = new ProductSearchRequest();
         productSearchRequest.setSize(4);
-        productSearchRequest.setPage(0);
+        productSearchRequest.setPage(2);
         model.addAttribute("wishResponse", wishResponse);
         model.addAttribute("productDetail", productDetailResponse);
         model.addAttribute("response", productService.getProductsByFilters(productSearchRequest));
@@ -99,7 +99,8 @@ public class ProductController {
     }
 
     @PostMapping("/update-sell")
-    public String updateProduct(@ModelAttribute Product product, @RequestParam("imageFiles") MultipartFile[] imageFiles) {;
+    public String updateProduct(@ModelAttribute Product product, @RequestParam("imageFiles") MultipartFile[] imageFiles, HttpServletRequest servletRequest) {
+        product.setMember(memberService.getMember(servletRequest));
         productService.saveProduct(product, imageFiles);
         return "redirect:/product/product-detail?productId=" + product.getId();
     }

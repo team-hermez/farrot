@@ -15,12 +15,15 @@ import com.hermez.farrot.product.repository.ProductRepository;
 import com.hermez.farrot.product.repository.ProductStatusRepository;
 import com.hermez.farrot.product.service.ProductService;
 import com.hermez.farrot.util.DateUtils;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import jakarta.persistence.criteria.Root;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,6 +53,10 @@ public class ProductServiceImpl implements ProductService {
     public Product saveProduct(Product product, MultipartFile[] imageFiles) {
         ProductStatus defaultStatus = productStatusRepository.findByStatus("판매중")
                 .orElseThrow(() -> new ResourceNotFoundException("판매중 상태 존재하지 않습니다."));
+        List<Image> existingImages = imageService.findImagesByEntity(product.getId(), "PRODUCT");
+        for (Image image : existingImages) {
+            imageService.deleteImage(image);
+        }
         product.setProductStatus(defaultStatus);
         productRepository.save(product);
         for (MultipartFile file : imageFiles) {
@@ -59,7 +66,6 @@ public class ProductServiceImpl implements ProductService {
         }
         return productRepository.save(product);
     }
-
     @Override
     public List<Category> getAllCategories() {
         return categoryService.getAllCategories();
@@ -82,26 +88,48 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll((Specification<Product>) (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.conjunction();
 
-            if (request.getProductName() != null && !request.getProductName().isEmpty()) {
-                String productNamePattern = "%" + request.getProductName() + "%";
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("productName"), productNamePattern));
-            }
-            if (request.getCategoryId() != null && !request.getCategoryId().isEmpty()) {
-                predicate = criteriaBuilder.and(predicate, root.get("category").get("id").in(request.getCategoryId()));
-            }
-            if (request.getMinPrice() != null) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThanOrEqualTo(root.get("price"), request.getMinPrice()));
-            }
-            if (request.getMaxPrice() != null) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThanOrEqualTo(root.get("price"), request.getMaxPrice()));
-            }
-            if (request.getMemberId() != null) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("member").get("id"), request.getMemberId()));
-            }
+            predicate = addProductNameFilter(predicate, root, criteriaBuilder, request.getProductName());
+            predicate = addCategoryFilter(predicate, root, criteriaBuilder, request.getCategoryId());
+            predicate = addPriceFilter(predicate, root, criteriaBuilder, request.getMinPrice(), request.getMaxPrice());
+            predicate = addMemberFilter(predicate, root, criteriaBuilder, request.getMemberId());
+
             query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
             return predicate;
         }, pageable);
     }
+
+    private Predicate addProductNameFilter(Predicate predicate, Root<Product> root, CriteriaBuilder criteriaBuilder, String productName) {
+        if (productName != null && !productName.isEmpty()) {
+            String productNamePattern = "%" + productName + "%";
+            return criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("productName"), productNamePattern));
+        }
+        return predicate;
+    }
+
+    private Predicate addCategoryFilter(Predicate predicate, Root<Product> root, CriteriaBuilder criteriaBuilder, List<Integer> categoryId) {
+        if (categoryId != null && !categoryId.isEmpty()) {
+            return criteriaBuilder.and(predicate, root.get("category").get("id").in(categoryId));
+        }
+        return predicate;
+    }
+
+    private Predicate addPriceFilter(Predicate predicate, Root<Product> root, CriteriaBuilder criteriaBuilder, Integer minPrice, Integer maxPrice) {
+        if (minPrice != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
+        }
+        if (maxPrice != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
+        }
+        return predicate;
+    }
+
+    private Predicate addMemberFilter(Predicate predicate, Root<Product> root, CriteriaBuilder criteriaBuilder, Integer memberId) {
+        if (memberId != null) {
+            return criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("member").get("id"), memberId));
+        }
+        return predicate;
+    }
+
 
     private Map<Integer, List<Image>> fetchProductImages(Page<Product> productPage) {
         Map<Integer, List<Image>> productImages = new HashMap<>();

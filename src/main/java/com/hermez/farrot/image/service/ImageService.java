@@ -78,4 +78,12 @@ public class ImageService {
     }
     return images;
   }
+
+  public List<Image> findImagesByEntity(Integer entityId, String entityType) {
+    return imageRepository.findByEntityIdAndEntityType(entityId, entityType);
+  }
+
+  public void deleteImage(Image image) {
+    imageRepository.delete(image);
+  }
 }
