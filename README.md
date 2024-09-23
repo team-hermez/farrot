@@ -130,14 +130,6 @@ farrot/
 
 <br>
     
-### 🐬 허상범
-
-- **UI**
-    - 페이지 : ⭐채우셈!⭐ 
-    - 공통 컴포넌트 : ⭐채우셈!⭐
-- **기능**
-    - ⭐채우셈!⭐
-
 ### 😎 김혁진
 
 - **UI**
@@ -145,6 +137,16 @@ farrot/
     - 공통 컴포넌트 : ⭐채우셈!⭐ 
 - **기능**
     - ⭐채우셈!⭐ 
+
+<br>
+
+### 🐬 허상범
+
+- **UI**
+    - 페이지 : ⭐채우셈!⭐ 
+    - 공통 컴포넌트 : ⭐채우셈!⭐
+- **기능**
+    - ⭐채우셈!⭐
 
 <br>
 
@@ -208,7 +210,7 @@ farrot/
 
 <br>
 
-## 8. 설치 및 실행 방법
+## 8. 클론 및 의존성 설치
 
 ### Requirements
 
@@ -216,15 +218,11 @@ farrot/
 - [Gradle 7.5](https://gradle.org/releases/)
 - [MariaDB 10.11.8](https://mariadb.org/download/?t=mariadb&p=mariadb&r=10.11.8)
 
-### Installation
-```bash
-$ git clone https://github.com//team-hermez/farrot.git
-$ cd dev
-```
 
-### 의존성 설치
+```bash
+git clone https://github.com/team-hermez/farrot.git
+cd farrot
 # Java 및 Gradle 설치 필요
-```
 ./gradlew build
 ```
 
@@ -237,6 +235,7 @@ $ cd dev
 
 - ⭐채우셈!⭐ 
 
+<br>
 
 ## 10. 프로젝트 후기
 
