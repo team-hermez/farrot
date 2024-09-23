@@ -12,6 +12,18 @@
 - 주요 기능으로는 상품 등록 및 검색, 거래 게시판, 교사들 간의 실시간 채팅 및 알림 기능이 포함됩니다.
 - 이를 통해 교사들만의 안전한 커뮤니티를 형성하고, 사용자 간의 효율적인 거래를 지원하는 것이 Farrot의 핵심 목적입니다.
 
+#### Farrot will provide a secure platform for trading used goods among teachers.
+You can easily register, search, and manage transactions with our user-friendly interface. Our service also includes real-time communication and notification features to enhance the trading experience.
+
+#### Farrot's platform will offer a seamless trading experience.
+
+Our platform supports the following features:
+1. Easy product registration and search functionalities.
+2. A transaction bulletin board for posting and managing trades.
+3. Real-time chat and notification options for effective communication.
+4. A secure community exclusively for teachers to support efficient transactions.
+
+
 <br>
 
 ## 👨‍👩‍👦‍👦 웹개발팀 소개
@@ -230,6 +242,8 @@ cd farrot
 ```
 ./gradlew bootRun
 ```
+
+<br>
 
 ## 9. 개선 목표
 
