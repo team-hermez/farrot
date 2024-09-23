@@ -10,7 +10,7 @@
     <link rel="icon" href="/img/core-img/favicon.ico">
     <link rel="stylesheet" href="/style.css">
     <script src="/js/member/regist-check-email-nickname.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
 </head>
 
 <body>
@@ -46,14 +46,14 @@
 
                         <div class="form-group d-flex align-items-center">
                             <input type="text" class="form-control" id="nickname" name="nickname" placeholder="닉네임" required>
-                            <button type="button" id="checkNicknameButton" class="btn btn-outline-primary ml-2" style="font-size: 0.85rem;" onclick="checkNickname()">닉네임 중복 확인</button>
-                            <span id="nicknameResult" class="ml-2"></span>
+                            <button type="button" id="checkNicknameButton" class="btn btn-outline-primary ml-1" style="font-size: 0.85rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="checkNickname()">닉네임 중복 확인</button>
+                            <span id="nicknameResult" style="display: block; margin-top: 5px;" class="ml-2"></span>
                         </div>
 
                         <div class="form-group d-flex align-items-center">
                             <input type="email" class="form-control" id="email" name="email" placeholder="이메일" required>
-                            <button type="button" id="checkEmailButton" class="btn btn-outline-primary ml-2" style="font-size: 0.85rem;" onclick="checkEmail()">이메일 중복 확인</button>
-                            <span id="emailResult" class="ml-2"></span>
+                            <button type="button" id="checkEmailButton" class="btn btn-outline-primary ml-1" style="font-size: 0.85rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="checkEmail()">이메일 중복 확인</button>
+                            <span id="emailResult" style="display: block; margin-top: 5px;" class="ml-2"></span>
                         </div>
 
                         <div class="form-group">

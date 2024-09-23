@@ -15,10 +15,12 @@ function checkEmail() {
         data: JSON.stringify({ email: email }), // JSON 형태로 데이터 전송
         success: function(response) {
             if (response) {
-                $('#checkEmailButton').text("확인 완료").css("background-color", "green");
+                $('#checkEmailButton').text("확인 완료").css("background-color", "#77c13d");
+                $('#checkEmailButton').text("확인 완료").css("color", "white");
                 isEmailChecked = true;
             } else {
                 $('#checkEmailButton').text("중복 이메일").css("background-color", "red");
+                $('#checkEmailButton').text("중복 이메일").css("color", "white");
                 isEmailChecked = false;
             }
             toggleSubmitButton();
@@ -37,13 +39,15 @@ function checkNickname() {
         url: "/member/check/nickname",
         method: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ nickname: nickname }), // JSON 형태로 데이터 전송
+        data: JSON.stringify({ nickname: nickname }),
         success: function(response) {
             if (response) {
-                $('#checkNicknameButton').text("확인 완료").css("background-color", "green");
+                $('#checkNicknameButton').text("확인 완료").css("background-color", "#77c13d");
+                $('#checkNicknameButton').text("확인 완료").css("color", "white");
                 isNicknameChecked = true;
             } else {
                 $('#checkNicknameButton').text("중복 닉네임").css("background-color", "red");
+                $('#checkNicknameButton').text("중복 닉네임").css("color", "white");
                 isNicknameChecked = false;
             }
             toggleSubmitButton();
