@@ -30,7 +30,7 @@ Our platform supports the following features:
 
 |      김혁진       |          엄진수         |       허상범         |       김다은        |
 | :----------------: | :----------------------: | :-----------------: | :----------------: |
-|   <img width="160px" src="https://github.com/user-attachments/assets/7273ae52-9bb0-409c-b545-6446db11775e" />    |   <img width="160px" src="https://github.com/user-attachments/assets/fb751d4d-6251-4da5-beda-60ddfcf103be" />    |   <img width="160px" src="https://github.com/user-attachments/assets/f741f255-c9a5-4b52-ba06-539cf152a495" />    |   <img width="160px" src="https://github.com/user-attachments/assets/f677fbaa-d497-4bd6-ac46-08fbe07b0cd6" />   |
+|   ![image](https://github.com/user-attachments/assets/c5349ab8-be7a-440c-8335-93bdd1a644ab)   |  ![image](https://github.com/user-attachments/assets/b9e11116-3777-4458-83a8-0c0d188ff458)    |  ![image](https://github.com/user-attachments/assets/f6792437-0999-4464-ad63-3614c3b9231b)  |   <img width="160px" src="https://github.com/user-attachments/assets/f677fbaa-d497-4bd6-ac46-08fbe07b0cd6" />   |
 |   [@hyoekjin](https://github.com/HS-hyeokjin)   |    [@jinsu](https://github.com/Gitdoolgi)  | [@sangbum](https://github.com/tokkaiiii)  | [@daeun](https://github.com/kde0707)  |
 | 천재교육 풀스택 6기 | 천재교육 풀스택 6기 | 천재교육 풀스택 6기 | 천재교육 풀스택 6기 |
 
