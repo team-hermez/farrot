@@ -200,10 +200,10 @@ farrot/
 
 | 기능 | 영상 |
 | :-------------------------: | :-------------------------------------------: |
-| 로그인 |  [![로그인 영상](https://img.youtube.com/vi/QZKYJJ-fXMg/0.jpg)](https://youtu.be/QZKYJJ-fXMg) |
-| 상품 및 안전결제 |  [![상품 영상](https://img.youtube.com/vi/M84pOMKOqmU/0.jpg)](https://youtu.be/M84pOMKOqmU) |
-| 찜 및 채팅 및 알림 |  [![찜, 채팅, 알림 영상](https://img.youtube.com/vi/otyEuD0k36w/0.jpg)](https://youtu.be/otyEuD0k36w) |
-| 신고 및 관리자 | [![관리자 영상](https://img.youtube.com/vi/Bc7_gGjL_N4/0.jpg)](https://youtu.be/Bc7_gGjL_N4) | 
+| 로그인 | <a href="https://youtu.be/QZKYJJ-fXMg" target="_blank">![로그인 영상](https://img.youtube.com/vi/QZKYJJ-fXMg/0.jpg)</a> |
+| 상품, 안전결제 | <a href="https://youtu.be/M84pOMKOqmU" target="_blank">![상품 영상](https://img.youtube.com/vi/M84pOMKOqmU/0.jpg)</a> |
+| 찜, 채팅, 알림 | <a href="https://youtu.be/otyEuD0k36w" target="_blank">![채팅 영상](https://img.youtube.com/vi/otyEuD0k36w/0.jpg)</a> |
+| 신고, 관리자 | <a href="https://youtu.be/Bc7_gGjL_N4" target="_blank">![관리자 영상](https://img.youtube.com/vi/Bc7_gGjL_N4/0.jpg)</a> |
 
 <br>
 
