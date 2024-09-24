@@ -214,6 +214,7 @@ farrot/
 - 사용자 본인의 상품 수정 및 삭제 기능이 있습니다.
 
 ### [채팅]
+- ![farrot-chat](https://github.com/user-attachments/assets/2ba7a209-ce54-411a-a089-7677f748ad5d)
 - 거래 상대와의 실시간 채팅을 지원합니다.
 - 기존의 거래 이력과 정보를 확인할 수 있는 공간입니다.
 
