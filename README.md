@@ -38,11 +38,11 @@ Our platform supports the following features:
 
 ## 1. 개발 환경
 
-- **Front-end** : HTML, CSS, JavaScript, React
-- **Back-end** : Spring Boot, JPA, MySQL
+- **Front-end** : HTML, CSS, JavaScript, Thymeleaf
+- **Back-end** : Spring Boot, JPA, MariaDB, SAFERROT(안전 결제 서버)
 - **버전 및 이슈관리** : Git, GitHub
-- **협업 툴** : Discord, Notion, GitHub
-- **서비스 배포 환경** : AWS
+- **협업 툴** : Discord, Notion, GitHub, Slack, VScode
+- **서비스 배포 환경** : Tomcat
 
 <br>
 
@@ -155,10 +155,10 @@ farrot/
 ### 🐬 허상범
 
 - **UI**
-    - 페이지 : ⭐채우셈!⭐ 
-    - 공통 컴포넌트 : ⭐채우셈!⭐
+    - 페이지 : 채팅, 알림, 찜 
+    - 공통 컴포넌트 : 영상제작, 슬라이드 제작
 - **기능**
-    - ⭐채우셈!⭐
+    - 채팅, 알림, 찜 
 
 <br>
 
