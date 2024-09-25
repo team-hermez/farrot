@@ -216,7 +216,7 @@ farrot/
 
 ### Requirements
 
-- [Java 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+- [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 - [Gradle 7.5](https://gradle.org/releases/)
 - [MariaDB 10.11.8](https://mariadb.org/download/?t=mariadb&p=mariadb&r=10.11.8)
 
