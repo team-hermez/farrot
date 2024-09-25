@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bigshop | Responsive E-commerce Template</title>
+    <link rel="icon" href="/img/core-img/favicon.ico">
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+
+<body>
+
+<div th:replace="/layout/header :: header"></div>
+    <div class="breadcumb_area">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <h5>500</h5>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active">500</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcumb Area -->
+
+    <!-- Not Found Area -->
+    <section class="error_page text-center section_padding_100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-6">
+                    <div class="not-found-text">
+                        <h2>500</h2>
+                        <h5 class="mb-3">인터넷 서버 에러</h5>
+                        <p th:text="${errorMessage}"></p>
+                        <a href="/">홈으로~</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<div th:replace="/layout/footer :: footer"></div>
+</body>
+
+</html>

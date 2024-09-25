@@ -1,0 +1,30 @@
+<!-- redirect-form.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title></title>
+</head>
+<body>
+결제 정보 확인 중 ...
+<form id="payment-form" th:action="@{${request.paymentUrl}}" method="POST">
+    <input type="hidden" th:name="serverName" th:value="${request.serverName}">
+    <input type="hidden" th:name="apiKey" th:value="${request.apiKey}">
+    <input type="hidden" th:name="productId" th:value="${request.productId}">
+    <input type="hidden" th:name="productName" th:value="${request.productName}">
+    <input type="hidden" th:name="buyerCode" th:value="${request.buyerId}">
+    <input type="hidden" th:name="buyerEmail" th:value="${request.buyerEmail}">
+    <input type="hidden" th:name="amount" th:value="${request.amount}">
+    <input type="hidden" th:name="sellerCode" th:value="${request.sellerId}">
+    <input type="hidden" th:name="sellerEmail" th:value="${request.sellerEmail}">
+    <input type="hidden" th:name="sellerAccount" th:value="${request.sellerAccount}">
+    <input type="hidden" th:name="safeDay" th:value="${request.safeDay}">
+    <input type="hidden" th:name="merchantUid" th:value="${request.merchantUid}">
+    <input type="hidden" th:name="callbackUrl" th:value="${request.callbackUrl}">
+    <input type="hidden" th:name="resultUrl" th:value="${request.resultUrl}">
+
+    <script type="text/javascript">
+        document.getElementById('payment-form').submit();
+    </script>
+</form>
+</body>
+</html>

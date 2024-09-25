@@ -1,0 +1,112 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bigshop | Responsive E-commerce Template</title>
+    <link rel="icon" href="/img/core-img/favicon.ico">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        #description {
+            width: 100%;
+            height: 150px;
+            resize: vertical;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="/layout/header :: header"></div>
+<div class="breadcumb_area">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <h5>상품 수정</h5>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">Product-edit</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="my-account-area section_padding_100_50">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-9">
+                <div class="my-account-content mb-50">
+                    <h5 class="mb-3">상품 수정</h5>
+
+                    <form action="#" method="post" th:action="@{/product/update-sell}" th:object="${product}" enctype="multipart/form-data">
+                        <div class="row">
+                            <input type="hidden" th:field="*{id}" />
+                            <input type="hidden" th:field="*{view}" />
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="categoryId">카테고리</label><br>
+                                    <select class="form-control" id="categoryId" th:field="*{category.id}" name="categoryId">
+                                        <option value="" disabled selected>카테고리를 선택하세요</option>
+                                        <option th:each="category : ${categories}"
+                                                th:value="${category.id}"
+                                                th:text="${category.code}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="productName">상품 이름</label>
+                                    <input type="text" class="form-control" id="productName" th:field="*{productName}" placeholder="상품명">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="price">판매 가격</label>
+                                    <input type="number" class="form-control" id="price" th:field="*{price}" placeholder="판매 가격">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="imageFiles">이미지 등록</label>
+                                    <input type="file" class="form-control" id="imageFiles" name="imageFiles" multiple>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="description">상품 설명</label>
+                                    <textarea class="form-control" id="description" rows=5 th:field="*{description}" placeholder="상품 설명"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary">수정하기</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.easing.min.js"></script>
+<script src="/js/default/classy-nav.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/default/scrollup.js"></script>
+<script src="/js/waypoints.min.js"></script>
+<script src="/js/jquery.countdown.min.js"></script>
+<script src="/js/jquery.counterup.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/jarallax.min.js"></script>
+<script src="/js/jarallax-video.min.js"></script>
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/jquery.nice-select.min.js"></script>
+<script src="/js/wow.min.js"></script>
+<script src="/js/default/active.js"></script>
+</html>

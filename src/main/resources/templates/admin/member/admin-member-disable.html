@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+
+    <!-- Bootstrap -->
+    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <!-- sidebar menu -->
+                <div th:replace="/admin/admin-sidebar :: div"></div>
+                <!-- /sidebar menu -->
+
+                <!-- /menu footer buttons -->
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div th:replace="/admin/admin-top :: div"></div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>비회원 </h3>
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>회원</h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <!-- start project list -->
+                                <table class="table table-striped projects">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 1%">#</th>
+                                        <th style="width: 20%">이름</th>
+                                        <th>이메일</th>
+                                        <th>전환 및 상세보기</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="list : ${memberList}">
+                                        <td th:text="${list.id}"></td>
+                                        <td>
+                                            <a th:text="${list.memberName}"></a>
+                                            <br/>
+                                            <small th:text="${list.createAt}"></small>
+                                        </td>
+                                        <td>
+
+                                            <a th:text="${list.email}"></a>
+
+                                        </td>
+                                        <form th:action="@{/admin/change-status/{id}(id=${list.id})}" method="post">
+                                            <td>
+                                                <a th:href="@{/admin/member-detail/{id}(id=${list.id})}"
+                                                   class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> 상세페이지
+                                                </a>
+                                                <button type="submit" name="action" value="enable"
+                                                        class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> 회원 전환
+                                                </button>
+                                                <button type="submit" name="action" value="disable"
+                                                        class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> 비회원
+                                                    전환
+                                                </button>
+                                            </td>
+                                        </form>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                                <!-- end project list -->
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item" th:classappend="${memberList.first} ? 'disabled' : ''">
+                                            <a class="page-link"
+                                               th:href="@{/admin/member-disable(page=0, size=${memberList.size})}"
+                                               aria-label="First">
+                                                <span aria-hidden="true">맨 처음</span>
+                                            </a>
+                                        </li>
+
+                                        <li class="page-item"
+                                            th:classappend="${memberList.hasPrevious()} ? '' : 'disabled'">
+                                            <a class="page-link"
+                                               th:href="@{/admin/member-disable(page=${memberList.number - 1}, size=${memberList.size})}"
+                                               aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+
+                                        <li class="page-item"
+                                            th:each="i : ${#numbers.sequence((memberList.number - 2 > 0 ? memberList.number - 2 : 0),
+                                             (memberList.number + 2 < memberList.totalPages - 1 ? memberList.number + 2 : memberList.totalPages - 1))}"
+                                            th:classappend="${i == memberList.number} ? 'active'">
+                                            <a class="page-link" th:text="${i + 1}" th:if="${i + 1} == 0? false : true"
+                                               th:href="@{/admin/member-disable(page=${i}, size=${memberList.size})}"></a>
+                                        </li>
+
+                                        <li class="page-item"
+                                            th:classappend="${memberList.hasNext()} ? '' : 'disabled'">
+                                            <a class="page-link"
+                                               th:href="@{/admin/member-disable(page=${memberList.number + 1}, size=${memberList.size})}"
+                                               aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+
+                                        <li class="page-item" th:classappend="${memberList.last} ? 'disabled' : ''">
+                                            <a class="page-link"
+                                               th:href="@{/admin/member-disable(page=${memberList.totalPages - 1}, size=${memberList.size})}"
+                                               aria-label="Last">
+                                                <span aria-hidden="true">끝으로</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>비회원</h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <!-- start project list -->
+                                <table class="table table-striped projects">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 1%">#</th>
+                                        <th style="width: 20%">이름</th>
+                                        <th>이메일</th>
+                                        <th>전환 및 상세보기</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="list : ${disabledMemberList}">
+                                        <td th:text="${list.id}"></td>
+                                        <td>
+                                            <a th:text="${list.memberName}"></a>
+                                            <br/>
+                                            <small th:text="${list.createAt}"></small>
+                                        </td>
+                                        <td>
+
+                                            <a th:text="${list.email}"></a>
+
+                                        </td>
+                                        <form th:action="@{/admin/change-status/{id}(id=${list.id})}" method="post">
+                                            <td>
+                                                <a th:href="@{/admin/member-detail/{id}(id=${list.id})}"
+                                                   class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> 상세페이지
+                                                </a>
+                                                <button type="submit" name="action" value="enable"
+                                                        class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> 회원 전환
+                                                </button>
+                                                <button type="submit" name="action" value="disable"
+                                                        class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> 비회원
+                                                    전환
+                                                </button>
+                                            </td>
+                                        </form>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                                <!-- end project list -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+            <div class="pull-right">
+                © 2024 Team-Hermez All Rights Reserved. <a href="/">Farrot</a>
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="../vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- FastClick -->
+<script src="../vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="../vendors/nprogress/nprogress.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="../build/js/custom.min.js"></script>
+</body>
+</html>

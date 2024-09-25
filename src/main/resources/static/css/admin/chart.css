@@ -1,0 +1,25 @@
+.dashboard-widget-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 270px;
+}
+
+.col-md-4 {
+    width: 100%;
+    max-width: 1597px;
+    height: 100%;
+}
+
+.countries_list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin: 0;
+}
+
+canvas {
+    max-width: 100%;
+    max-height: 100%;
+}

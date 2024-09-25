@@ -1,0 +1,134 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bigshop | Responsive E-commerce Template</title>
+    <link rel="icon" href="/img/core-img/favicon.ico">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/css/member/btn-custom.css">
+    <script src="/js/member/checkNickname.js"></script>
+    <script src="/js/member/checkNewPassword.js"></script>
+    <script src="/js/member/detailValidation.js"></script>
+    <script src="/js/member/imagePreview.js"></script>
+    <script src="/js/member/checkExPassword.js"></script>
+</head>
+
+<body>
+<div th:replace="/layout/header :: header"></div>
+<div class="breadcumb_area">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <h5>마이페이지</h5>
+                <div id="error-message" style="color: red;">
+                    <span th:text="${errorMessage}"></span>
+                </div>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">My Account</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="my-account-area section_padding_100_50">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-9">
+                <div class="my-account-content mb-50">
+                    <form th:action="@{/member/detail}" method="POST" th:object="${member}" enctype="multipart/form-data">
+                        <div class="row">
+                            <!-- 좌측 상단: 이름 및 이메일 -->
+                            <div class="col-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="memberName">이름</label>
+                                    <div class="d-flex align-items-center">
+                                        <img th:if="${member.provider == 'naver'}" src="/img/login-img/member-naver-icon.png" alt="Naver Icon" style="width: 20px; height: 20px; margin-right: 5px;">
+                                        <input type="text" class="form-control" id="memberName" th:field="*{memberName}" th:readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">이메일 주소</label>
+                                    <input type="email" class="form-control" id="email" th:field="*{email}" th:readonly="readonly">
+                                </div>
+                            </div>
+
+                            <!-- 우측 상단: 프로필 이미지 -->
+                            <div class="col-12 col-lg-6">
+                                <div class="form-group d-flex flex-column align-items-center">
+                                    <img th:src="@{${image.getPath()}}" alt="Profile Image" class="img-fluid" id="profileImagePreview" style="max-height: 150px;">
+                                    <div class="mt-2">
+                                        <input type="file" class="d-none" id="profileImage" name="profileImage" onchange="previewImage(event)">
+                                        <label for="profileImage" class="btn btn-secondary">이미지 업로드</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 닉네임 -->
+                        <div class="form-group">
+                            <label for="nickname">닉네임</label>
+                            <div class="input-group">
+                                <input type="hidden" id="currentNickname" th:value="${member.nickname}">
+                                <input type="text" class="form-control" id="nickname" th:field="*{nickname}">
+                                <button type="button" id="checkNicknameButton" class="btn btn-outline-primary" style="font-size: 0.85rem;" onclick="checkNickname()">닉네임 중복 체크</button>
+                                <span id="nicknameResult" class="ml-2"></span>
+                            </div>
+                        </div>
+
+                        <!-- 계좌 -->
+                        <div class="form-group">
+                            <label for="account">계좌</label>
+                            <input type="text" class="form-control" id="account" th:field="*{account}">
+                        </div>
+
+                        <!-- 현재 비밀번호 -->
+                        <div class="form-group">
+                            <label for="exPassword">현재 비밀번호</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="exPassword" name="exPassword" required>
+                                <button type="button" id="checkExPasswordButton" class="btn btn-outline-primary" style="font-size: 0.85rem;" onclick="checkExPassword()">비밀번호 확인</button>
+                                <span id="exPasswordResult" class="ml-2"></span>
+                            </div>
+                        </div>
+
+                        <!-- 새 비밀번호 -->
+                        <div class="form-group">
+                            <label for="newPassword">새 비밀번호</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                        </div>
+
+                        <!-- 새 비밀번호 확인 -->
+                        <div class="form-group">
+                            <label for="confirmPass">새 비밀번호 확인</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="confirmPass" required>
+                                <button type="button" class="btn btn-secondary" onclick="checkNewPassword()">비밀번호 일치 확인</button>
+                            </div>
+                            <div id="passwordMatchMessage"></div>
+                        </div>
+
+                        <!-- 활성화 상태 -->
+                        <div class="form-group">
+                            <label for="status">활성화 상태</label>
+                            <input type="text" class="form-control" id="status" th:value="${member.status == 1 ? '활성화' : '비활성화'}" readonly>
+                        </div>
+
+                        <!-- 저장 버튼 -->
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">저장하기</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div th:replace="/layout/footer :: footer"></div>
+
+</body>
+</html>

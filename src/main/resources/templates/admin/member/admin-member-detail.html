@@ -1,0 +1,293 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+
+    <!-- Bootstrap -->
+    <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="/build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="clearfix"></div>
+
+                <!-- sidebar menu -->
+                <div th:replace="/admin/admin-sidebar :: div"></div>
+                <!-- /sidebar menu -->
+
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div th:replace="/admin/admin-top :: div"></div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>사용자 프로필</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 ">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>프로필 <small>활동내역</small></h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="col-md-3 col-sm-3  profile_left">
+
+                                    <div class="profile_img">
+                                        <div id="crop-avatar">
+                                            <!-- Current avatar -->
+                                            <img src="/default-member-image.png" alt="" class="img-circle img-fluid">
+                                        </div>
+                                    </div>
+
+                                    <h3 th:text="${member.memberName}"></h3>
+
+                                    <ul class="list-unstyled user_data">
+                                        <li><i class="fa fa-phone"></i> 전화번호 #: <span
+                                                th:text="${member.phone}">번호</span></li>
+                                        <li>
+                                            <i class="fa fa-briefcase user-profile-icon"></i> 이메일 #: <span
+                                                th:text="${member.email}">이메일</span>
+                                        </li>
+
+                                    </ul>
+
+                                </div>
+                                <div class="col-md-9 col-sm-9 ">
+                                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                                        <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                                            <li role="presentation" class="active"><a href="#tab_content1" id="home-tab"
+                                                                                      role="tab" data-toggle="tab"
+                                                                                      aria-expanded="true">내가 올린 상품</a>
+                                            </li>
+                                            <li role="presentation" class=""><a
+                                                    th:href="@{/admin/member-detail/transactions/{id}(id=${member.id})}">내가
+                                                한 안전결제</a>
+                                            </li>
+                                        </ul>
+                                        <div id="myTabContent" class="tab-content">
+                                            <div th:each="list : ${myProductList}" role="tabpanel"
+                                                 class="tab-pane active " id="tab_content1" aria-labelledby="home-tab">
+                                                <!-- start recent activity -->
+                                                <ul class="messages">
+                                                    <li>
+                                                        <div class="message_wrapper">
+                                                            <h4 th:text="${list.productName}" class="heading"></h4>
+                                                            <blockquote th:text="${list.description}"
+                                                                        class="message"></blockquote>
+                                                            <br/>
+                                                            <p class="url">
+                                                                <span class="fs1 text-info" aria-hidden="true"
+                                                                      data-icon=""></span></p>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div role="tabpanel" class="tab-pane fade" id="tab_content2"
+                                                 aria-labelledby="profile-tab">
+
+                                                <!-- start user projects -->
+                                                <table class="data table table-striped no-margin">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Project Name</th>
+                                                        <th>Client Company</th>
+                                                        <th class="hidden-phone">Hours Spent</th>
+                                                        <th>Contribution</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>New Company Takeover Review</td>
+                                                        <td>Deveint Inc</td>
+                                                        <td class="hidden-phone">18</td>
+                                                        <td class="vertical-align-mid">
+                                                            <div class="progress">
+                                                                <div class="progress-bar progress-bar-success"
+                                                                     data-transitiongoal="35"></div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+                                                        <td>New Partner Contracts Consultanci</td>
+                                                        <td>Deveint Inc</td>
+                                                        <td class="hidden-phone">13</td>
+                                                        <td class="vertical-align-mid">
+                                                            <div class="progress">
+                                                                <div class="progress-bar progress-bar-danger"
+                                                                     data-transitiongoal="15"></div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+                                                        <td>Partners and Inverstors report</td>
+                                                        <td>Deveint Inc</td>
+                                                        <td class="hidden-phone">30</td>
+                                                        <td class="vertical-align-mid">
+                                                            <div class="progress">
+                                                                <div class="progress-bar progress-bar-success"
+                                                                     data-transitiongoal="45"></div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4</td>
+                                                        <td>New Company Takeover Review</td>
+                                                        <td>Deveint Inc</td>
+                                                        <td class="hidden-phone">28</td>
+                                                        <td class="vertical-align-mid">
+                                                            <div class="progress">
+                                                                <div class="progress-bar progress-bar-success"
+                                                                     data-transitiongoal="75"></div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <!-- end user projects -->
+
+                                            </div>
+                                            <div role="tabpanel" class="tab-pane fade" id="tab_content3"
+                                                 aria-labelledby="profile-tab">
+                                                <p>xxFood truck fixie locavore, accusamus mcsweeney's marfa nulla
+                                                    single-origin coffee squid. Exercitation +1 labore velit, blog
+                                                    sartorial PBR leggings next level wes anderson artisan four loko
+                                                    farm-to-table craft beer twee. Qui
+                                                    photo booth letterpress, commodo enim craft beer mlkshk </p>
+                                            </div>
+                                            <nav aria-label="Page navigation">
+                                                <nav aria-label="Page navigation">
+                                                    <ul class="pagination justify-content-center">
+                                                        <!-- 첫 페이지 버튼 -->
+                                                        <li class="page-item"
+                                                            th:classappend="${myProductList.first} ? 'disabled' : ''">
+                                                            <a class="page-link"
+                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=0, size=${myProductList.size})}"
+                                                               aria-label="First">
+                                                                <span aria-hidden="true">맨 처음</span>
+                                                            </a>
+                                                        </li>
+
+                                                        <!-- 이전 페이지 버튼 -->
+                                                        <li class="page-item"
+                                                            th:classappend="${myProductList.hasPrevious()} ? '' : 'disabled'">
+                                                            <a class="page-link"
+                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${myProductList.number - 1}, size=${myProductList.size})}"
+                                                               aria-label="Previous">
+                                                                <span aria-hidden="true">&laquo;</span>
+                                                            </a>
+                                                        </li>
+
+                                                        <!-- 페이지 번호 버튼들 -->
+                                                        <li class="page-item"
+                                                            th:each="i : ${#numbers.sequence((myProductList.number - 2 > 0 ? myProductList.number - 2 : 0),
+                                             (myProductList.number + 2 < myProductList.totalPages - 1 ? myProductList.number + 2 : myProductList.totalPages - 1))}"
+                                                            th:classappend="${i == myProductList.number} ? 'active'">
+                                                            <a class="page-link" th:text="${i + 1}"
+                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${i}, size=${myProductList.size})}"
+                                                               th:if="${i + 1} == 0? false : true"></a>
+                                                        </li>
+
+                                                        <!-- 다음 페이지 버튼 -->
+                                                        <li class="page-item"
+                                                            th:classappend="${myProductList.hasNext()} ? '' : 'disabled'">
+                                                            <a class="page-link"
+                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${myProductList.number + 1}, size=${myProductList.size})}"
+                                                               aria-label="Next">
+                                                                <span aria-hidden="true">&raquo;</span>
+                                                            </a>
+                                                        </li>
+
+                                                        <!-- 마지막 페이지 버튼 -->
+                                                        <li class="page-item"
+                                                            th:classappend="${myProductList.last} ? 'disabled' : ''">
+                                                            <a class="page-link"
+                                                               th:href="@{/admin/member-detail/{id}(id=${member.id}, page=${myProductList.totalPages - 1}, size=${myProductList.size})}"
+                                                               aria-label="Last">
+                                                                <span aria-hidden="true">끝으로</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+
+                                            </nav>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <footer>
+                                <div class="pull-right">
+                                    © 2024 Team-Hermez All Rights Reserved. <a href="/">Farrot</a>
+                                </div>
+                                <div class="clearfix"></div>
+                            </footer>
+                            <!-- /footer content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /page content -->
+
+            <!-- footer content -->
+
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FastClick -->
+    <script src="/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="/vendors/nprogress/nprogress.js"></script>
+    <!-- morris.js -->
+    <script src="/vendors/raphael/raphael.min.js"></script>
+    <script src="/vendors/morris.js/morris.min.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="/vendors/moment/min/moment.min.js"></script>
+    <script src="/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="/build/js/custom.min.js"></script>
+
+</body>
+</html>

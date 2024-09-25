@@ -1,0 +1,179 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Contact Form | Gentelella Alela! by Colorlib</title>
+
+    <!-- Bootstrap -->
+    <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="/vendors/nprogress/nprogress.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="/build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div th:replace="/admin/admin-sidebar :: div"></div>
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div th:replace="/admin/admin-top :: div"></div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>🚨</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div class="col-md-12 col-sm-12  text-center">
+                                <ul class="pagination pagination-split">
+                                    <li><a href="#"></a></li>
+                                    <li><a href="#"></a></li>
+                                    <li><a href="#"></a></li>
+                                    <li><a href="#"></a></li>
+                                    <li><a href="#"></a></li>
+                                    <li></li>
+                                    <li><a href="#"></a></li>
+                                    <li><a href="#"></a></li>
+                                    <li><a href="#"></a></li>
+                                    <li><a href="#"></a></li>
+                                </ul>
+                            </div>
+
+                            <div class="clearfix"></div>
+
+
+                            <div th:each="list : ${reportList}" class="col-md-4 col-sm-4  profile_details">
+                                <div class="well profile_view">
+                                    <div class="col-sm-12">
+                                        <h4 th:text="${list.title}" class="brief"><i></i></h4>
+                                        <div class="left col-md-7 col-sm-7">
+                                            <h2 th:text="${list.member.memberName}"></h2>
+                                            <ul class="list-unstyled">
+                                                <li><i class="fa fa-hand-paper-o"></i> 신고사유 : <span
+                                                        th:text="${list.content}">신고사유</span></li>
+                                                <li><i class="fa fa-phone"></i> 전화번호 <span
+                                                        th:text="${list.member.phone}">번호</span></li>
+                                                <li><i class="fa fa-briefcase user-profile-icon"></i> 이메일 : <span
+                                                        th:text="${list.member.email}">이메일</span></li>
+                                                <li><i class="fa fa-hourglass-2"></i> 신고 시간 : <span
+                                                        th:text="${list.createdAt}"></span></li>
+                                            </ul>
+                                        </div>
+                                        <div class="right col-md-5 col-sm-5 text-center">
+                                            <img src="/default-member-image.png" alt="" class="img-circle img-fluid">
+                                        </div>
+                                    </div>
+                                    <div class=" profile-bottom text-center">
+                                        <div class=" col-sm-6 emphasis">
+
+                                        </div>
+                                        <div class=" col-sm-6 emphasis">
+                                            <button type="button" class="btn btn-success btn-sm"><i class="fa fa-user">
+                                            </i> <i class="fa"></i> 허락
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-user"> </i> 취소
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${reportList.first} ? 'disabled' : ''">
+                            <a class="page-link" th:href="@{/admin/report(page=0, size=${reportList.size})}"
+                               aria-label="First">
+                                <span aria-hidden="true">맨 처음</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${reportList.hasPrevious()} ? '' : 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/report(page=${reportList.number - 1}, size=${reportList.size})}"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence((reportList.number - 2 > 0 ? reportList.number - 2 : 0),
+                                             (reportList.number + 2 < reportList.totalPages - 1 ? reportList.number + 2 : reportList.totalPages - 1))}"
+                            th:classappend="${i == reportList.number} ? 'active'">
+                            <a class="page-link" th:text="${i + 1}"
+                               th:href="@{/admin/report(page=${i}, size=${reportList.size})}"
+                               th:if="${i + 1} == 0? false : true"></a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${reportList.hasNext()} ? '' : 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/report(page=${reportList.number + 1}, size=${reportList.size})}"
+                               aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${reportList.last} ? 'disabled' : ''">
+                            <a class="page-link"
+                               th:href="@{/admin/report(page=${reportList.totalPages - 1}, size=${reportList.size})}"
+                               aria-label="Last">
+                                <span aria-hidden="true">끝으로</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <footer>
+            <div class="pull-right">
+                © 2024 Team-Hermez All Rights Reserved. <a href="/">Farrot</a>
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="/vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/build/js/custom.min.js"></script>
+</body>
+</html>

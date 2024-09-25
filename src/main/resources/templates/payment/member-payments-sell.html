@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bigshop | Responsive E-commerce Template</title>
+    <link rel="icon" href="/img/core-img/favicon.ico">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body>
+<div th:replace="/layout/header :: header"></div>
+
+<div class="breadcumb_area">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <h5>안전거래</h5>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">안전거래 판매목록</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cart Area -->
+<div class="cart_area section_padding_100_70 clearfix">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-12">
+                        <h3 class="mb-4">안전결제 판매 내역</h3>
+                    </div>
+                </div>
+                <div class="cart-table">
+                    <div class="table-responsive">
+                        <table class="table table-bordered mb-30">
+                            <thead>
+                            <tr>
+                                <th scope="col">주문번호</th>
+                                <th scope="col">상품명</th>
+                                <th scope="col">구매자 이메일</th>
+                                <th scope="col">상품금액</th>
+                                <th scope="col">정산예정금액</th>
+                                <th scope="col">거래일</th>
+                                <th scope="col">비고</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="payment : ${payments}">
+                                <td th:text="${payment.merchantUid}">주문번호</td>
+                                <td th:text="${payment.product.productName}">상품명</td>
+                                <td th:text="${payment.product.member.email}">구매자 이메일</td>
+                                <td th:text="${payment.product.price} + '원'">상품금액</td>
+                                <td th:text="${#numbers.formatDecimal(payment.product.price * 0.9, 1, 'POINT', 0, 'POINT')} + '원'">정산예정금액</td>
+                                <td th:text="${#dates.format(payment.createdAt, 'yyyy-MM-dd HH:mm')}">거래일</td>
+                                <td>
+                                    <span th:switch="${payment.paymentStatus.paymentStatusId}">
+                                        <span th:case="1">
+                                            <button class="btn btn-primary" data-toggle="modal" data-target="#logisModal"
+                                                    th:attr="data-id=${payment.paymentId}, data-shipping-detail=${payment.shippingPayment.shippingDetail}
+                                                        ,data-post-detail=${payment.shippingPayment.postCode} ,data-load-detail=${payment.shippingPayment.shippingAddress}">
+                                                운송장등록
+                                            </button>
+                                        </span>
+                                        <span th:case="2">
+                                            <form action="http://localhost:9090/shipping/track-shipment" method="post">
+                                                <input type="hidden" name="merchantUid" th:value="${payment.merchantUid}" />
+                                                <button type="submit" class="btn btn-secondary">배송중</button>
+                                            </form>
+                                        </span>
+                                        <span th:case="3">
+                                            <form action="http://localhost:9090/shipping/track-shipment" method="post">
+                                                <input type="hidden" name="merchantUid" th:value="${payment.merchantUid}" />
+                                                <button type="submit" class="btn btn-primary">배송완료</button>
+                                            </form>
+                                        </span>
+                                        <span th:case="4">정산완료</span>
+                                        <span th:case="5">환불완료</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="logisModal" tabindex="-1" role="dialog" aria-labelledby="logisModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logisModalLabel">운송장 등록</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group border p-3 rounded bg-light">
+                    <label class="font-weight-bold mb-3">배송 정보</label>
+                    <div class="mb-1">
+                        <span class="font-weight-bold">우편 주소:</span>
+                        <span id="postDetail" class="ml-2">배송 정보 없음</span>
+                    </div>
+                    <div class="mb-1">
+                        <span class="font-weight-bold">도로명 주소:</span>
+                        <span id="loadDetail" class="ml-2">배송 정보 없음</span>
+                    </div>
+                    <div class="mb-1">
+                        <span class="font-weight-bold">상세 주소:</span>
+                        <span id="shippingDetail" class="ml-2">배송 정보 없음</span>
+                    </div>
+                </div>
+
+                <form id="logisForm" th:action="@{/payment/register-logis}" method="post">
+                    <div class="form-group">
+                        <label for="trackingNumber">운송장 번호</label>
+                        <input type="text" class="form-control" id="trackingNumber" name="trackingNumber" required>
+                    </div>
+
+                    <div class="form-group mb-1">
+                        <label for="courierCode">택배사 선택</label>
+                        <select class="form-control" id="courierCode" name="courierCode" required>
+                            <option value="01">우체국택배</option>
+                            <option value="04">CJ대한통운</option>
+                            <option value="05">한진택배</option>
+                            <option value="06">로젠택배</option>
+                            <option value="08">롯데택배</option>
+                            <option value="94">카카오 T 당일배송</option>
+                            <option value="95">큐익스프레스</option>
+                            <option value="22">대신택배</option>
+                            <option value="23">경동택배</option>
+                            <option value="20">한덱스</option>
+                            <option value="32">합동택배</option>
+                            <option value="132">지오피</option>
+                            <option value="143">투데이</option>
+                            <option value="45">우리택배</option>
+                            <option value="46">CU편의점택배</option>
+                            <option value="53">농협택배</option>
+                            <option value="163">위니온</option>
+                            <option value="107">LG전자</option>
+                        </select>
+                    </div>
+
+                    <input type="hidden" id="paymentId" name="paymentId" value="">
+                    <button type="submit" class="btn btn-primary">등록</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+    $('#logisModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var paymentId = button.data('id');
+        var shippingDetail = button.data('shipping-detail');
+        var postDetail = button.data('post-detail');
+        var loadDetail = button.data('load-detail');
+
+        var modal = $(this);
+        modal.find('#paymentId').val(paymentId);
+        modal.find('#shippingDetail').text(shippingDetail);
+        modal.find('#postDetail').text(postDetail);
+        modal.find('#loadDetail').text(loadDetail);
+
+    });
+</script>
+<div th:replace="/layout/footer :: footer"></div>
+</body>
+
+</html>

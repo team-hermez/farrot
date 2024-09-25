@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bigshop | Responsive E-commerce Template</title>
+    <link rel="icon" href="/img/core-img/favicon.ico">
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+
+<body>
+<div th:replace="/layout/header :: header"></div>
+<!-- Breadcumb Area -->
+<div class="breadcumb_area">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <h5>판매상품</h5>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active"> 판매상품</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcumb Area -->
+<div class="modal fade" id="quickview" tabindex="-1" role="dialog" aria-labelledby="quickview" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body">
+                <div class="quickview_body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 col-lg-5">
+                                <div class="quickview_pro_img">
+                                    <img class="first_img" src="img/product-img/new-1-back.png" alt="">
+                                    <img class="hover_img" src="img/product-img/new-1.png" alt="">
+                                    <!-- Product Badge -->
+                                    <div class="product_badge">
+                                        <span class="badge-new">New</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-7">
+                                <div class="quickview_pro_des">
+                                    <h4 class="title">Boutique Silk Dress</h4>
+                                    <div class="top_seller_product_rating mb-15">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </div>
+                                    <h5 class="price">$120.99 <span>$130</span></h5>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia expedita
+                                        quibusdam aspernatur, sapiente consectetur accusantium perspiciatis praesentium
+                                        eligendi, in fugiat?</p>
+                                    <a href="#">View Full Product Details</a>
+                                </div>
+                                <!-- Add to Cart Form -->
+                                <form class="cart" method="post">
+                                    <div class="quantity">
+                                        <input type="number" class="qty-text" id="qty" step="1" min="1" max="12"
+                                               name="quantity" value="1">
+                                    </div>
+                                    <button type="submit" name="addtocart" value="5" class="cart-submit">Add to cart
+                                    </button>
+                                    <!-- Wishlist -->
+                                    <div class="modal_pro_wishlist">
+                                        <a href="wishlist.html"><i class="icofont-heart"></i></a>
+                                    </div>
+                                    <!-- Compare -->
+                                    <div class="modal_pro_compare">
+                                        <a href="compare.html"><i class="icofont-exchange"></i></a>
+                                    </div>
+                                </form>
+                                <!-- Share -->
+                                <div class="share_wf mt-30">
+                                    <p>Share with friends</p>
+                                    <div class="_icon">
+                                        <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                        <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                                        <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
+                                        <a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                                        <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                        <a href="#"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Shop List Area -->
+<section class="shop_list_area section_padding_100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10">
+                <div class="row">
+                    <div class="col-12">
+                        <h3 class="mb-4">나의 판매 상품 리스트</h3>
+                    </div>
+                </div>
+                <div class="shop_list_product_area">
+                    <div class="row">
+                        <!-- Single Product -->
+                        <div class="col-12">
+                            <div class="single-product-area mb-30" th:each="product : ${response.productPage}">
+                                <div class="product_image">
+                                    <img class="normal_img"
+                                         th:src="${response.productImages[product.id].get(0).getPath()}" alt="상품 이미지"
+                                         style="width: 300px; height: 300px;">
+                                    <div class="overlay" th:if="${product.productStatus.id == 2}"
+                                         style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.3); color: white; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold;">
+                                        예약중
+                                    </div>
+                                    <div class="overlay" th:if="${product.productStatus.id == 3}"
+                                         style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.3); color: green; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold;">
+                                        판매완료
+                                    </div>
+                                </div>
+
+                                <div class="product_description">
+                                    <div class="product_add_to_cart">
+                                        <a href="#"><i class="icofont-shopping-cart"></i> 결제보기</a>
+                                    </div>
+                                    <div class="product_quick_view">
+                                        <a th:href="@{/product/product-detail(productId=${product.id})}">
+                                            <i class="fa fa-reply"></i> 보러 가기
+                                        </a>
+                                    </div>
+
+                                    <p class="brand_name" th:text="${product.category.code}">카테고리명</p>
+                                    <a th:href="@{/product/product-detail(productId=${product.id})}"
+                                       th:text="${product.productName}">상품명</a>
+                                    <h6 class="product-price" th:text="'₩' + ${product.price}">가격</h6>
+                                    <div class="d-flex flex-wrap justify-content-start align-items-center mt-4">
+                                        <a th:href="@{/product/update-sell(id=${product.id})}"
+                                           class="btn btn-warning btn-sm mx-1">수정하기</a>
+
+                                        <form th:action="@{/product/delete(id=${product.id})}" method="post" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+                                            <button type="submit" class="btn btn-danger btn-sm mx-1" style="
+                                                    font-size: 15px;
+                                                    margin-bottom: 8px;
+                                                ">삭제하기
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="shop_pagination_area mt-30" th:if="${response.productPage.totalElements > 0}">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination pagination-sm justify-content-center">
+                            <li class="page-item" th:classappend="${response.currentPage == 0} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{/product/member-products(page=${response.currentPage - 1}, size=${response.size}, categoryId=${param.categoryId}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, productName=${param.productName})}">
+                                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <li class="page-item"
+                                th:each="pageNum : ${#numbers.sequence(0, response.productPage.totalPages - 1)}"
+                                th:classappend="${pageNum == response.currentPage} ? 'active'">
+                                <a class="page-link"
+                                   th:href="@{/product/member-products(page=${pageNum}, size=${response.size}, categoryId=${param.categoryId}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, productName=${param.productName})}"
+                                   th:text="${pageNum + 1}">1</a>
+                            </li>
+                            <li class="page-item"
+                                th:classappend="${response.currentPage == response.productPage.totalPages - 1} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{/product/member-products(page=${response.currentPage + 1}, size=${response.size}, categoryId=${param.categoryId}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, productName=${param.productName})}">
+                                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div th:if="${response.productPage.totalElements == 0}">
+                    <h1>상품이 없습니다.</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="/layout/footer :: footer"></div>
+</body>
+
+</html>

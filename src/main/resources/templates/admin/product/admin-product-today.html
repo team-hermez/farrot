@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/admin/todayTotalSales.js"></script>
+
+    <!-- Bootstrap -->
+    <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin/chart.css}">
+
+
+    <!-- Custom Theme Style -->
+    <link href="/build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <!-- sidebar menu -->
+                <div th:replace="/admin/admin-sidebar :: div"></div>
+                <!-- /sidebar menu -->
+
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div th:replace="/admin/admin-top :: div"></div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>상품 관리</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+
+                    <div class="col-md-12 col-sm-12 ">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>상품 통계 <small>일일 매출 통계</small></h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="dashboard-widget-content">
+                                    <div class="col-md-4 hidden-small">
+                                        <table class="countries_list">
+                                            <canvas id="todayTotalChart"></canvas>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row" style="display: block;">
+
+                    <div class="col-md-12 col-sm-12  ">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>전체 상품 </h2>
+                                <div class="clearfix"></div>
+                            </div>
+
+                            <div class="x_content">
+                                <div class="table-responsive">
+                                    <table class="table table-striped jambo_table bulk_action">
+                                        <thead>
+                                        <tr class="headings">
+                                            <th>
+                                                <input type="checkbox" id="check-all" class="flat">
+                                            </th>
+                                            <th class="column-title">상품번호</th>
+                                            <th class="column-title">상품명</th>
+                                            <th class="column-title">카테고리</th>
+                                            <th class="column-title">금액</th>
+                                            <th class="column-title">조회수</th>
+                                            <th class="column-title">상품 설명</th>
+                                            <th class="column-title">상품 상태</th>
+                                            <th class="column-title">등록 일자</th>
+                                            </th>
+                                            <th class="bulk-actions" colspan="7">
+                                                <a class="antoo" style="color:#fff; font-weight:500;">선택됨 ( <span
+                                                        class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                                            </th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody th:each="list : ${productList}">
+                                        <tr class="even pointer">
+                                            <td class="a-center ">
+                                                <input type="checkbox" class="flat" name="table_records">
+                                            </td>
+                                            <td th:text="${list.id}" class=" "></td>
+                                            <td>
+                                                <a th:href="@{/product/product-detail?productId={productId}(productId=${list.id})}"
+                                                   th:text="${list.productName}"></a>
+                                            <td th:text="${list.category.code}" class=" "><i
+                                                    class="success fa fa-long-arrow-up"></i></td>
+                                            <td th:text="${list.price}" class=" "></td>
+                                            <td th:text="${list.view}" class=" "></td>
+                                            <td th:text="${list.description}" class="a-right a-right "></td>
+                                            <td th:text="${list.productStatus.status}" class="a-right a-right "></td>
+                                            <td th:text="${list.createdAt}" class=" last"><a href="#"></a>
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        <!-- 맨 처음 버튼 -->
+                                        <li class="page-item" th:classappend="${productList.first} ? 'disabled' : ''">
+                                            <a class="page-link"
+                                               th:href="@{/admin/products/today(page=0, size=${productList.size})}"
+                                               aria-label="First">
+                                                <span aria-hidden="true">맨 처음</span>
+                                            </a>
+                                        </li>
+
+                                        <!-- 이전 페이지 버튼 -->
+                                        <li class="page-item"
+                                            th:classappend="${productList.hasPrevious()} ? '' : 'disabled'">
+                                            <a class="page-link"
+                                               th:href="@{/admin/products/today(page=${productList.number - 1}, size=${productList.size})}"
+                                               aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+
+                                        <!-- 페이지 번호 버튼 (최대 5개) -->
+                                        <li class="page-item"
+                                            th:each="i : ${#numbers.sequence((productList.number - 2 > 0 ? productList.number - 2 : 0),
+                                             (productList.number + 2 < productList.totalPages - 1 ? productList.number + 2 : productList.totalPages - 1))}"
+                                            th:classappend="${i == productList.number} ? 'active'">
+                                            <a class="page-link" th:text="${i + 1}"
+                                               th:href="@{/admin/products/today(page=${i}, size=${productList.size})}"
+                                               th:if="${i + 1} == 0? false : true"></a>
+                                        </li>
+
+                                        <!-- 다음 페이지 버튼 -->
+                                        <li class="page-item"
+                                            th:classappend="${productList.hasNext()} ? '' : 'disabled'">
+                                            <a class="page-link"
+                                               th:href="@{/admin/products/today(page=${productList.number + 1}, size=${productList.size})}"
+                                               aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+
+                                        <!-- 끝으로 버튼 -->
+                                        <li class="page-item" th:classappend="${productList.last} ? 'disabled' : ''">
+                                            <a class="page-link"
+                                               th:href="@{/admin/products/today(page=${productList.totalPages - 1}, size=${productList.size})}"
+                                               aria-label="Last">
+                                                <span aria-hidden="true">끝으로</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+            <div class="pull-right">
+                © 2024 Team-Hermez All Rights Reserved. <a href="/">Farrot</a>
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="/vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<!-- iCheck -->
+<script src="/vendors/iCheck/icheck.min.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/build/js/custom.min.js"></script>
+</body>
+</html>

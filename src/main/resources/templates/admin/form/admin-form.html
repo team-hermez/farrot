@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="images/favicon.ico" type="image/ico"/>
+
+    <title>Gentelella Alela!</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/admin/categoryTop5.js"></script>
+    <script src="/js/admin/registerWeekly.js"></script>
+    <script src="/js/admin/weather.js"></script>
+    <script src="/js/admin/findTop5Latest.js"></script>
+    <script src="/js/admin/categoryViewMany.js"></script>
+    <script src="/js/admin/categoryAveragePrice.js"></script>
+
+    <style>
+        #weatherApp {
+            width: 100%; /* 전체 너비 사용 */
+            max-width: 400px; /* 최대 너비 설정 */
+            min-width: 250px; /* 최소 너비 설정 */
+            background-color: #f9f9f9; /* 배경색 설정 */
+            border: 1px solid #ddd; /* 테두리 추가 */
+            border-radius: 8px; /* 테두리 둥글게 */
+            padding: 15px; /* 패딩 추가 */
+            box-sizing: border-box; /* 패딩과 테두리를 포함한 전체 크기 계산 */
+            margin: 0 auto; /* 중앙 정렬 */
+        }
+
+        #weatherApp .weather-box {
+            background-color: #f8f9ff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+
+        #weatherApp .nowtime {
+            background-color: #88c5f7;
+            display: block;
+            color: white;
+            border-radius: 10px;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #weatherApp h3 {
+            margin: 10px 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        #weatherApp .weather-icon img {
+            width: 80px;
+            height: 80px;
+        }
+
+        #weatherApp .weather-info {
+            margin: 20px 0;
+        }
+
+        #weatherApp .error-message {
+            color: red;
+            font-weight: bold;
+            display: none;
+        }
+
+        #topCategories {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        #topCategories ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #topCategories ul li {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #topCategories ul li:last-child {
+            border-bottom: none;
+        }
+
+        #topCategories ul li span {
+            flex: 1;
+            text-align: left;
+        }
+
+        #topCategories ul li .count {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        #topCategories ul li:nth-child(1) {
+            background-color: #f0f8ff; /* Light Blue for 1st place */
+        }
+
+        #topCategories ul li:nth-child(2) {
+            background-color: #f5f5dc; /* Light Beige for 2nd place */
+        }
+
+        #topCategories ul li:nth-child(3) {
+            background-color: #fff0f5; /* Lavender Blush for 3rd place */
+        }
+
+        #topCategories ul li:nth-child(4) {
+            background-color: #e6e6fa; /* Lavender for 4th place */
+        }
+
+        #topCategories ul li:nth-child(5) {
+            background-color: #fff; /* White for 5th place */
+        }
+
+        #weatherApp {
+            width: 100%; /* 전체 너비 사용 */
+            max-width: 400px; /* 최대 너비 설정 */
+            min-width: 250px; /* 최소 너비 설정 */
+            background-color: #f9f9f9; /* 배경색 설정 */
+            border: 1px solid #ddd; /* 테두리 추가 */
+            border-radius: 8px; /* 테두리 둥글게 */
+            padding: 15px; /* 패딩 추가 */
+            box-sizing: border-box; /* 패딩과 테두리를 포함한 전체 크기 계산 */
+            margin: 0 auto; /* 중앙 정렬 */
+        }
+
+        #categoryAverageChart {
+            width: 100% !important; /* 전체 너비 */
+            height: 488px; /* 원하는 높이 */
+        }
+
+        #categoryViewChart {
+            width: 100% !important; /* 전체 너비 */
+            height: 800px; /* 원하는 높이 */
+        }
+
+    </style>
+    <!-- Bootstrap -->
+    <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+
+    <!-- bootstrap-progressbar -->
+    <link href="/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="/vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+    <!-- bootstrap-daterangepicker -->
+    <link href="/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="/build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <!-- sidebar menu -->
+                <div th:replace="/admin/admin-sidebar :: div"></div>
+                <!-- /sidebar menu -->
+
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div th:replace="/admin/admin-top :: div"></div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <!-- top tiles -->
+            <div class="row" style="display: flex; flex-wrap: nowrap; overflow-x: auto; margin: -3px;">
+                <div class="col-md-2 col-sm-6 tile_stats_count" style="background-color: #f9f9f9; border-radius: 5px; padding: 10px; margin: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 150px;">
+                    <span class="count_top" style="font-weight: bold; font-size: 20px; color: #333;"><i class="fa fa-user"></i> 전체 회원</span>
+                    <div class="count" th:text="${totalCount}" style="font-size: 36px; color: #007bff; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                    <span class="count_bottom" style="font-size: 16px; color: #777;">총 회원 수</span>
+                </div>
+                <div class="col-md-2 col-sm-6 tile_stats_count" style="background-color: #f9f9f9; border-radius: 5px; padding: 10px; margin: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 150px;">
+                    <span class="count_top" style="font-weight: bold; font-size: 20px; color: #333;"><i class="fa fa-dollar-sign"></i> 일일 매출</span>
+                    <div class="count green" th:text="${totalSalesCount}" style="font-size: 36px; color: #28a745; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                    <span class="count_bottom" style="font-size: 16px; color: #777;">오늘 발생한 매출</span>
+                </div>
+                <div class="col-md-2 col-sm-6 tile_stats_count" style="background-color: #f9f9f9; border-radius: 5px; padding: 10px; margin: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 150px;">
+                    <span class="count_top" style="font-weight: bold; font-size: 20px; color: #333;"><i class="fa fa-user-plus"></i> 오늘 회원 가입 수</span>
+                    <div class="count" th:text="${totalRegisterCount}" style="font-size: 36px; color: #dc3545; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                    <span class="count_bottom" style="font-size: 16px; color: #777;">오늘 신규 가입 회원 수</span>
+                </div>
+                <div class="col-md-2 col-sm-6 tile_stats_count" style="background-color: #f9f9f9; border-radius: 5px; padding: 10px; margin: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 150px;">
+                    <span class="count_top" style="font-weight: bold; font-size: 20px; color: #333;"><i class="fa fa-exclamation-triangle"></i> 신고 건</span>
+                    <div class="count" th:text="${totalReportCount}" style="font-size: 36px; color: #ffc107; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                    <span class="count_bottom" style="font-size: 16px; color: #777;">총 신고 건수</span>
+                </div>
+            </div>
+
+
+            <!-- /top tiles -->
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="dashboard_graph" style="background-color: #fff; border-radius: 5px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+
+                        <div class="row x_title">
+                            <div class="col-md-6">
+                                <h3 style="font-weight: bold; color: #333;">일주일 간 가입 통계</h3>
+                            </div>
+                        </div>
+
+                        <div style="height: 390px; width: 800px;" class="col-md-9 col-sm-9">
+                            <canvas id="mainChart" style="border: 1px solid #ddd;"></canvas>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <!-- 카테고리 Top 5 -->
+                                <div class="col-md-7 col-sm-8 bg-white" style="padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                    <div class="x_title">
+                                        <h3 style="font-weight: bold; color: #333;"><i class="fa fa-gift"></i> 이번 주 카테고리 판매 Top 5</h3>
+                                    </div>
+                                    <div id="topCategories">
+                                        <ul style="list-style-type: none; padding: 0;">
+                                            <!-- 카테고리 항목들 -->
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5 col-sm-5">
+                                    <div th:replace="/admin/admin-weather.html :: div"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+
+                    </div>
+                </div>
+            </div>
+            <br/>
+
+            <div class="row">
+
+                <div class="col-md-4 col-sm-4">
+                    <div class="x_panel tile fixed_height_500 overflow_hidden" style="background-color: #fff; border-radius: 5px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <div class="x_title">
+                            <h3 style="font-weight: bold; color: #333;">카테고리 평균 거래금액</h3>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <canvas id="categoryAverageChart" style="border: 1px solid #ddd;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-4">
+                    <div class="x_panel tile fixed_height_100 overflow_hidden" style="background-color: #fff; border-radius: 5px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <div class="x_title">
+                            <h3 style="font-weight: bold; color: #333;">일주일 카테고리 조회수 통계</h3>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <table style="margin: 0; width: 100%;">
+                                <tr>
+                                    <td>
+                                        <canvas id="categoryViewChart" style="border: 1px solid #ddd;"></canvas>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-4">
+                    <div class="x_panel tile fixed_height_400" style="background-color: #fff; border-radius: 5px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <div class="x_content">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h3 style="font-weight: bold; color: #333;">상품 등록 차트 <small style="color: #777;">실시간</small></h3>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+                                    <div class="dashboard-widget-content">
+                                        <ul class="list-unstyled timeline widget">
+                                            <h2 class="title1" style="color: #333;"></h2>
+                                            <div class="byline"></div>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-md-4 col-sm-4 ">
+
+                </div>
+
+
+                <div class="col-md-8 col-sm-8 ">
+
+
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+            <div class="pull-right">
+                © 2024 Team-Hermez All Rights Reserved. <a href="/">Farrot</a>
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="/vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<!-- Chart.js -->
+<!--<script src="/vendors/Chart.js/dist/Chart.min.js"></script>-->
+<!-- gauge.js -->
+<script src="/vendors/gauge.js/dist/gauge.min.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+<!-- iCheck -->
+<script src="/vendors/iCheck/icheck.min.js"></script>
+<!-- Skycons -->
+<script src="/vendors/skycons/skycons.js"></script>
+<!-- Flot -->
+<script src="/vendors/Flot/jquery.flot.js"></script>
+<script src="/vendors/Flot/jquery.flot.pie.js"></script>
+<script src="/vendors/Flot/jquery.flot.time.js"></script>
+<script src="/vendors/Flot/jquery.flot.stack.js"></script>
+<script src="/vendors/Flot/jquery.flot.resize.js"></script>
+<!-- Flot plugins -->
+<script src="/vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+<script src="/vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+<script src="/vendors/flot.curvedlines/curvedLines.js"></script>
+<!-- DateJS -->
+<script src="/vendors/DateJS/build/date.js"></script>
+<!-- JQVMap -->
+<script src="/vendors/jqvmap/dist/jquery.vmap.js"></script>
+<script src="/vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+<script src="/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+<!-- bootstrap-daterangepicker -->
+<script src="/vendors/moment/min/moment.min.js"></script>
+<script src="/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+
+<!-- Custom Theme Scripts -->
+<script src="/build/js/custom.min.js"></script>
+
+</body>
+</html>

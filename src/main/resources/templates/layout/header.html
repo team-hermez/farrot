@@ -1,0 +1,269 @@
+<header class="header_area" xmlns:sec="http://www.w3.org/1999/xhtml">
+  <script type="module">
+    import {initializeApp} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import {
+      getMessaging,
+      getToken,
+      onMessage
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-messaging.js";
+
+    const firebaseFcm = (
+            () => {
+              async function init() {
+                if ('serviceWorker' in navigator) {
+                  window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                            .then(() => {
+                              const firebaseConfig = {
+                                apiKey: "",
+                                authDomain: "",
+                                projectId: "",
+                                storageBucket: "",
+                                messagingSenderId: "",
+                                appId: "",
+                                measurementId: ""
+                              };
+
+                              const app = initializeApp(firebaseConfig);
+                              const message = getMessaging(app);
+                              Notification.requestPermission().then(permission => {
+                                if (permission === 'granted') {
+                                  return getToken(message, {
+                                    vapidKey: ""
+                                  })
+                                          .then(async function (token) {
+                                            await fetch('/notification/register', {
+                                              method: 'post',
+                                              body: token
+                                            })
+                                            onMessage(message, payload => {
+                                              console.log('message received!!!!', payload);
+                                              const notificationTitle = payload.notification.title;
+                                              const notificationOptions = {
+                                                body: payload.notification.body,
+                                                icon: '/default-icon.png'
+                                              }
+                                              if (Notification.permission === 'granted') {
+                                                new Notification(notificationTitle, notificationOptions);
+                                              }
+                                            })
+                                          })
+                                          .catch((error) => {
+                                            console.log('푸시 토큰 가져오는 중에 에러 발생', error)
+                                          })
+                                } else {
+                                  console.log('푸시 알림 거부됨');
+                                }
+                              })
+                                      .catch((error) => {
+                                        console.error('Firebase 토큰 가져오기 실패:', error);
+                                      });
+                            });
+                  })
+                }
+              }
+
+              return {
+                init: function () {
+                  init()
+                }
+              }
+            })()
+    firebaseFcm.init()
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <div class="bigshop-main-menu">
+    <div class="container">
+      <div class="classy-nav-container breakpoint-off">
+        <nav class="classy-navbar" id="bigshopNav">
+          <a href="/" class="nav-brand"><img style="width: 184px; height: 75px; margin-bottom: 10px;"
+                                             src="/img/core-img/farrot.png" alt="logo"></a>
+          <div class="classy-navbar-toggler">
+            <span class="navbarToggler"><span></span><span></span><span></span></span>
+          </div>
+          <div class="classy-menu">
+            <div class="classycloseIcon">
+              <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
+            </div>
+            <div class="classynav">
+              <ul>
+                <li><a href="/">홈</a>
+                </li>
+                <li><a href="#">내 정보</a>
+                  <ul class="dropdown">
+                    <li><a href="/chat-room/rooms">채팅방</a></li>
+                    <li><a href="/wishlist/wishlist">찜목록</a></li>
+                    <li><a href="/member/detail">마이페이지</a></li>
+                    <li><a href="/product/member-products">판매 목록</a></li>
+                    <li><a href="/payment/member-payments">구매 결제</a></li>
+                    <li><a href="/payment/member-payments-sell">판매 결제</a></li>
+                  </ul>
+                </li>
+                <li><a href="/product/products">카테고리</a>
+                  <div class="megamenu">
+                    <ul class="single-mega cn-col-4">
+                      <li><a href="/product/products?categoryId=1">패션 의류</a></li>
+                      <li><a href="/product/products?categoryId=2">패션 잡화</a></li>
+                      <li><a href="/product/products?categoryId=3">뷰티</a></li>
+                      <li><a href="/product/products?categoryId=4">출산/유아동</a></li>
+                      <li><a href="/product/products?categoryId=5">모바일/태블릿</a></li>
+                      <li><a href="/product/products?categoryId=6">가전제품</a></li>
+                    </ul>
+                    <ul class="single-mega cn-col-4">
+                      <li><a href="/product/products?categoryId=7">노트북/PC</a></li>
+                      <li><a href="/product/products?categoryId=8">카메라/캠코더</a></li>
+                      <li><a href="/product/products?categoryId=9">가구/인테리어</a></li>
+                      <li><a href="/product/products?categoryId=10">리빙/생활</a></li>
+                      <li><a href="/product/products?categoryId=11">게임</a></li>
+                      <li><a href="/product/products?categoryId=12">반려동물/취미</a></li>
+                    </ul>
+                    <ul class="single-mega cn-col-4">
+                      <li><a href="/product/products?categoryId=13">도서/음반</a></li>
+                      <li><a href="/product/products?categoryId=14">티켓/쿠폰</a></li>
+                      <li><a href="/product/products?categoryId=15">스포츠</a></li>
+                      <li><a href="/product/products?categoryId=16">레저/여행</a></li>
+                      <li><a href="/product/products?categoryId=17">오토바이</a></li>
+                      <li><a href="/product/products?categoryId=18">공구/산업용품</a></li>
+                    </ul>
+                    <div class="single-mega cn-col-2">
+                      <div class="megamenu-slides owl-carousel">
+                        <a href="shop-grid-left-sidebar.html">
+                          <img src="/farrot4-1.png" alt="">
+                        </a>
+                        <a href="shop-list-left-sidebar.html">
+                          <img src="/farrot6.png" alt="">
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li><a href="/product/register-sell">판매하기</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Hero Meta -->
+          <div class="hero_meta_area ml-auto d-flex align-items-center justify-content-end">
+            <!-- Search -->
+            <div class="search-area">
+              <div class="search-btn"><i class="icofont-search"></i></div>
+              <!-- Form -->
+              <div class="search-form">
+                <input type="search" class="form-control" placeholder="Search">
+                <input type="submit" class="d-none" value="Send">
+              </div>
+            </div>
+
+            <!-- Wishlist -->
+            <div class="cart-area">
+              <div id="read-count" class="cart--btn">
+                <span class="read-count"></span>
+                <script th:inline="javascript">
+                  $.ajax({
+                    url: '/chat-room/notification',
+                    type: 'get',
+                    success: data => {
+                      const notificationSpan = document.querySelector('.read-count')
+                      if (typeof data.readCount !== 'undefined' && data.readCount !== 0) {
+                        notificationSpan.classList.add('cart_quantity')
+                        notificationSpan.textContent = data.readCount
+                        const spanDiv = document.getElementById('read-count')
+                        spanDiv.append(notificationSpan)
+                      }
+                    },
+                    error: data => {
+                      console.log("실패", data)
+                    }
+                  })
+                </script>
+                <a th:href="@{/chat-room/rooms}"><i class="fa fa-envelope-o"></i></a>
+              </div>
+
+            </div>
+
+            <!-- Cart -->
+            <div class="cart-area">
+              <div class="cart--btn"><i class="icofont-cart"></i>
+                <span class="wish-count"></span>
+                <script th:inline="javascript">
+                  $.ajax({
+                    url: '/wishlist/count',
+                    type: 'get',
+                    success: data => {
+                      if (data !== 0) {
+                        const wishSpan = document.querySelector('.wish-count')
+                        wishSpan.classList.add('cart_quantity')
+                        wishSpan.textContent = data
+                      }
+                    },
+                    error: data => {
+                      console.log("실패", data)
+                    }
+                  })
+                </script>
+              </div>
+
+              <!-- Cart Dropdown Content -->
+              <div class="cart-dropdown-content">
+                <ul class="cart-list" id="wish-drop">
+                  <script th:inline="javascript">
+                    $.ajax({
+                      url: '/wishlist/header-wish',
+                      type: 'get',
+                      success: data => {
+                        const items = [];
+                        data.forEach(product => {
+                          const li = `<li>
+                    <div class="cart-item-desc">
+                      <a href="/product/product-detail?productId=${product.id}" class="image">
+                        <img src="${product.latestImagePath}" class="cart-thumb" alt="">
+                      </a>
+                      <div>
+                        <a href="/product/product-detail?productId=${product.id}">${product.productName}</a>
+                        <p><span class="price">가격: ${product.price} 원</span></p>
+                      </div>
+                    </div>
+                  </li>`
+                          items.push(li)
+                        })
+                        const wishDrop = document.getElementById('wish-drop');
+                        wishDrop.innerHTML = items.join('');
+                      },
+                      error: data => {
+                        console.log(JSON.parse(data.responseText).message)
+                      }
+                    })
+                  </script>
+                </ul>
+                <div class="cart-box">
+                  <a href="/wishlist/wishlist" class="btn btn-primary d-block">찜목록 더보기</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Account -->
+            <div class="account-area">
+
+              <div class="user-thumbnail"><i class="fa fa-user-o"></i>
+              </div>
+
+              <ul class="user-meta-dropdown">
+                <li sec:authorize="!isAuthenticated()">
+                  <a href="/member/register">회원가입</a>
+                </li>
+                <li sec:authorize="!isAuthenticated()">
+                  <a href="/member/login">로그인</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                  <a href="/member/logout">로그아웃</a>
+                </li>
+
+
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>

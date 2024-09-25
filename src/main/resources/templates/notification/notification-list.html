@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+    <title>Bigshop | Responsive E-commerce Template</title>
+
+    <!-- Favicon  -->
+    <link rel="icon" href="/img/core-img/favicon.ico">
+
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="/style.css">
+
+    <div th:replace="/layout/header :: header"></div>
+
+</head>
+
+<body>
+    <!-- ++++++++++++++++++++++
+    Breadcrumb Right Align
+    ++++++++++++++++++++++ -->
+    <div class="breadcumb_area">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <h5>전체 알림</h5>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">홈</a></li>
+                        <li class="breadcrumb-item active">알림 목록</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ++++++++++++++++++++++
+    Breadcrumb Center Align
+    ++++++++++++++++++++++ -->
+
+    <div class="mb-100"></div>
+
+    <div class="container">
+        <!-- Shortcodes Title -->
+        <div class="shortcodes_title mb-30">
+            <h5>Bootstrap Default Breadcrumb</h5>
+        </div>
+
+        <div class="shortcodes_content">
+            <!-- ++++++++++++++++++++++
+            Bootstrap Default Breadcrumb
+            ++++++++++++++++++++++ -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">Home</li>
+                </ol>
+            </nav>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Library</li>
+                </ol>
+            </nav>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Library</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Data</li>
+                </ol>
+            </nav>
+            <!-- ++++++++++++++++++++++
+            Bootstrap Default Breadcrumb
+            ++++++++++++++++++++++ -->
+        </div>
+    </div>
+    <div class="mb-100"></div>
+</div>
+<!-- Shortcodes Area End -->
+
+<div th:replace="/layout/footer :: footer"></div>
+
+</body>
+
+</html>

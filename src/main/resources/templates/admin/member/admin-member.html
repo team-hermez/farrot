@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <script type="module">
+        import {initializeApp} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import {
+            getMessaging,
+            getToken,
+            onMessage
+        } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-messaging.js";
+
+        const firebaseFcm = (
+            () => {
+                async function init() {
+                    if ('serviceWorker' in navigator) {
+                        window.addEventListener('load', () => {
+                            navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                                .then(() => {
+                                    const firebaseConfig = {
+                                        apiKey: "",
+                                        authDomain: "",
+                                        projectId: "",
+                                        storageBucket: "",
+                                        messagingSenderId: "",
+                                        appId: "",
+                                        measurementId: ""
+                                    };
+
+                                    const app = initializeApp(firebaseConfig);
+                                    const message = getMessaging(app);
+                                    Notification.requestPermission().then(permission => {
+                                        if (permission === 'granted') {
+                                            console.log('허용된 곳에 들어옴')
+                                            // new Notification('알림 권한이 허용되었습니다!', {body: '푸시 알림이 활성화되었습니다.'})
+                                            return getToken(message, {
+                                                vapidKey: ""
+                                            })
+                                                .then(async function (token) {
+                                                    console.log(`푸쉬 토큰 발급 완료 : ${token}`);
+                                                    await fetch('/notification/register', {
+                                                        method: 'post',
+                                                        body: token
+                                                    })
+                                                    onMessage(message, payload => {
+                                                        console.log('message received!!!!', payload);
+                                                        const notificationTitle = payload.notification.title;
+                                                        const notificationOptions = {
+                                                            body: payload.notification.body,
+                                                            icon: '/default-icon.png'
+                                                        }
+                                                        if (Notification.permission === 'granted') {
+                                                            new Notification(notificationTitle, notificationOptions);
+                                                        }
+                                                    })
+                                                })
+                                                .catch((error) => {
+                                                    console.log('푸시 토큰 가져오는 중에 에러 발생', error)
+                                                })
+                                        } else {
+                                            console.log('푸시 알림 거부됨');
+                                        }
+                                    })
+                                        .catch((error) => {
+                                            console.error('Firebase 토큰 가져오기 실패:', error);
+                                        });
+                                });
+                        })
+                    }
+                }
+
+                return {
+                    init: function () {
+                        init()
+                    }
+                }
+            })()
+        firebaseFcm.init()
+    </script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+
+    <!-- Bootstrap -->
+    <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/admin/registerMonthly.js"></script>
+    <link rel="stylesheet" th:href="@{/css/admin/chart.css}">
+    <!-- NProgress -->
+    <link href="/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="/build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <!-- sidebar menu -->
+                <div th:replace="/admin/admin-sidebar :: div"></div>
+                <!-- /sidebar menu -->
+
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div th:replace="/admin/admin-top :: div"></div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>회원 관리</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+
+                    <div class="col-md-12 col-sm-12 ">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>회원 통계 <small>달별 가입한 회원 수</small></h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="dashboard-widget-content">
+                                    <div class="col-md-4 hidden-small">
+                                        <table class="countries_list">
+                                            <canvas id="registerMonthlyChart"></canvas>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row" style="display: block;">
+
+                    <div class="col-md-12 col-sm-12  ">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>전체 회원 </h2>
+
+                                <div class="clearfix"></div>
+                            </div>
+
+                            <form th:action="@{/admin/process-action}" method="post">
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th>
+                                            <input type="checkbox" id="check-all" class="flat"
+                                                   onclick="this.form.querySelectorAll('input[name=selectedIds]').forEach(checkbox => checkbox.checked = this.checked);">
+                                        </th>
+                                        <th class="column-title">회원번호</th>
+                                        <th class="column-title">이름</th>
+                                        <th class="column-title">닉네임</th>
+                                        <th class="column-title">계정</th>
+                                        <th class="column-title">전화번호</th>
+                                        <th class="column-title">생성일</th>
+                                        <th class="column-title">상태</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody th:each="list : ${memberList}">
+                                    <tr>
+                                        <td class="a-center">
+                                            <input type="checkbox" name="selectedIds" th:value="${list.id}"
+                                                   class="flat"/>
+                                        </td>
+                                        <td th:text="${list.id}"></td>
+                                        <td>
+                                            <a style="text-decoration: underline;"
+                                               th:href="@{/admin/member-detail/{id}(id=${list.id})}"
+                                               th:text="${list.memberName}"></a>
+                                        </td>
+                                        <td th:text="${list.nickname}"></td>
+                                        <td th:text="${list.email}"></td>
+                                        <td th:text="${list.phone}"></td>
+                                        <td th:text="${list.createAt}"></td>
+                                        <td th:text="${list.role.description}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="row justify-content-end">
+                                    <div class="btn-group form-check">
+                                        <button class="btn btn-secondary" type="button" data-bs-toggle="modal"
+                                                data-bs-target="#userModal">공지사항
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">공지사항</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form>
+                                                    <div class="mb-3">
+                                                        <label for="content" class="form-label">공지사항 내용</label>
+                                                        <textarea class="form-control" name="content" id="content"
+                                                                  rows="4" required></textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="priority" class="form-label">우선순위</label>
+                                                        <select class="form-select" id="priority" name="priority">
+                                                            <option selected>선택하세요...</option>
+                                                            <option value="⭐⭐⭐⭐⭐">높음</option>
+                                                            <option value="⭐⭐⭐">보통</option>
+                                                            <option value="⭐">낮음</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="date" class="form-label">시작 날짜</label>
+                                                        <input type="date" class="form-control" id="date" name="date">
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    닫기
+                                                </button>
+                                                <button type="submit" name="action" value="alert"
+                                                        class="btn btn-primary">알림
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item" th:classappend="${memberList.first} ? 'disabled' : ''">
+                                        <a class="page-link" th:href="@{/admin/member(page=0, size=${memberList.size})}"
+                                           aria-label="First">
+                                            <span aria-hidden="true">맨 처음</span>
+                                        </a>
+                                    </li>
+
+                                    <li class="page-item"
+                                        th:classappend="${memberList.hasPrevious()} ? '' : 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{/admin/member(page=${memberList.number - 1}, size=${memberList.size})}"
+                                           aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+
+                                    <li class="page-item"
+                                        th:each="i : ${#numbers.sequence((memberList.number - 2 > 0 ? memberList.number - 2 : 0),
+                                             (memberList.number + 2 < memberList.totalPages - 1 ? memberList.number + 2 : memberList.totalPages - 1))}"
+                                        th:classappend="${i == memberList.number} ? 'active'">
+                                        <a class="page-link" th:text="${i + 1}"
+                                           th:href="@{/admin/member(page=${i}, size=${memberList.size})}"
+                                           th:if="${i + 1} == 0? false : true"></a>
+                                    </li>
+
+                                    <li class="page-item" th:classappend="${memberList.hasNext()} ? '' : 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{/admin/member(page=${memberList.number + 1}, size=${memberList.size})}"
+                                           aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+
+                                    <li class="page-item" th:classappend="${memberList.last} ? 'disabled' : ''">
+                                        <a class="page-link"
+                                           th:href="@{/admin/member(page=${memberList.totalPages - 1}, size=${memberList.size})}"
+                                           aria-label="Last">
+                                            <span aria-hidden="true">끝으로</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+            <div class="pull-right">
+                © 2024 Team-Hermez All Rights Reserved. <a href="/">Farrot</a>
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="/vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<!-- iCheck -->
+<script src="/vendors/iCheck/icheck.min.js"></script>
+
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
+
+<!-- Custom Theme Scripts -->
+<script src="/build/js/custom.min.js"></script>
+</body>
+</html>
