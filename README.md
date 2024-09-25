@@ -213,10 +213,10 @@ farrot/
 | 메인 페이지 1 |  메인 페이지 2   |
 | :-------------------------------------------: | :------------: | 
 |  ![메인 페이지](https://github.com/user-attachments/assets/fff93cd9-0107-4c60-b4d4-f96c92c1620d)   |  ![메인 페이지 2](https://github.com/user-attachments/assets/9354b37f-1e7d-4a46-97d4-0537cdcb1c4a) |  
-| 회원가입 페이지   |   마이페이지   |  
-| ![회원가입](https://github.com/user-attachments/assets/5f5334e2-6543-4c95-920a-cbffb2d86b0d)  |   ![마이페이지](https://github.com/user-attachments/assets/773d670b-b8e1-4fa0-b60d-bbc63f24a1fa) |  
-| 로그인 페이지   |    상품 페이지   |  
-| ![로그인](https://github.com/user-attachments/assets/a06d1942-d194-4763-a215-d3bf034c491a) |  ![상품목록 페이지](https://github.com/user-attachments/assets/79de6de5-8a54-49bd-a5ba-14ce4c1c49bd)  | 
+| 회원가입 페이지   |   로그인 페이지   |  
+| ![회원가입](https://github.com/user-attachments/assets/5f5334e2-6543-4c95-920a-cbffb2d86b0d)  | ![로그인](https://github.com/user-attachments/assets/a06d1942-d194-4763-a215-d3bf034c491a)   |  
+| 마이페이지   |    상품 페이지   |  
+| ![마이페이지](https://github.com/user-attachments/assets/773d670b-b8e1-4fa0-b60d-bbc63f24a1fa) |  ![상품목록 페이지](https://github.com/user-attachments/assets/79de6de5-8a54-49bd-a5ba-14ce4c1c49bd)  | 
 | 상품 상세 페이지   |  안전결제 페이지  | 
 | ![상품상세페이지](https://github.com/user-attachments/assets/74e41cde-104a-45fd-b878-39c872064451)   |  ![안전결제](https://github.com/user-attachments/assets/9d0ce543-fc80-4984-9880-d14f879cd4aa)  |
 | 구매 내역 페이지   |  채팅 페이지   |  
