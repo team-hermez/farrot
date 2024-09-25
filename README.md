@@ -131,19 +131,11 @@ farrot/
 
 ## 4. 역할 분담
 
-![435435435345](https://github.com/user-attachments/assets/fff93cd9-0107-4c60-b4d4-f96c92c1620d)
-![3432432](https://github.com/user-attachments/assets/9354b37f-1e7d-4a46-97d4-0537cdcb1c4a)
-
-
-
 
 ### 👻엄진수
 
 - **UI**
     - 페이지 : 회원가입 및 인증 페이지, 마이페이지
-    - ![123](https://github.com/user-attachments/assets/5f5334e2-6543-4c95-920a-cbffb2d86b0d)
-    - ![61261616](https://github.com/user-attachments/assets/773d670b-b8e1-4fa0-b60d-bbc63f24a1fa)
-    - ![315415151](https://github.com/user-attachments/assets/a06d1942-d194-4763-a215-d3bf034c491a)
 
 - **기능**
     - 로그인 기능 구현
@@ -159,12 +151,6 @@ farrot/
 
 - **UI**
     - 페이지 : 상품 관련 페이지, 결제 관련 페이지 
-    - ![11](https://github.com/user-attachments/assets/4f94299c-fe7e-444e-9630-2afa97ef6b77)
-    - ![캡처](https://github.com/user-attachments/assets/4c8a567f-b4cb-47a5-a1f1-53402ae96ef6)
-    - ![44](https://github.com/user-attachments/assets/74e41cde-104a-45fd-b878-39c872064451)
-    - ![222](https://github.com/user-attachments/assets/9d0ce543-fc80-4984-9880-d14f879cd4aa)
-    - ![1212](https://github.com/user-attachments/assets/7e5ebc53-7601-4c6f-91c5-20f2fc4dcbd1)
-
 
 - **기능**
     - 상품 등록 수정 삭제 기능 구현
@@ -181,10 +167,6 @@ farrot/
 
 - **UI**
     - 페이지 : 채팅 페이지, 알림 페이지, 위시리스트 페이지
-    - ![34343434141](https://github.com/user-attachments/assets/778a53e1-dac3-424a-a557-79c2162cc6b8)
-    - ![515151515](https://github.com/user-attachments/assets/d4768eb1-5853-40e8-8868-14f1081ef4f6)
-    - ![456456546456456](https://github.com/user-attachments/assets/09023b7f-6be3-4d5f-b0ac-2f83611ede0b)
-    - ![343415151515](https://github.com/user-attachments/assets/95197fde-2492-476c-85a0-bddbb6a262fd)
 
 - **기능**
     - 대화 실시간 읽음 처리 구현
@@ -197,18 +179,13 @@ farrot/
 ### 🍊 김다은
 - **UI**
     - 페이지 : 관리자 페이지( 회원관리, 상품관리, 신고관리) 구현
-    - ![11111](https://github.com/user-attachments/assets/1786910a-bd32-4b0b-9fd0-cf2a4a49a602)
-    - ![222222](https://github.com/user-attachments/assets/5f52f24d-f39a-421b-8486-19eaeada8067)
-    - ![5151](https://github.com/user-attachments/assets/54640765-624b-408f-9d89-62a6b4bbcb49)
-    - ![3431414](https://github.com/user-attachments/assets/bbce900e-a459-4965-8377-942e96d01a72)
-    - ![34513515](https://github.com/user-attachments/assets/e31baa0d-88b2-4661-ba9f-2161f73264a1)
 
 - **기능**
     - 회원, 비회원, 회원 상세 보기 등 회원관리 서비스 구현
     - 상품 거래량, 상품 등록 순, 실시간 상품 등록 확인 서비스 구현
     - 신고하기 서비스 구현
     - 실시간 통계 조회 서비스 구현
-    - 상품별 카텍고리 관리
+    - 상품별 카테고리 관리
 
 <br>
 
@@ -230,6 +207,29 @@ farrot/
 - 만나서 회의를 진행하며 작업 순서와 방향성에 대한 고민을 나누고 노션 및 디스코드에 회의 내용을 기록했습니다.
 
 <br>
+
+## 6. 페이지
+
+| 메인 페이지 1 |  메인 페이지 2   |
+| :-------------------------------------------: | :------------: | 
+|  ![메인 페이지](https://github.com/user-attachments/assets/fff93cd9-0107-4c60-b4d4-f96c92c1620d)   |  ![메인 페이지 2](https://github.com/user-attachments/assets/9354b37f-1e7d-4a46-97d4-0537cdcb1c4a) |  
+| 회원가입 페이지   |   마이페이지   |  
+| ![회원가입](https://github.com/user-attachments/assets/5f5334e2-6543-4c95-920a-cbffb2d86b0d)  |   ![마이페이지](https://github.com/user-attachments/assets/773d670b-b8e1-4fa0-b60d-bbc63f24a1fa) |  
+| 로그인 페이지   |    상품 페이지   |  
+| ![로그인](https://github.com/user-attachments/assets/a06d1942-d194-4763-a215-d3bf034c491a) |  ![상품목록 페이지](https://github.com/user-attachments/assets/79de6de5-8a54-49bd-a5ba-14ce4c1c49bd)  | 
+| 상품 상세 페이지   |  안전결제 페이지  | 
+| ![상품상세페이지](https://github.com/user-attachments/assets/74e41cde-104a-45fd-b878-39c872064451)   |  ![안전결제](https://github.com/user-attachments/assets/9d0ce543-fc80-4984-9880-d14f879cd4aa)  |
+| 구매 내역 페이지   |  채팅 페이지   |  
+| ![구매 내역](https://github.com/user-attachments/assets/7e5ebc53-7601-4c6f-91c5-20f2fc4dcbd1)  |  ![채팅](https://github.com/user-attachments/assets/778a53e1-dac3-424a-a557-79c2162cc6b8) |
+| 대화방 페이지  |  알림 및 위시리스트   |
+| ![대화방](https://github.com/user-attachments/assets/d4768eb1-5853-40e8-8868-14f1081ef4f6) | ![알림 및 위시리스트](https://github.com/user-attachments/assets/a10e35e0-afd7-405c-a30b-88a49b7eeb9d) |
+| 관리자 페이지 | 회원관리 페이지 |
+| ![관리자](https://github.com/user-attachments/assets/d1c63429-dc84-4e74-8630-9cac48d0c89e) | ![회원관리](https://github.com/user-attachments/assets/a1b9decd-c69e-4176-9139-a30056d05837) |
+| 비회원관리 페이지 | 상품관리 페이지 |
+| ![비회원](https://github.com/user-attachments/assets/484a3f4a-0a32-4865-8b54-fb4d6729d10c) | ![상품관리](https://github.com/user-attachments/assets/6277d141-621f-458f-86b2-691fb8700327) |
+
+<br>
+
 
 ## 7. 페이지별 기능 
 
