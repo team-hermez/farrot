@@ -1,11 +1,36 @@
 # 🛍️ Farrot 선생님 중고거래 플랫폼
-![farrot](https://github.com/user-attachments/assets/dcb62b7f-041a-4bad-be19-4c0d697762f6)
+<div align="center">
 
-- 발표URL : [Farrot 최종발표/영상 및 자료⭕](https://www.miricanvas.com/v/13opefh)
+![farrot](https://github.com/user-attachments/assets/dcb62b7f-041a-4bad-be19-4c0d697762f6)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fteam-hermez%2Ffarrot&count_bg=%238FB0C6&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=%F0%9F%A6%A6&edge_flat=false)](https://hits.seeyoufarm.com)
+
+</div>
+
+## 🔗 Link
+-  [Farrot 최종발표/영상 및 자료⭕](https://www.miricanvas.com/v/13opefh)
 
 <br>
 
-## 프로젝트 소개
+## 🗓️ 개발 기간 및 작업 관리
+
+### 개발 기간
+
+- 기획 : 2024년 9월 11일 ~ 2024년 9월 12일
+- 기능 설계 : 2024년 9월 12일 ~ 2024년 9월 13일
+- View 구현 : 2024년 9월 19일 ~ 2024년 9월 20일
+- 서버 구현 : 2024년 9월 19일 ~ 2024년 9월 23일
+- 발표 : 2024년 9월 23일
+
+<br>
+
+### 작업 관리
+
+- GitHub Projects를 사용하여 진행 상황을 공유했습니다.
+- 만나서 회의를 진행하며 작업 순서와 방향성에 대한 고민을 나누고 노션 및 디스코드에 회의 내용을 기록했습니다.
+
+<br>
+
+## 📢 프로젝트 소개
 
 - Farrot은 교사들이 안전하고 신뢰할 수 있는 환경에서 중고 물품을 거래할 수 있도록 설계된 플랫폼입니다.
 - 교사들 간의 원활한 소통과 상호 신뢰를 기반으로 한 거래를 목표로 하며, 교육자들이 필요한 물품을 쉽게 등록하고 검색할 수 있는 기능을 제공합니다.
@@ -36,17 +61,19 @@ Our platform supports the following features:
 
 <br>
 
-## 1. 개발 환경
+## ⚙️ 개발 환경
 
 - **Front-end** : HTML, CSS, JavaScript, Thymeleaf
 - **Back-end** : Spring Boot, JPA, MariaDB, SAFERROT(안전 결제 서버)
 - **버전 및 이슈관리** : Git, GitHub
 - **협업 툴** : Discord, Notion, GitHub, Slack, VScode
 - **서비스 배포 환경** : Tomcat
+![Stacks](https://github.com/user-attachments/assets/d09856ad-8226-4d8c-bc66-7be38f8d2b0b)
+
 
 <br>
 
-## 2. 채택한 개발 기술과 브랜치 전략
+## ✅ 채택한 개발 기술과 브랜치 전략
 
 ### 브랜치 전략
 
@@ -57,7 +84,7 @@ Our platform supports the following features:
 
 <br>
 
-## 3. 프로젝트 구조
+## 🪜 프로젝트 구조
 
 ```
 farrot/
@@ -129,7 +156,7 @@ farrot/
 
 <br>
 
-## 4. 역할 분담
+## 🙏 역할 분담
 
 
 ### 🐈‍⬛ 엄진수
@@ -190,26 +217,8 @@ farrot/
 
 <br>
 
-## 5. 개발 기간 및 작업 관리
 
-### 개발 기간
-
-- 기획 : 2024년 9월 11일 ~ 2024년 9월 12일
-- 기능 설계 : 2024년 9월 12일 ~ 2024년 9월 13일
-- View 구현 : 2024년 9월 19일 ~ 2024년 9월 20일
-- 서버 구현 : 2024년 9월 19일 ~ 2024년 9월 23일
-- 발표 : 2024년 9월 23일
-
-<br>
-
-### 작업 관리
-
-- GitHub Projects를 사용하여 진행 상황을 공유했습니다.
-- 만나서 회의를 진행하며 작업 순서와 방향성에 대한 고민을 나누고 노션 및 디스코드에 회의 내용을 기록했습니다.
-
-<br>
-
-## 6. 페이지
+## 📺 화면 구성
 
 | 메인 페이지 1 |  메인 페이지 2   |
 | :-------------------------------------------: | :------------: | 
@@ -232,7 +241,7 @@ farrot/
 <br>
 
 
-## 7. 페이지별 기능 
+## 📦 화별 기능 
 
 | 기능 | 영상 |
 | :-------------------------: | :-------------------------------------------: |
@@ -243,7 +252,7 @@ farrot/
 
 <br>
 
-## 8. 클론 및 의존성 설치
+## 🏁 클론 및 의존성 설치
 
 ### Requirements
 
@@ -266,7 +275,7 @@ cd farrot
 
 <br>
 
-## 9. 개선 목표
+## 🎯 개선 목표
 
 - 이전 프로젝트인 flone을 연결하여 선생님의 중고거래 사이트 정체성 확립
 - 에스크로 서비스 구체화
@@ -274,7 +283,7 @@ cd farrot
 
 <br>
 
-## 10. 프로젝트 후기
+## ⌨️ 프로젝트 후기
 
 ### (❁´◡`❁) 엄진수
 
@@ -299,3 +308,9 @@ cd farrot
 
 관리자 페이지를 하면서 여러가지 sql문을 경험해볼 수 있었습니다.
 처음에만 어려웠지 뒤로 갈수록 jpa에 익숙해지니 마무리가 될때쯤 어렵지 않다고 늦겼습니다. 관리자페이지를 하면서 팀원들과 많이 소통했는데 그 부분이 제일 재미있었던것 같습니다.	
+
+<br>
+
+## 📞 연락처
+
+프로젝트 관련 문의는 [team-Hermez](https://github.com/team-hermez)으로 문의주시길 바랍니다.
