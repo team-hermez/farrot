@@ -53,7 +53,7 @@ Our platform supports the following features:
 
 ## 👨‍👩‍👦‍👦 웹개발팀 소개
 
-|      김혁진       |          엄진수         |       허상범         |       김다은        |
+|      👑김혁진       |          엄진수         |       허상범         |       김다은        |
 | :----------------: | :----------------------: | :-----------------: | :----------------: |
 |   ![image](https://github.com/user-attachments/assets/c5349ab8-be7a-440c-8335-93bdd1a644ab)   |  ![image](https://github.com/user-attachments/assets/b9e11116-3777-4458-83a8-0c0d188ff458)    |  ![image](https://github.com/user-attachments/assets/f6792437-0999-4464-ad63-3614c3b9231b)  |   ![image](https://github.com/user-attachments/assets/971f010f-1724-475b-86e4-ba8cd34edb78)   |
 |   [@hyoekjin](https://github.com/HS-hyeokjin)   |    [@jinsu](https://github.com/Gitdoolgi)  | [@sangbum](https://github.com/tokkaiiii)  | [@daeun](https://github.com/kde0707)  |
